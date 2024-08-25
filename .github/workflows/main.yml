@@ -1,0 +1,63 @@
+name: "Build & Release"
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - release/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.24.0
+
+      - name: Fix Flutter SDK folder permission
+        run: git config --global --add safe.directory /tmp/flutter/
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Format code
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze code
+        run: flutter analyze .
+
+      # Build debug APK
+      - name: Build Debug APK
+        run: flutter build apk --debug
+
+      # Upload debug APK
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: build/app/outputs/flutter-apk/debug/app-debug.apk
+
+      # Build release APK
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      # Upload release APK
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/release/app-release.apk
