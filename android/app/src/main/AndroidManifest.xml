@@ -1,8 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <service
-    android:name="com.ryanheise.audioservice.AudioServiceBackground"
-    android:permission="android.permission.FOREGROUND_SERVICE"
-    android:exported="true"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

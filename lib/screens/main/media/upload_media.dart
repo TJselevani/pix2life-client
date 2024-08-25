@@ -42,12 +42,30 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     return Uri.encodeComponent(fileName);
   }
 
+  // Future<void> _pickImages() async {
+  //   final List<XFile> selectedImages = await _picker.pickMultiImage();
+  //   if (selectedImages.isNotEmpty) {
+  //     setState(() {
+  //       _images!.addAll(selectedImages);
+  //       _copyMedia = selectedImages;
+  //       _selectedMediaType = 'images';
+  //     });
+  //   }
+  // }
+
   Future<void> _pickImages() async {
-    final List<XFile> selectedImages = await _picker.pickMultiImage();
-    if (selectedImages.isNotEmpty) {
+    final List<XFile>? selectedImages = (await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: true,
+    ))
+        ?.files
+        .map((file) => XFile(file.path!))
+        .toList();
+
+    if (selectedImages != null && selectedImages.isNotEmpty) {
       setState(() {
-        _images = selectedImages;
-        _copyMedia = selectedImages;
+        _images!.addAll(selectedImages);
+        _copyMedia!.addAll(selectedImages);
         _selectedMediaType = 'images';
       });
     }

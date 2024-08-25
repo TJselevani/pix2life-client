@@ -38,6 +38,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   List<CameraDescription>? cameras;
   bool _isLoading = false;
   bool _isSet = false;
+  bool _isReady = false;
   File? _imageFile;
   String? _matchedImage;
   String? _galleryName;
@@ -63,6 +64,11 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
+        _isReady = true; // Mark as ready to match
+      });
+    } else {
+      setState(() {
+        _isReady = false; // Reset if no file is picked
       });
     }
   }
@@ -73,6 +79,11 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
+        _isReady = true; // Mark as ready to match
+      });
+    } else {
+      setState(() {
+        _isReady = false; // Reset if no file is picked
       });
     }
   }
@@ -333,15 +344,16 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
             ),
           ),
           SizedBox(height: ScreenUtil().setHeight(30)),
-          _isLoading
-              ? LoadingAnimationWidget.bouncingBall(
-                  color: AppPalette.redColor1,
-                  size: ScreenUtil().setWidth(30),
-                )
-              : RoundedButton(
-                  name: "Match Image",
-                  onPressed: _uploadMatchImage,
-                ),
+          if (_isReady)
+            _isLoading
+                ? LoadingAnimationWidget.bouncingBall(
+                    color: AppPalette.redColor1,
+                    size: ScreenUtil().setWidth(30),
+                  )
+                : RoundedButton(
+                    name: "Match Image",
+                    onPressed: _uploadMatchImage,
+                  ),
           SizedBox(height: ScreenUtil().setHeight(20)),
         ],
       ),
