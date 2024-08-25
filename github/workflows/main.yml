@@ -1,0 +1,64 @@
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#       - master
+#   push:
+#     branches:
+#       - master
+#       - main
+#       - develop
+#       - release/*
+
+# name: "Build & Release"
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Flutter
+#         uses: actions/setup-java@v2
+#         with:
+#           distribution: "temurin" # Use the Temurin distribution
+#           java-version: "17.x"
+
+#       - name: Fix Flutter SDK folder permission
+#         run: git config --global --add safe.directory /tmp/flutter/
+
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: "3.24.0"
+#           channel: "beta"
+
+#       - name: Check Flutter Version
+#         run: flutter --version
+
+#       - name: Install dependencies
+#         run: flutter pub get
+#       - run: flutter format --set-exit-if-changed .
+#       - run: flutter analyze .
+
+#       # Build debug APK
+#       - name: Build Debug APK
+#         run: flutter build apk --debug
+
+#       # Upload debug APK
+#       - name: Upload Debug APK
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: debug-apk
+#           path: build/app/outputs/flutter-apk/debug/app-debug.apk
+
+#       # Build release APK
+#       - name: Build Release APK
+#         run: flutter build apk --release
+
+#       # Upload release APK
+#       - name: Upload Release APK
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: release-apk
+#           path: build/app/outputs/flutter-apk/release/app-release.apk
