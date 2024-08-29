@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
 import 'package:confetti/confetti.dart';
 import 'package:pix2life/screens/billet/upload_profile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,12 +63,16 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 30.h),
               _buildConfetti(),
               _buildTopBar(),
+              SizedBox(height: 10.h),
               _buildSuccessMessage(),
+              SizedBox(height: 10.h),
               _buildImage(),
-              // _buildSubtitle(),
+              SizedBox(height: 10.h),
               _buildButton(),
+              SizedBox(height: 30.h),
             ],
           ),
         ),
@@ -98,44 +102,42 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
   }
 
   Widget _buildTopBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30.h),
-      child: Container(
-        width: 50.w,
-        height: 5.h,
-        color: AppPalette.blackColor,
-      ),
+    return Container(
+      width: 50.w,
+      height: 5.h,
+      color: AppPalette.blackColor,
     );
   }
 
   Widget _buildSuccessMessage() {
     return Column(
       children: [
-        SizedBox(
-          width: 247.w,
-          child: RichText(
-            text: TextSpan(
-              text: widget.userEmail,
-              style: TextStyle(
-                color: AppPalette.fontTitleBlackColor2,
-                fontFamily: 'Poppins',
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w600,
-              ),
+        RichText(
+          text: TextSpan(
+            text: widget.userEmail,
+            style: TextStyle(
+              color: AppPalette.fontTitleBlackColor2,
+              fontFamily: 'Poppins',
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w600,
             ),
-            textAlign: TextAlign.center,
           ),
+          textAlign: TextAlign.center,
         ),
         SizedBox(height: 20.h),
-        Text(
-          'Yey! Account setup Successful',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w600,
+        RichText(
+          text: TextSpan(
+            text: 'Yey! Account setup Successful',
+            style: TextStyle(
+              color: AppPalette.fontTitleBlackColor2,
+              fontFamily: 'Poppins',
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          textAlign: TextAlign.center,
         ),
-        SizedBox(height: 30.h),
+        SizedBox(height: 10.h),
         SizedBox(
           width: 319.w,
           child: RichText(
@@ -160,8 +162,8 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
     return Hero(
       tag: AppImage.welcomeImage,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 60.h),
-        width: 353.w,
+        margin: EdgeInsets.symmetric(vertical: 10.h),
+        width: 330.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.w),
           color: Colors.grey,

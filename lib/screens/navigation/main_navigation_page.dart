@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/auth_logo.dart';
+import 'package:pix2life/config/common/logo_widget.dart';
 import 'package:pix2life/screens/billet/upload_profile.dart';
 import 'package:pix2life/screens/main/menu/index.dart';
 import 'package:pix2life/screens/navigation/media_tab_navigation.dart';
@@ -78,15 +78,15 @@ class _MainPageState extends State<MainPage> {
       selectedFontSize: ScreenUtil().setSp(17),
       items: <BottomNavigationBarItem>[
         _buildBottomNavigationBarItem(
-          icon: Icons.home_filled,
+          icon: Icons.airplay_rounded, //home_filled
           label: 'Home',
         ),
         _buildBottomNavigationBarItem(
-          icon: Icons.perm_media_rounded,
+          icon: Icons.all_inclusive_rounded, //perm_media_rounded
           label: 'Media',
         ),
         _buildBottomNavigationBarItem(
-          icon: Icons.menu,
+          icon: Icons.architecture_rounded,
           label: 'Menu',
         ),
       ],
@@ -98,12 +98,12 @@ class _MainPageState extends State<MainPage> {
       selectedLabelStyle: TextStyle(
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(14),
+        fontSize: ScreenUtil().setSp(16),
       ),
       unselectedLabelStyle: TextStyle(
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(14),
+        fontSize: ScreenUtil().setSp(12),
       ),
       onTap: _onItemTapped,
     );

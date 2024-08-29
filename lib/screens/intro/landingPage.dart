@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
+import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
 import 'package:pix2life/provider/auth_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,9 +48,9 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 20.h),
+            SizedBox(height: 30.h),
             _buildTopBarIndicator(),
-            SizedBox(height: 70.h),
+            SizedBox(height: 40.h),
             _buildPageView(context),
             SizedBox(height: 10.h),
             _buildPageIndicator(),
@@ -203,6 +204,9 @@ class _WelcomePageState extends State<WelcomePage> {
           SuccessSnackBar.show(context: context, message: state.message);
           WelcomePage.routeHome(context);
         } else if (state is Unauthenticated) {
+          WelcomePage.routeSignIn(context);
+        } else if (state is AuthFailure) {
+          ErrorSnackBar.show(context: context, message: state.message);
           WelcomePage.routeSignIn(context);
         }
       },

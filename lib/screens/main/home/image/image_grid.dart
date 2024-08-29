@@ -224,7 +224,8 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                 Expanded(
                   flex: 2,
                   child: Container(
-                    margin: EdgeInsets.all(16.w),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 1.h),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(16.w),
@@ -256,7 +257,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                 Expanded(
                   flex: 2,
                   child: ListView(
-                    padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     children: galleryMap.entries.map((entry) {
                       final galleryName = entry.key;
                       final images = entry.value;

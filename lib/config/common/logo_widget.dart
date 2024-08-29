@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/logo.dart';
+import 'package:pix2life/config/common/all_logos.dart';
 
 class AuthLogo extends StatelessWidget {
   const AuthLogo({super.key});

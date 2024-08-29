@@ -13,7 +13,7 @@ class DisappearingText extends StatefulWidget {
   const DisappearingText({
     Key? key,
     required this.text,
-    this.displayDuration = const Duration(seconds: 5),
+    this.displayDuration = const Duration(seconds: 3),
     required this.isVisible,
   }) : super(key: key);
 
@@ -71,7 +71,12 @@ class _DisappearingTextState extends State<DisappearingText> {
     return _isVisible
         ? Text(
             widget.text,
-            style: const TextStyle(fontSize: 20),
+            style: const TextStyle(
+              fontSize: 10,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              color: AppPalette.redColor1,
+            ),
           )
         : Container(); // Return an empty container when the text disappears
   }
@@ -174,125 +179,3 @@ class RotateText extends StatelessWidget {
   }
 }
 
-class HoverButton extends StatefulWidget {
-  final String name;
-  final VoidCallback? onPressed;
-
-  const HoverButton({super.key, required this.name, this.onPressed});
-  @override
-  State<HoverButton> createState() => _HoverButtonState();
-}
-
-class _HoverButtonState extends State<HoverButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    )..repeat(reverse: true);
-
-    _animation = Tween<double>(begin: 0, end: 10).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, -_animation.value),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  AppPalette.transparent,
-                  AppPalette.transparent,
-                ],
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-              ),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 3,
-                  blurRadius: 12,
-                  offset: const Offset(0, 6), // changes position of shadow
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              onPressed: widget.onPressed,
-              child: Text(
-                '${widget.name}',
-                style: TextStyle(color: AppPalette.whiteColor),
-              ),
-              style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  textStyle: TextStyle(fontSize: 18),
-                  backgroundColor: AppPalette.redColor1.withOpacity(0.3)),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ShutterButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final double size;
-  final Color color;
-
-  const ShutterButton({
-    Key? key,
-    this.onPressed,
-    this.size = 60.0,
-    this.color = Colors.red,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: onPressed,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-            border: Border.all(
-              color: Colors.white,
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              width: size * 0.6,
-              height: size * 0.6,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.redAccent,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

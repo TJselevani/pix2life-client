@@ -26,18 +26,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SignUpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final response = await _userService.createUser(_createUserCredentials(event));
+      final response =
+          await _userService.createUser(_createUserCredentials(event));
       await _handleAuthResponse(response, emit);
     } catch (e) {
       _handleError(e, emit, "Sign-up Failed");
     }
   }
 
-  Future<void> _onLoginEvent(
-      LoginEvent event, Emitter<AuthState> emit) async {
+  Future<void> _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final response = await _userService.signIn(_createLoginCredentials(event));
+      final response =
+          await _userService.signIn(_createLoginCredentials(event));
       await _handleAuthResponse(response, emit);
     } catch (e) {
       _handleError(e, emit, "Sign-in failed");
@@ -114,8 +115,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthSuccess(user: authUser, message: authMessage));
   }
 
-  void _handleError(dynamic error, Emitter<AuthState> emit, String defaultMessage) {
+  void _handleError(
+      dynamic error, Emitter<AuthState> emit, String defaultMessage) {
     log.e(error);
-    emit(AuthFailure(message: defaultMessage));
+    emit(AuthFailure(message: '${defaultMessage}'));
   }
 }

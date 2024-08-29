@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
-import 'package:pix2life/config/common/text_animations.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/text_animation_widgets.dart';
 import 'package:pix2life/config/logger/logger.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
@@ -98,7 +98,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
 
     File image = _imageFile!;
     FormData formData = FormData.fromMap({
-      "image": await MultipartFile.fromFile(image.path,
+      "file": await MultipartFile.fromFile(image.path,
           filename: image.path.split('/').last),
     });
 
@@ -137,48 +137,53 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
             backgroundColor: Colors.transparent,
             child: Stack(
               children: [
+                // Blurred background
                 Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
-                      color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        color: Colors.transparent, // Remove the black overlay
+                      ),
                     ),
                   ),
                 ),
+                // Gallery images display
                 Center(
                   child: Container(
-                    padding: EdgeInsets.all(ScreenUtil().setWidth(16)),
+                    padding: EdgeInsets.all(16.w),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           galleryName,
                           style: TextStyle(
-                            fontSize: ScreenUtil().setSp(24),
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: ScreenUtil().setHeight(16)),
+                        SizedBox(height: 16.h),
                         SizedBox(
-                          height: ScreenUtil().setHeight(300),
+                          height: 300.h,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: images.length,
                             itemBuilder: (context, index) {
                               final image = images[index];
                               return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: ScreenUtil().setWidth(8)),
+                                padding: EdgeInsets.symmetric(horizontal: 8.w),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      ScreenUtil().setWidth(12)),
+                                  borderRadius: BorderRadius.circular(12.w),
                                   child: Image.network(
                                     image.url,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Icon(Icons.image_not_supported),
+                                    errorBuilder: (context, error,
+                                            stackTrace) =>
+                                        const Icon(Icons.image_not_supported),
                                   ),
                                 ),
                               );
@@ -195,12 +200,17 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
         },
       );
     } catch (e) {
-      log.e('Failed to fetch images: $e');
+      print('Failed to fetch images: $e');
+      ErrorSnackBar.show(context: context, message: 'Failed to fetch images');
     }
   }
 
-  Widget _buildImageContainer(String label, File? imageFile, bool isLoading,
-      {bool isMatchedImage = false}) {
+  Widget _buildImageContainer({
+    required String label,
+    File? imageFile,
+    String? imageUrl,
+    bool isLoading = false,
+  }) {
     return Container(
       width: ScreenUtil().setWidth(150),
       height: ScreenUtil().setHeight(150),
@@ -208,36 +218,40 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
         color: AppPalette.redColor1,
         shape: BoxShape.rectangle,
       ),
-      child: imageFile == null
+      child: isLoading
           ? Center(
-              child: isLoading
-                  ? LoadingAnimationWidget.beat(
-                      color: AppPalette.whiteColor,
-                      size: ScreenUtil().setWidth(50),
-                    )
-                  : Text(
-                      label,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontSize: ScreenUtil().setSp(12),
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              child: LoadingAnimationWidget.beat(
+                color: AppPalette.whiteColor,
+                size: ScreenUtil().setWidth(50),
+              ),
             )
-          : isMatchedImage
-              ? GestureDetector(
-                  onTap: () => _showGalleryImages(_galleryName!),
-                  child: CachedNetworkImage(
-                    imageUrl: _matchedImage!,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Image.file(
+          : imageFile != null
+              ? Image.file(
                   imageFile,
                   fit: BoxFit.cover,
-                ),
+                )
+              : imageUrl != null && imageUrl.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () => _showGalleryImages(_galleryName!),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.image_not_supported),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Poppins',
+                          fontSize: ScreenUtil().setSp(12),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
     );
   }
 
@@ -254,7 +268,13 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
               color: AppPalette.redColor1,
             ),
           ),
-          Text(label),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              // color: AppPalette.blackColor,
+            ),
+          ),
         ],
       ),
     );
@@ -298,20 +318,18 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildImageContainer(
-                          'Your Image',
-                          _imageFile,
-                          false,
+                          label: 'Your Image',
+                          imageFile: _imageFile,
                         ),
                         SizedBox(width: ScreenUtil().setWidth(20)),
                         _buildImageContainer(
-                          'Matched Image',
-                          null,
-                          _isLoading,
-                          isMatchedImage: true,
+                          label: 'Matched Image',
+                          imageUrl: _matchedImage,
+                          isLoading: _isLoading,
                         ),
                       ],
                     ),
-                    SizedBox(height: ScreenUtil().setHeight(40)),
+                    SizedBox(height: ScreenUtil().setHeight(20)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -321,7 +339,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
                             'Search Gallery', _pickImageFromGallery),
                       ],
                     ),
-                    SizedBox(height: ScreenUtil().setHeight(30)),
+                    SizedBox(height: ScreenUtil().setHeight(50)),
                     SizedBox(
                       width: ScreenUtil().setWidth(319),
                       child: RichText(

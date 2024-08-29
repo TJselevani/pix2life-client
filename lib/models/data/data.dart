@@ -51,8 +51,3 @@ List<Map<String, dynamic>> quotes = [
   }
 ];
 
-void main() {
-  quotes.forEach((quote) {
-    print('${quote['quote']} - ${quote['author']} (${quote['year']})');
-  });
-}

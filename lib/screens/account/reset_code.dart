@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/auth_input_field.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/logo.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/input_fields.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
+import 'package:pix2life/config/common/all_logos.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
 import 'package:pix2life/functions/services/user.services.dart';
@@ -110,7 +110,7 @@ class _UserResetCodePageState extends State<UserResetCodePage> {
           key: _formKey,
           child: Column(
             children: [
-              SizedBox(height: 25.h),
+              SizedBox(height: 30.h),
               _buildTopBarIndicator(),
               SizedBox(height: 40.h),
               _buildTitleText(),

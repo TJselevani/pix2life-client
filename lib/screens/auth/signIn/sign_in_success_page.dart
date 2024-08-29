@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
 import 'package:confetti/confetti.dart';
 import 'package:pix2life/models/entities/user.model.dart';
 import 'package:pix2life/screens/navigation/main_navigation_page.dart';
@@ -69,6 +69,7 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
             _buildTopBarIndicator(),
             SizedBox(height: 30.h),
             _buildUserEmail(authUser),
+            SizedBox(height: 20.h),
             _buildWelcomeImage(),
             SizedBox(height: 20.h),
             _buildSuccessText(),

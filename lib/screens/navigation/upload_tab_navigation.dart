@@ -131,7 +131,7 @@ class _UploadTabNavigationState extends State<UploadTabNavigation>
       highlightColor: AppPalette.redColor1,
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: ScreenUtil().setHeight(4),
+          vertical: ScreenUtil().setHeight(8),
           horizontal: ScreenUtil().setWidth(10),
         ),
         child: Text(

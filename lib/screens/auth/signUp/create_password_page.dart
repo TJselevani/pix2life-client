@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/auth_input_field.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/input_fields.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
 import 'package:pix2life/config/logger/logger.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
@@ -66,9 +66,11 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
           _isLoading = false;
         });
 
+        log.i('User ::: !!!!! ${response.userEmail}');
+        log.i(response.message);
+
         SuccessSnackBar.show(
-            context: context,
-            message: '${response.userEmail} ${response.message}');
+            context: context, message: '${response.userEmail} ${response.message}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -112,11 +114,17 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
             key: _formKey,
             child: Column(
               children: [
+                SizedBox(height: 30.h),
                 _buildTopBar(),
+                SizedBox(height: 20.h),
                 _buildTitle(),
+                SizedBox(height: 10.h),
                 _buildSubtitle(),
+                SizedBox(height: 20.h),
                 _buildImage(),
+                SizedBox(height: 30.h),
                 _buildPasswordFields(),
+                SizedBox(height: 30.h),
                 _buildSubmitButton(),
                 SizedBox(height: 20.h),
               ],
@@ -224,7 +232,6 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
         SizedBox(height: 20.h),
         SizedBox(
           width: 315.w,
-          height: 50.h,
           child: AuthInputField(
             controller: controller,
             labelText: label,

@@ -135,7 +135,7 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
           text,
           style: TextStyle(
             fontFamily: 'Poppins',
-            fontSize: ScreenUtil().setSp(18),
+            fontSize: ScreenUtil().setSp(14),
             fontWeight: FontWeight.w700,
           ),
         ),

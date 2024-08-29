@@ -6,7 +6,7 @@ class CreatePasswordResponse {
 
   factory CreatePasswordResponse.fromJson(Map<String, dynamic> json) {
     return CreatePasswordResponse(
-      userEmail: json['user'] ?? '',
+      userEmail: json['userEmail'] ?? '',
       message: json['message'] ?? '',
     );
   }

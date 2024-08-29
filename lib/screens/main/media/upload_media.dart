@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/square_button.dart';
-import 'package:pix2life/config/common/text_animations.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/text_animation_widgets.dart';
 import 'package:pix2life/config/logger/logger.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
@@ -14,6 +14,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/models/entities/gallery.model.dart';
 
 class UploadMediaPage extends StatefulWidget {
   static route(context) => Navigator.pushReplacementNamed(context, '/Home');
@@ -33,27 +34,54 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   List<XFile>? _copyMedia = [];
   List<String> _uploadingMedia = [];
   List<String> _uploadDone = [];
+  List<Gallery> fetchedGalleries = [];
+  List<String> galleryNames = [];
+  bool isLoading = true;
 
   final MediaService mediaService = MediaService();
   bool _isLoading = false;
   String _selectedMediaType = '';
+  String? _selectedOption;
 
-  String encodeFileName(String fileName) {
-    return Uri.encodeComponent(fileName);
+  @override
+  void initState() {
+    super.initState();
+    _fetchGalleries();
   }
 
-  // Future<void> _pickImages() async {
-  //   final List<XFile> selectedImages = await _picker.pickMultiImage();
-  //   if (selectedImages.isNotEmpty) {
-  //     setState(() {
-  //       _images!.addAll(selectedImages);
-  //       _copyMedia = selectedImages;
-  //       _selectedMediaType = 'images';
-  //     });
-  //   }
-  // }
+  Future<void> _fetchGalleries() async {
+    if (!mounted) return;
+    try {
+      final response = await mediaService.fetchGalleries();
+      setState(() {
+        fetchedGalleries = response.galleries;
+        galleryNames = fetchedGalleries.map((gallery) => gallery.name).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle any errors here
+      if (mounted)
+        setState(() {
+          isLoading = false;
+        });
+      log.e('Failed to fetch galleries: $e');
+    }
+    if (!mounted) return;
+  }
 
   Future<void> _pickImages() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    setState(() {
+      if (_selectedMediaType != 'images') {
+        _copyMedia = [];
+      }
+      _videos = [];
+      _audios = [];
+      // _selectedMediaType = 'images';
+    });
     final List<XFile>? selectedImages = (await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: true,
@@ -66,19 +94,25 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       setState(() {
         _images!.addAll(selectedImages);
         _copyMedia!.addAll(selectedImages);
-        _selectedMediaType = 'images';
       });
     }
   }
 
   Future<void> _pickVideo() async {
+    setState(() {
+      if (_selectedMediaType != 'videos') {
+        _copyMedia = [];
+      }
+      _images = [];
+      _audios = [];
+      // _selectedMediaType = 'videos';
+    });
     final XFile? videoPicker =
         await _picker.pickVideo(source: ImageSource.gallery);
     if (videoPicker != null) {
       setState(() {
-        _copyMedia!.add(videoPicker);
         _videos!.add(videoPicker);
-        _selectedMediaType = 'videos';
+        _copyMedia!.add(videoPicker);
       });
     }
   }
@@ -88,6 +122,14 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     if (!status.isGranted) {
       await Permission.storage.request();
     }
+    setState(() {
+      if (_selectedMediaType != 'audios') {
+        _copyMedia = [];
+      }
+      _images = [];
+      _videos = [];
+      // _selectedMediaType = 'audios';
+    });
 
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -100,7 +142,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
         setState(() {
           _audios!.addAll(audioFiles);
           _copyMedia!.addAll(audioFiles);
-          _selectedMediaType = 'audios';
         });
       }
     } catch (e) {
@@ -117,10 +158,18 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       _isLoading = true;
     });
 
-    await Future.forEach(mediaList!, (XFile media) async {
+    if (mediaList == null || mediaList.isEmpty) {
+      log.w('No media to upload');
+      return;
+    }
+
+    await Future.forEach(mediaList, (XFile media) async {
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(media.path, filename: media.name),
       });
+
+      log.i('Uploading file: ${media.name}, path: ${media.path}');
+      log.i('FormData being sent: ${formData.fields}');
 
       setState(() {
         _uploadingMedia.add(media.name);
@@ -128,6 +177,8 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
 
       try {
         final galleryName = _nameController.text.trim();
+        log.i('Gallery name: $galleryName');
+
         final response = await uploadFunction(formData, galleryName);
 
         if (!mounted) return;
@@ -193,25 +244,14 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 'Upload Media to Gallery',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
-                  fontSize: ScreenUtil().setSp(25),
+                  fontSize: ScreenUtil().setSp(20),
                   fontWeight: FontWeight.w700,
                   color: AppPalette.blackColor3,
                 ),
               ),
+              SizedBox(height: ScreenUtil().setHeight(1)),
+              if (_selectedMediaType.isNotEmpty) _buildMediaOptions(),
               SizedBox(height: ScreenUtil().setHeight(5)),
-              Text(
-                'Select the type of media you want to add.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontSize: ScreenUtil().setSp(17),
-                  fontWeight: FontWeight.w400,
-                  color: AppPalette.greyColor2,
-                ),
-              ),
-              SizedBox(height: ScreenUtil().setHeight(15)),
-              if (!_isLoading) _buildMediaSelectionButtons(),
-              SizedBox(height: ScreenUtil().setHeight(25)),
               if (_selectedMediaType.isNotEmpty)
                 _isLoading
                     ? Center(
@@ -221,10 +261,24 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                         ),
                       )
                     : _buildSaveButton(),
+              SizedBox(height: ScreenUtil().setHeight(5)),
+              Text(
+                'Select the type of media you want to add.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: ScreenUtil().setSp(14),
+                  fontWeight: FontWeight.w400,
+                  color: AppPalette.greyColor2,
+                ),
+              ),
+              SizedBox(height: ScreenUtil().setHeight(15)),
+              if (!_isLoading) _buildMediaSelectionButtons(),
+              SizedBox(height: ScreenUtil().setHeight(25)),
               SizedBox(height: ScreenUtil().setHeight(10)),
               _buildUploadNotes(),
               SizedBox(height: ScreenUtil().setHeight(25)),
-              if (_selectedMediaType == 'images') _buildUploadedMediaList(),
+              // if (_selectedMediaType != '') _buildUploadedMediaList(),
             ],
           ),
         ),
@@ -233,7 +287,9 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   }
 
   Widget _buildMediaPreview() {
-    if (_images != null && _images!.isNotEmpty) {
+    if (_selectedMediaType == 'images' &&
+        _images != null &&
+        _images!.isNotEmpty) {
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
@@ -249,7 +305,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
         width: ScreenUtil().setWidth(250),
         height: ScreenUtil().setHeight(250),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? _buildUploadedMediaList() //Center(child: CircularProgressIndicator())
             : GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -272,6 +328,60 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 },
                 itemCount: _images!.length,
               ),
+      );
+    } else if (_selectedMediaType == 'videos' &&
+        _videos != null &&
+        _videos!.isNotEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(-3, 3),
+            ),
+          ],
+        ),
+        width: ScreenUtil().setWidth(250),
+        height: ScreenUtil().setHeight(250),
+        child: _buildUploadedMediaList(),
+        // child: ListView.builder(
+        //   itemCount: _videos!.length,
+        //   itemBuilder: (context, index) {
+        //     return ListTile(
+        //       title: Text(_videos![index].name),
+        //     );
+        //   },
+        // ),
+      );
+    } else if (_selectedMediaType == 'audios' &&
+        _audios != null &&
+        _audios!.isNotEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(-3, 3),
+            ),
+          ],
+        ),
+        width: ScreenUtil().setWidth(250),
+        height: ScreenUtil().setHeight(250),
+        child: _buildUploadedMediaList(),
+        // child: ListView.builder(
+        //   itemCount: _audios!.length,
+        //   itemBuilder: (context, index) {
+        //     return ListTile(
+        //       title: Text(_audios![index].name),
+        //     );
+        //   },
+        // ),
       );
     }
 
@@ -321,28 +431,49 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
 
   Widget _buildMediaSelectionButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildMediaButton('Video', _pickVideo),
-        _buildMediaButton('Image', _pickImages),
-        _buildMediaButton('Audio', _pickAudios),
+        Flexible(
+          child: _buildMediaButton('Video', _pickVideo),
+        ),
+        SizedBox(width: ScreenUtil().setWidth(5)),
+        Flexible(
+          child: _buildMediaButton('Image', _pickImages),
+        ),
+        SizedBox(width: ScreenUtil().setWidth(5)),
+        Flexible(
+          child: _buildMediaButton('Audio', _pickAudios),
+        ),
       ],
     );
   }
 
   Widget _buildMediaButton(String name, VoidCallback onPressed) {
     return SizedBox(
-      width: ScreenUtil().setWidth(100),
+      width: double.infinity.w,
       child: SquareButton(
         name: name,
         onPressed: () {
-          setState(() {
-            _images = [];
-            _audios = [];
-            _videos = [];
-            _copyMedia = [];
-            _selectedMediaType = '';
-          });
+          switch (name) {
+            case 'Video':
+              setState(() {
+                _selectedMediaType = 'videos';
+              });
+              break;
+            case 'Image':
+              setState(() {
+                _selectedMediaType = 'images';
+              });
+              break;
+            case 'Audio':
+              setState(() {
+                _selectedMediaType = 'audios';
+              });
+              break;
+            default:
+              log.i('No media selected');
+          }
+
           onPressed();
         },
       ),
@@ -395,7 +526,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   text: note,
                   style: TextStyle(
                     fontFamily: 'Montserrat',
-                    fontSize: ScreenUtil().setSp(13),
+                    fontSize: ScreenUtil().setSp(11),
                     fontWeight: FontWeight.w700,
                     color: AppPalette.greyColor2,
                   ),
@@ -432,6 +563,43 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildMediaOptions() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(1)),
+      child: Column(
+        children: [
+          Text(
+            'Choose a Gallery',
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: ScreenUtil().setSp(16),
+              fontWeight: FontWeight.w500,
+              color: AppPalette.blackColor2,
+            ),
+          ),
+          SizedBox(height: ScreenUtil().setHeight(10)),
+          DropdownButton<String>(
+            value: _selectedOption,
+            hint: Text('Select gallery'),
+            items: galleryNames.map((String name) {
+              return DropdownMenuItem<String>(
+                value: name,
+                child: Text(name),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedOption = newValue;
+                // Pass the selected gallery name to your function here
+                _nameController.text = newValue ?? '';
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }

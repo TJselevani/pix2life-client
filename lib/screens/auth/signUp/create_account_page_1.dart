@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/auth_input_field.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/logo.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/input_fields.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
+import 'package:pix2life/config/common/all_logos.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/services/user.services.dart';
 import 'package:pix2life/screens/auth/signUp/create_account_page_2.dart';
@@ -57,7 +57,11 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
           _isLoading = false;
         });
         log.e('Error: $e');
-        ErrorSnackBar.show(message: "$e", context: context);
+        if ('$e' == "type 'String' is not a subtype of type 'int' of 'index'") {
+          ErrorSnackBar.show(message: "Service Unavailable", context: context);
+        } else {
+          ErrorSnackBar.show(message: "$e", context: context);
+        }
       }
     }
   }
@@ -92,15 +96,23 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
           key: _formKey,
           child: Column(
             children: [
+              SizedBox(height: 30.h),
               _buildTopBarIndicator(),
+              SizedBox(height: 20.h),
               _buildTitle(),
+              SizedBox(height: 1.h),
               _buildSubtitle(),
+              SizedBox(height: 20.h),
               _buildLogo(),
+              SizedBox(height: 10.h),
               _buildWelcomeImage(),
+              SizedBox(height: 10.h),
               _buildEmailField(),
+              SizedBox(height: 30.h),
               _buildContinueButton(),
+              SizedBox(height: 40.h),
               _buildSignInLink(context),
-              const SizedBox(height: 20),
+              SizedBox(height: 60.h),
             ],
           ),
         ),
@@ -230,7 +242,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
     return SizedBox(
       width: 315.w,
       child: _isLoading
-          ? const CircularProgressIndicator()
+          ? Center(child: const CircularProgressIndicator())
           : RoundedButton(
               name: 'Continue',
               onPressed: _submitForm,

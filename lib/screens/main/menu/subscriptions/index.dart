@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,29 +26,36 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
       appBar: _buildAppBar(),
       body: Padding(
         padding: EdgeInsets.all(ScreenUtil().setWidth(18)),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTitle(),
-              SizedBox(height: ScreenUtil().setHeight(2)),
-              _buildSubtitle(),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              _buildPlanOption('Monthly', monthlyCharge),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              _buildPlanOption('Annually', annualCharge),
-              SizedBox(height: ScreenUtil().setHeight(40)),
-              _buildPaymentMethodTitle(),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              _buildPaymentMethodOption(
-                  'Credit/Debit card', Icons.credit_card_rounded),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              _buildPaymentMethodOption('Paypal', Icons.paypal),
-              Expanded(child: Container()),
-              _buildActionButton(),
-              SizedBox(height: ScreenUtil().setHeight(10)),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTitle(),
+            SizedBox(height: ScreenUtil().setHeight(2)),
+            _buildSubtitle(),
+            SizedBox(height: ScreenUtil().setHeight(20)),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildPlanOption('Monthly', monthlyCharge),
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    _buildPlanOption('Annually', annualCharge),
+                    SizedBox(height: ScreenUtil().setHeight(40)),
+                    _buildPaymentMethodTitle(),
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    _buildPaymentMethodOption(
+                        'Credit/Debit card', Icons.credit_card_rounded),
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    _buildPaymentMethodOption('Paypal', Icons.paypal),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: ScreenUtil().setHeight(10)),
+            _buildActionButton(),
+            SizedBox(height: ScreenUtil().setHeight(10)),
+          ],
         ),
       ),
     );
@@ -269,22 +276,30 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                 final int amount =
                     selectedPlan == 'Monthly' ? monthlyCharge : annualCharge;
 
-                switch (selectedPaymentMethod) {
-                  case 'Paypal':
-                    // await PayPalService.instance.createPayment(context);
-                    break;
-                  case 'Credit/Debit card':
-                    // await StripeService.instance.makePayment(amount, "usd");
-                    break;
-                  default:
-                    ErrorSnackBar.show(
-                      context: context,
-                      message: 'Payment Currently Unavailable',
-                    );
+                try {
+                  switch (selectedPaymentMethod) {
+                    case 'Paypal':
+                      // await PayPalService.instance.createPayment(context);
+                      break;
+                    case 'Credit/Debit card':
+                      // await StripeService.instance.makePayment(amount, "usd");
+                      break;
+                    default:
+                      ErrorSnackBar.show(
+                        context: context,
+                        message: 'Payment Currently Unavailable',
+                      );
+                  }
+                } catch (e) {
+                  ErrorSnackBar.show(
+                    context: context,
+                    message: 'Payment Failed: $e',
+                  );
+                } finally {
+                  setState(() {
+                    isLoading = false;
+                  });
                 }
-                setState(() {
-                  isLoading = false;
-                });
               },
             ),
           );

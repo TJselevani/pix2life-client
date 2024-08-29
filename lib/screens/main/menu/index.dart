@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pix2life/config/app/app.config.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/icon_text_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
 import 'package:pix2life/functions/services/token.services.dart';
 import 'package:pix2life/screens/billet/upload_profile.dart';
 import 'package:pix2life/provider/auth_bloc.dart';
@@ -60,7 +60,7 @@ class _MenuPageState extends State<MenuPage> {
             Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UploadProfilePicPage(),
@@ -79,26 +79,28 @@ class _MenuPageState extends State<MenuPage> {
             ),
             SizedBox(height: ScreenUtil().setHeight(20)),
             Center(
-              child: RichText(
-                text: TextSpan(
-                  text: 'Welcome!\n',
-                  style: TextStyle(
-                    color: AppPalette.redColor1,
-                    fontSize: ScreenUtil().setSp(27),
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Poppins',
-                  ),
-                  children: [
-                    TextSpan(
-                      text: user['username'],
-                      style: TextStyle(
-                        color: AppPalette.redColor1,
-                        fontSize: ScreenUtil().setSp(26),
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Poppins',
-                      ),
+              child: Flexible(
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Welcome! ',
+                    style: TextStyle(
+                      color: AppPalette.redColor1,
+                      fontSize: ScreenUtil().setSp(27),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
                     ),
-                  ],
+                    children: [
+                      TextSpan(
+                        text: user['username'],
+                        style: TextStyle(
+                          color: AppPalette.redColor1,
+                          fontSize: ScreenUtil().setSp(26),
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -135,9 +137,21 @@ class _MenuPageState extends State<MenuPage> {
   Widget _buildMenuOption(IconData icon, String name, VoidCallback onPressed) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(10)),
-      child: IconTextButton(
-        prefixIcon: icon,
-        name: name,
+      child: ElevatedButton.icon(
+        icon: Icon(icon, color: AppPalette.redColor1),
+        label: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            name,
+            style: TextStyle(color: AppPalette.redColor1),
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: AppPalette.redColor1,
+          backgroundColor: AppPalette.whiteColor, // Text and icon color
+          side: BorderSide(color: AppPalette.redColor1), // Border color
+          alignment: Alignment.centerLeft, // Align icon and text to the left
+        ),
         onPressed: onPressed,
       ),
     );

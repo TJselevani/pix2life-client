@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
 import 'package:pix2life/config/logger/logger.dart';
+import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/services/media.services.dart';
 import 'package:pix2life/models/entities/gallery.model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,10 +73,15 @@ class _CollageScreenState extends State<CollageScreen> {
               children: [
                 // Blurred background
                 Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
-                      color: Colors.transparent, // Remove the black overlay
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        color: Colors.transparent, // Remove the black overlay
+                      ),
                     ),
                   ),
                 ),
@@ -129,6 +135,7 @@ class _CollageScreenState extends State<CollageScreen> {
       );
     } catch (e) {
       print('Failed to fetch images: $e');
+      ErrorSnackBar.show(context: context, message: 'Failed to fetch images');
     }
   }
 

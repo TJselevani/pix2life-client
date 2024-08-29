@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/square_button.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
 import 'package:pix2life/functions/services/token.services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

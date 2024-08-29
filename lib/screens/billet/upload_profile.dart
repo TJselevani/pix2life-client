@@ -7,9 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/config/app/app.config.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/images.dart';
-import 'package:pix2life/config/common/normal_rounded_button.dart';
-import 'package:pix2life/config/common/text_animations.dart';
+import 'package:pix2life/config/common/button_widgets.dart';
+import 'package:pix2life/config/common/all_images.dart';
 import 'package:pix2life/config/logger/logger.dart';
 import 'package:pix2life/functions/notifications/error.dart';
 import 'package:pix2life/functions/notifications/success.dart';
@@ -17,10 +16,18 @@ import 'package:pix2life/functions/services/media.services.dart';
 import 'package:pix2life/models/entities/user.model.dart';
 import 'package:pix2life/provider/auth_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/screens/billet/guide.dart';
 
 class UploadProfilePicPage extends StatefulWidget {
   static Route(context) {
     Navigator.pushReplacementNamed(context, '/Home');
+  }
+
+  static Guide(context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => GuidePage()),
+    );
   }
 
   const UploadProfilePicPage({super.key});
@@ -60,7 +67,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
 
     XFile image = _image!;
     FormData formData = FormData.fromMap({
-      "image": await MultipartFile.fromFile(image.path, filename: image.name),
+      "file": await MultipartFile.fromFile(image.path, filename: image.name),
     });
 
     try {
@@ -104,57 +111,81 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
         elevation: 0,
         toolbarHeight: 64.h,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8.w),
-        child: Column(
-          children: [
-            _buildHeader(authUser),
-            _buildProfileImage(authUser),
-            _buildChooseImageButton(),
-            _buildUploadIcon(),
-            _buildInstructions(),
-            _buildProceedButton(),
-          ],
+      body: Container(
+        decoration: _buildBackgroundDecoration(),
+        padding: EdgeInsets.all(18.w),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildHeader(authUser),
+              _buildProfileImage(authUser),
+              SizedBox(height: 40.h),
+              _buildChooseImageButton(),
+              if (_isPending) _buildUploadIcon(),
+              SizedBox(height: 20.h),
+              _buildInstructions(),
+              SizedBox(height: 20.h),
+              _buildProceedButton(),
+              SizedBox(height: 60.h),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  BoxDecoration _buildBackgroundDecoration() {
+    return BoxDecoration(
+      color: AppPalette.whiteColor,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(37.r),
+        topRight: Radius.circular(37.r),
+        bottomLeft: Radius.circular(37.r),
+        bottomRight: Radius.circular(37.r),
+      ),
+      gradient: LinearGradient(
+        colors: [AppPalette.whiteColor, AppPalette.whiteColor],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+    );
+  }
+
   Widget _buildHeader(User authUser) {
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(37.w),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 30.h),
-              Container(
-                width: 50.w,
-                height: 5.h,
-                color: AppPalette.blackColor,
-              ),
-              SizedBox(height: 40.h),
-              SizedBox(
-                width: 247.w,
-                child: RichText(
-                  text: TextSpan(
-                    text: authUser.email,
-                    style: TextStyle(
-                      color: AppPalette.fontTitleBlackColor2,
-                      fontFamily: 'Poppins',
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(37.w),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 30.h),
+            Container(
+              width: 50.w,
+              height: 5.h,
+              color: AppPalette.blackColor,
+            ),
+            SizedBox(height: 20.h),
+            SizedBox(
+              // width: 247.w,
+              child: RichText(
+                text: TextSpan(
+                  text: authUser.email,
+                  style: TextStyle(
+                    color: AppPalette.fontTitleBlackColor2,
+                    fontFamily: 'Poppins',
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w600,
                   ),
-                  textAlign: TextAlign.center,
                 ),
+                textAlign: TextAlign.center,
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20.h),
+          ],
         ),
       ),
     );
@@ -164,9 +195,9 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     return Hero(
       tag: AppImage.welcomeImage,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10.h),
-        height: 278.h,
-        width: 283.w,
+        margin: EdgeInsets.symmetric(horizontal: 10.h),
+        height: 200.h,
+        width: 200.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.w),
           color: AppPalette.whiteColor,
@@ -197,17 +228,21 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   }
 
   Widget _buildUploadIcon() {
-    return SizedBox(
-      height: 20.h,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 45.h),
       child: Center(
-        child: _isPending
-            ? GestureDetector(
-                onTap: _uploadImage,
-                child: Icon(Icons.upload_rounded, size: 24.sp),
-              )
+        child: _isLoading
+            ? Center(
+                child: LoadingAnimationWidget.prograssiveDots(
+                color: AppPalette.blackColor,
+                size: 50.sp,
+              ))
             : _isUploaded
                 ? Icon(Icons.check, size: 24.sp)
-                : SizedBox.shrink(),
+                : GestureDetector(
+                    onTap: _uploadImage,
+                    child: Icon(Icons.upload_rounded, size: 24.sp),
+                  ),
       ),
     );
   }
@@ -215,7 +250,6 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   Widget _buildInstructions() {
     return Column(
       children: [
-        SizedBox(height: 20.h),
         Text(
           'Upload your profile picture',
           style: TextStyle(
@@ -224,7 +258,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: 30.h),
+        SizedBox(height: 10.h),
         SizedBox(
           width: 319.w,
           child: RichText(
@@ -246,24 +280,21 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   }
 
   Widget _buildProceedButton() {
-    return SizedBox(
-      height: 40.h,
-      child: Center(
-        child: _isLoading
-            ? LoadingAnimationWidget.prograssiveDots(
-                color: AppPalette.blackColor,
-                size: 50.sp,
-              )
-            : RoundedButton(
-                name: "Let's proceed",
-                onPressed: () async {
-                  if (_isSet) {
-                    await _uploadImage();
-                  }
-                  UploadProfilePicPage.Route(context);
-                },
-              ),
-      ),
+    return Center(
+      child: _isLoading
+          ? LoadingAnimationWidget.bouncingBall(
+              color: AppPalette.blackColor,
+              size: 50.sp,
+            )
+          : RoundedButton(
+              name: "Let's proceed",
+              onPressed: () async {
+                if (_isSet) {
+                  await _uploadImage();
+                }
+                UploadProfilePicPage.Route(context);
+              },
+            ),
     );
   }
 }

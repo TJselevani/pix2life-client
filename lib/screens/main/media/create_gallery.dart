@@ -46,7 +46,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
     XFile image = _image!;
     FormData formData = FormData.fromMap({
-      "image": await MultipartFile.fromFile(image.path, filename: image.name),
+      "file": await MultipartFile.fromFile(image.path, filename: image.name),
       "galleryName": _galleryNameController.text.trim(),
       "description": _descriptionController.text.trim(),
     });
@@ -164,55 +164,63 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       ),
                     ),
                     SizedBox(height: 12.h),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: _pickImage,
-                          icon: Icon(Icons.image, size: 24),
-                          label: Text(
-                            'Select Image',
-                            style: TextStyle(
-                              color: AppPalette.redColor1,
-                              fontFamily: 'Poppins',
-                              // fontSize: 15.sp,
+                        Flexible(
+                          child: ElevatedButton.icon(
+                            onPressed: _pickImage,
+                            icon: Icon(Icons.image, size: 15),
+                            label: Text(
+                              'Select Image',
+                              style: TextStyle(
+                                color: AppPalette.redColor1,
+                                fontFamily: 'Poppins',
+                                fontSize: 11.sp,
+                              ),
                             ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            iconColor: AppPalette.redColor1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.w),
+                            style: ElevatedButton.styleFrom(
+                              iconColor: AppPalette.redColor1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.w),
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 16.h),
+                        // SizedBox(width: 5.w),
                         _isLoading
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                  color: AppPalette.redColor1,
-                                  strokeWidth: 2.w,
+                            ? Flexible(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppPalette.redColor1,
+                                    strokeWidth: 2.w,
+                                  ),
                                 ),
                               )
-                            : ElevatedButton(
-                                onPressed: () {
-                                  if (_isSet) {
-                                    _createGallery();
-                                  } else {
-                                    ErrorSnackBar.show(
-                                        context: context,
-                                        message: 'Image required');
-                                  }
-                                },
-                                child: Text(
-                                  'Create Gallery',
-                                  style: TextStyle(
-                                      color: AppPalette.redColor1,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 15.sp),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.w),
+                            : Flexible(
+                                child: ElevatedButton.icon(
+                                  icon: Icon(Icons.create, size: 15),
+                                  onPressed: () {
+                                    if (_isSet) {
+                                      _createGallery();
+                                    } else {
+                                      ErrorSnackBar.show(
+                                          context: context,
+                                          message: 'Image required');
+                                    }
+                                  },
+                                  label: Text(
+                                    'Create Gallery',
+                                    style: TextStyle(
+                                        color: AppPalette.redColor1,
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11.sp),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    iconColor: AppPalette.redColor1,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.w),
+                                    ),
                                   ),
                                 ),
                               ),

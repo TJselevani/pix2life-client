@@ -32,6 +32,7 @@ class _AudioGalleryPageState extends State<AudioGalleryPage> {
   String? _selectedAudioName = 'Audio Gallery';
   String? _selectedAudioUrl;
   bool _isPlaying = false;
+  bool _isGridView = false; // Toggle for design
 
   @override
   void initState() {
@@ -82,76 +83,90 @@ class _AudioGalleryPageState extends State<AudioGalleryPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(audio['filename']),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('File Name: ${audio['filename'] ?? 'Cactus'}'),
-              Text('Description: ${audio['description'] ?? 'No description'}'),
-              Text('Gallery: ${audio['galleryName'] ?? 'Media Gallery'}'),
-              Text('Created: ${Utility.formatTimestamp(audio['createdAt'])}'),
-              Text('(${Utility.getRelativeTime(audio['createdAt'])}) Ago'),
-            ],
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditMediaScreen(
-                          data: audio,
-                          type: 'audio',
+                Text(
+                  audio['filename'] ?? 'Unknown',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Text('File Name: ${audio['filename'] ?? 'Cactus'}'),
+                Text(
+                    'Description: ${audio['description'] ?? 'No description'}'),
+                Text('Gallery: ${audio['galleryName'] ?? 'Media Gallery'}'),
+                Text('Created: ${Utility.formatTimestamp(audio['createdAt'])}'),
+                Text('(${Utility.getRelativeTime(audio['createdAt'])}) Ago'),
+                SizedBox(height: 20.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditMediaScreen(
+                              data: audio,
+                              type: 'audio',
+                            ),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: AppPalette.redColor,
+                        foregroundColor: AppPalette.whiteColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppPalette.redColor,
-                    foregroundColor: AppPalette.whiteColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      child: const Text('Update'),
                     ),
-                  ),
-                  child: const Text('Update'),
-                ),
-                SizedBox(width: 70.w),
-                TextButton(
-                  onPressed: () async {
-                    try {
-                      final audioId = audio['id'];
-                      final response = await mediaService.deleteAudio(audioId);
-                      Navigator.of(context).pop(); // Close the dialog
-                      SuccessSnackBar.show(
-                          context: context,
-                          message: response.message); // Display the snackbar
-                      _refreshAudios(); // Refresh the audios list
-                    } catch (e) {
-                      Navigator.of(context)
-                          .pop(); // Close the dialog in case of error as well
-                      ErrorSnackBar.show(
-                          context: context,
-                          message: 'Failed to delete Audio: $e');
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppPalette.redColor1,
-                    foregroundColor: AppPalette.whiteColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                    TextButton(
+                      onPressed: () async {
+                        try {
+                          final audioId = audio['id'];
+                          final response =
+                              await mediaService.deleteAudio(audioId);
+                          Navigator.of(context).pop(); // Close the dialog
+                          SuccessSnackBar.show(
+                              context: context,
+                              message:
+                                  response.message); // Display the snackbar
+                          _refreshAudios(); // Refresh the audios list
+                        } catch (e) {
+                          Navigator.of(context)
+                              .pop(); // Close the dialog in case of error as well
+                          ErrorSnackBar.show(
+                              context: context,
+                              message: 'Failed to delete Audio: $e');
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: AppPalette.redColor1,
+                        foregroundColor: AppPalette.whiteColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Text('Delete'),
                     ),
-                  ),
-                  child: const Text('Delete'),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -192,6 +207,19 @@ class _AudioGalleryPageState extends State<AudioGalleryPage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isGridView ? Icons.list : Icons.grid_view,
+              size: 24.sp,
+            ),
+            onPressed: () {
+              setState(() {
+                _isGridView = !_isGridView;
+              });
+            },
+          ),
+        ],
         bottom: _isSearchVisible
             ? PreferredSize(
                 preferredSize: Size.fromHeight(56.h),
@@ -237,95 +265,160 @@ class _AudioGalleryPageState extends State<AudioGalleryPage> {
               galleryMap[galleryName]!.add(audio);
             }
 
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(16.w),
-                    itemCount: _filteredAudios.length,
-                    itemBuilder: (context, index) {
-                      final audio = _filteredAudios[index];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedAudioName = audio['filename'];
-                            _selectedAudioUrl = audio['url'];
-                            _playAudio(_selectedAudioUrl!);
-                          });
-                        },
-                        onLongPress: () {
-                          _showAudioInfo(audio);
-                        },
-                        child: Stack(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 8.h),
-                              padding: EdgeInsets.all(16.w),
-                              decoration: BoxDecoration(
-                                color: AppPalette.redColor,
-                                borderRadius: BorderRadius.circular(25.w),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: Offset(2, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    _isPlaying &&
-                                            _selectedAudioUrl == audio['url']
-                                        ? Icons.pause
-                                        : Icons.play_arrow,
-                                    size: 48.sp,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Expanded(
-                                    child: RichText(
-                                      overflow: TextOverflow.ellipsis,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: '${audio['filename']}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (_isPlaying && _selectedAudioUrl == audio['url'])
-                              Positioned(
-                                top: 20.h,
-                                right: 20.w,
-                                child: LoadingAnimationWidget.staggeredDotsWave(
-                                  color: AppPalette.whiteColor,
-                                  size: 20.sp,
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
+            return _isGridView ? _buildGridView() : _buildListView();
           }
         },
       ),
+    );
+  }
+
+  ListView _buildListView() {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      itemCount: _filteredAudios.length,
+      itemBuilder: (context, index) {
+        final audio = _filteredAudios[index];
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedAudioName = audio['filename'];
+              _selectedAudioUrl = audio['url'];
+              _playAudio(_selectedAudioUrl!);
+            });
+          },
+          onLongPress: () {
+            _showAudioInfo(audio);
+          },
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: AppPalette.redColor,
+                  borderRadius: BorderRadius.circular(25.w),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _isPlaying && _selectedAudioUrl == audio['url']
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      size: 48.sp,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${audio['filename']}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_isPlaying && _selectedAudioUrl == audio['url'])
+                Positioned(
+                  top: 20.h,
+                  right: 20.w,
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: AppPalette.whiteColor,
+                    size: 20.sp,
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  GridView _buildGridView() {
+    return GridView.builder(
+      padding: EdgeInsets.all(16.w),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16.w,
+        mainAxisSpacing: 16.h,
+        childAspectRatio: 1.5,
+      ),
+      itemCount: _filteredAudios.length,
+      itemBuilder: (context, index) {
+        final audio = _filteredAudios[index];
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedAudioName = audio['filename'];
+              _selectedAudioUrl = audio['url'];
+              _playAudio(_selectedAudioUrl!);
+            });
+          },
+          onLongPress: () {
+            _showAudioInfo(audio);
+          },
+          child: Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: AppPalette.redColor,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  _isPlaying && _selectedAudioUrl == audio['url']
+                      ? Icons.pause
+                      : Icons.play_arrow,
+                  size: 38.sp,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 10.h),
+                Expanded(
+                  child: Text(
+                    audio['filename'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

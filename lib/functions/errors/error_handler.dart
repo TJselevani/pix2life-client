@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'application_error.dart';
 import 'errors.dart';
@@ -7,13 +9,18 @@ class ErrorHandler {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
-        e.type == DioExceptionType.cancel ||
-        e.type == DioExceptionType.badResponse) {
+        e.type == DioExceptionType.cancel) {
       // Handle network-related errors or server downtime
       throw ApplicationError(
         message:
             'Service Unavailable. Please check your internet connection and try again.',
         status: 503, // Service Unavailable
+      );
+    } else if (e.error is SocketException) {
+      // Handle failed host lookup error
+      throw ApplicationError(
+        message: 'Unable to connect to the server, please try again later',
+        status: 404,
       );
     }
 
@@ -41,7 +48,9 @@ class ErrorHandler {
         case 503:
           throw ServiceUnavailable(message: message);
         default:
-          throw ApplicationError(message: message, status: statusCode);
+          throw ApplicationError(
+              message: 'An unexpected error occurred. Please try again later!',
+              status: 500);
       }
     } else {
       // If no response is available, it's a network issue or other unknown error

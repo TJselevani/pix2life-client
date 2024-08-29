@@ -1,8 +1,8 @@
 class AppConfig {
-  static const baseUrl1 = 'http://127.0.0.1:4040';
-  static const baseUrl =
-      'https://capital-obviously-terrier.ngrok-free.app/api/v3';
-  static const baseUrl2 = 'https://pix2life-backend.onrender.com';
+  static const baseUrl = "https://pix2life-server.onrender.com/api/v3";
+  // static const baseUrl2 = 'https://pix2life-backend.onrender.com';
+  // static const baseUrl3 =
+  //     'https://capital-obviously-terrier.ngrok-free.app/api/v3';
 
   static const avatarUrl =
       'https://i.fbcd.co/products/resized/resized-750-500/d4c961732ba6ec52c0bbde63c9cb9e5dd6593826ee788080599f68920224e27d.jpg';
