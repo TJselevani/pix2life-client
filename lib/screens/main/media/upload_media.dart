@@ -549,17 +549,17 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     return Column(
       children: _copyMedia!.map((media) {
         return Center(
-          child: SizedBox(
-            width: ScreenUtil().setWidth(230),
-            child: ListTile(
-              leading: _uploadingMedia.contains(media.name)
-                  ? Icon(Icons.cloud)
-                  : Icon(Icons.cloud_circle),
-              title: Text(media.name),
-              trailing: _uploadDone.contains(media.name)
-                  ? Icon(Icons.check, color: Colors.green)
-                  : null,
+          child: ListTile(
+            leading: _uploadingMedia.contains(media.name)
+                ? Icon(Icons.cloud)
+                : Icon(Icons.cloud_circle),
+            title: Text(
+              media.name,
+              style: TextStyle(fontFamily: 'Poppins', fontSize: 11.sp),
             ),
+            trailing: _uploadDone.contains(media.name)
+                ? Icon(Icons.check, color: Colors.green)
+                : null,
           ),
         );
       }).toList(),
