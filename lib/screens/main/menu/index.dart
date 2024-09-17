@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pix2life/config/app/app.config.dart';
 import 'package:pix2life/config/app/app_palette.dart';
-import 'package:pix2life/config/common/button_widgets.dart';
 import 'package:pix2life/functions/services/token.services.dart';
 import 'package:pix2life/screens/billet/upload_profile.dart';
 import 'package:pix2life/provider/auth_bloc.dart';
