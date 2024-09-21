@@ -1,0 +1,11 @@
+{
+    "id": "1",
+    "username": "_empty.username",
+    "email": "_empty.email",
+    "address": "_empty.address",
+    "phoneNumber": "_empty.phoneNumber",
+    "postCode": "_empty.postCode",
+    "avatarUrl": "_empty.avatarUrl",
+    "lastLogin": "_empty.lastLogin",
+    "subscriptionPlan": "_empty.subscriptionPlan"
+}

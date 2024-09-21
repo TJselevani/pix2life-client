@@ -1,61 +1,55 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pix2life/core/api/api.service.dart';
-import 'package:pix2life/features/auth/data/data_source/auth_remote_data_source.dart';
-import 'package:pix2life/core/services/auth_manager.dart';
-import 'package:pix2life/core/services/auth_user_service.dart';
-import 'package:pix2life/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:pix2life/features/auth/domain/repositories/auth_repository.dart';
-import 'package:pix2life/features/auth/domain/usecases/check_user_account.dart';
-import 'package:pix2life/features/auth/domain/usecases/create_user_password.dart';
-import 'package:pix2life/features/auth/domain/usecases/user_log_out.dart';
-import 'package:pix2life/features/auth/domain/usecases/user_sign_in.dart';
-import 'package:pix2life/features/auth/domain/usecases/user_sign_up.dart';
-import 'package:pix2life/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:pix2life/src/auth/data/data_source/auth_manager.dart';
+import 'package:pix2life/src/api/data/data_source/api.service.dart';
+import 'package:pix2life/src/auth/data/data_source/auth_remote_data_source.dart';
+import 'package:pix2life/src/auth/data/data_source/auth_user_service.dart';
+import 'package:pix2life/src/auth/data/repositories/auth_repository_impl.dart';
+import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
+import 'package:pix2life/src/auth/domain/usecases/check_auth_status.dart';
+import 'package:pix2life/src/auth/domain/usecases/check_user_account.dart';
+import 'package:pix2life/src/auth/domain/usecases/create_user_password.dart';
+import 'package:pix2life/src/auth/domain/usecases/user_log_out.dart';
+import 'package:pix2life/src/auth/domain/usecases/user_sign_in.dart';
+import 'package:pix2life/src/auth/domain/usecases/user_sign_up.dart';
+import 'package:pix2life/src/auth/presentation/bloc/auth_bloc.dart';
 
-final serviceLocator = GetIt.instance;
+final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
-  _initAuth();
-  // Stripe.publishableKey = '${AppConfig.stripePublishableKey}';
-  final apiService = ApiService();
-  final userService = UserService();
-  final authManager = AuthManager();
-  serviceLocator.registerLazySingleton(() => apiService);
-  serviceLocator.registerLazySingleton(() => userService);
-  serviceLocator.registerLazySingleton(() => authManager);
-}
-
-void _initAuth() async {
-  serviceLocator.registerFactory<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(
-      serviceLocator<AuthManager>(),
-      serviceLocator<UserService>(),
+  //presentation layer { Application Logic}
+  sl.registerFactory(
+    () => AuthBloc(
+      userSignUp: sl(),
+      userSignIn: sl(),
+      checkUserAccount: sl(),
+      logOutUSer: sl(),
+      createUserPassword: sl(),
+      checkAuthStatus: sl(),
     ),
   );
 
-  serviceLocator.registerFactory<AuthRepository>(
-    () => AuthRepositoryImpl(
-      serviceLocator(),
-    ),
-  );
+  //domain layer { Usecases }
+  sl.registerLazySingleton(() => UserSignUp(sl()));
+  sl.registerLazySingleton(() => UserSignIn(sl()));
+  sl.registerLazySingleton(() => CheckAuthStatus(sl()));
+  sl.registerLazySingleton(() => LogOutUser(sl()));
+  sl.registerLazySingleton(() => CreateUserPassword(sl()));
+  sl.registerLazySingleton(() => CheckUserAccount(sl()));
 
-  serviceLocator.registerLazySingleton(() => AuthBloc(
-        userSignUp: serviceLocator<UserSignUp>(),
-        userSignIn: serviceLocator<UserSignIn>(),
-        checkUserAccount: serviceLocator<CheckUserAccount>(),
-        logOutUSer: serviceLocator<LogOutUser>(),
-        createUserPassword: serviceLocator<CreateUserPassword>(),
-      ));
+  //data layer { repositories }
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(sl(), sl()));
 
-  serviceLocator.registerFactory<UserSignUp>(
-    () => UserSignUp(
-      serviceLocator(),
-    ),
-  );
+  //data source external dependencies
+  sl.registerLazySingleton(() => AuthManager());
+  sl.registerLazySingleton(() => UserService(sl()));
 
-  serviceLocator.registerFactory<UserSignIn>(
-    () => UserSignIn(
-      serviceLocator(),
-    ),
-  );
+  sl.registerLazySingleton(() => ApiService(sl(), sl()));
+
+  //
+  sl.registerLazySingleton(() => Dio());
+  sl.registerLazySingleton(() => FlutterSecureStorage());
 }

@@ -3,21 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
-import 'package:pix2life/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:pix2life/features/auth/presentation/pages/intro/landing_page.dart';
-import 'package:pix2life/features/auth/presentation/pages/sign_in/sign_in_page_1.dart';
-import 'package:pix2life/features/auth/presentation/pages/sign_up/create_account/create_account_page_1.dart';
+import 'package:pix2life/src/auth/presentation/bloc/auth_bloc.dart';
+import 'package:pix2life/src/auth/presentation/views/intro/landing_page.dart';
+import 'package:pix2life/src/auth/presentation/views/sign_in/sign_in_page_1.dart';
+import 'package:pix2life/src/auth/presentation/views/sign_up/create_account/create_account_page_1.dart';
+import 'package:pix2life/src/auth/presentation/views/sign_up/create_password/create_password_page_1.dart';
 import 'package:pix2life/injection_container.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initDependencies;
+  await initDependencies();
   runApp(
     ScreenUtilInit(
       designSize: Size(375, 804),
       builder: (context, child) {
         return MultiBlocProvider(
-          providers: [BlocProvider(create: (_) => serviceLocator<AuthBloc>())],
+          providers: [BlocProvider(create: (context) => sl<AuthBloc>())],
           child: const MyApp(),
         );
       },
@@ -40,12 +41,29 @@ class MyApp extends StatelessWidget {
         '/': (context) => WelcomePage(),
         '/SignIn': (context) => UserSignInPage(),
         '/SignUp': (context) => UserEmailSignUpPage(),
-        // '/Home': (context) => MainPage(),
-        // '/Profile': (context) => UserProfilePage(),
-        // '/Subscriptions': (context) => SubscriptionsPage(),
-        // '/Notifications': (context) => NotificationsPage(),
-        // '/HelpCenter': (context) => HelpCenterPage(),
+        '/Home': (context) => MyWidget(),
+        '/Password': (context) => UserCreatePasswordPage(),
+        '/Avatar': (context) => MyWidget(),
       },
+    );
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Center(
+              child: Text('MAinPage'),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -86,3 +104,7 @@ class MyApp extends StatelessWidget {
 // git push -u origin main
 
 
+// https://www.youtube.com/watch?v=_E3EF1jPumM&t=1253s
+// 6:20 testing cubit
+
+// 6:32:46 --dependency injection

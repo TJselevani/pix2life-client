@@ -18,11 +18,10 @@ class AppTheme {
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: AppPalette.redColor1,
     ),
-    // colorScheme: ColorScheme(
-    //   primary: AppPalette.redColor1,
-    // ),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: AppPalette.appLightThemeBackgroundColor,
-    appBarTheme: const AppBarTheme(backgroundColor: AppPalette.appLightThemeBackgroundColor),
+    appBarTheme: const AppBarTheme(
+        backgroundColor: AppPalette.appLightThemeBackgroundColor),
     primaryColor: AppPalette.redColor1,
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),
@@ -50,7 +49,8 @@ class AppTheme {
     //   primary: AppPalette.redColor1,
     // ),
     scaffoldBackgroundColor: AppPalette.appDarkThemeBackgroundColor1,
-    appBarTheme: const AppBarTheme(backgroundColor: AppPalette.appDarkThemeBackgroundColor1),
+    appBarTheme: const AppBarTheme(
+        backgroundColor: AppPalette.appDarkThemeBackgroundColor1),
     primaryColor: AppPalette.redColor1,
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),

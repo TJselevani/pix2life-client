@@ -1,6 +1,9 @@
-import 'package:fpdart/fpdart.dart';
-import 'package:pix2life/core/error/failure.dart';
+import 'package:pix2life/core/utils/typeDef.dart';
 
 abstract interface class UseCase<SuccessType, Params> {
-  Future<Either<Failure, SuccessType>> call(Params params);
+  ResultFuture<SuccessType> call(Params params);
+}
+
+abstract interface class UseCaseWithoutParams<SuccessType> {
+  ResultFuture<SuccessType> call();
 }

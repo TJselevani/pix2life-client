@@ -57,10 +57,13 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   fpdart: ^1.1.0
   get_it: ^7.7.0
+  equatable: ^2.0.5
+  simple_animations: ^5.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.4
     
 flutter_native_splash:
   color: "#ffffff" # Background color for the splash screen

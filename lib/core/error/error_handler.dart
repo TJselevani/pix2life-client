@@ -1,8 +1,7 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:pix2life/core/error/errors.dart';
-import 'application_error.dart';
+import 'package:pix2life/core/error/exceptions.dart';
+import 'package:pix2life/core/error/http_errors.dart';
 
 class ErrorHandler {
   static void handleError(DioException e) {
@@ -10,17 +9,13 @@ class ErrorHandler {
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
         e.type == DioExceptionType.cancel) {
-      // Handle network-related errors or server downtime
-      throw ApplicationError(
+      throw ServiceUnavailable(
         message:
             'Service Unavailable. Please check your internet connection and try again.',
-        status: 503, // Service Unavailable
       );
     } else if (e.error is SocketException) {
-      // Handle failed host lookup error
-      throw ApplicationError(
+      throw NotFoundError(
         message: 'Unable to connect to the server, please try again later',
-        status: 404,
       );
     }
 
@@ -50,13 +45,12 @@ class ErrorHandler {
         default:
           throw ApplicationError(
               message: 'An unexpected error occurred. Please try again later!',
-              status: 500);
+              statusCode: 500);
       }
     } else {
-      // If no response is available, it's a network issue or other unknown error
       throw ApplicationError(
         message: 'An unexpected error occurred. Please try again later.',
-        status: 500,
+        statusCode: 505,
       );
     }
   }
