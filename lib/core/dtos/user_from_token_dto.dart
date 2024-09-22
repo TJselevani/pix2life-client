@@ -1,11 +1,16 @@
+import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/src/auth/data/models/user.model.dart';
+
 class UserFromTokenResponse {
-  final Map<String, dynamic> user;
+  final UserModel user;
 
   UserFromTokenResponse({required this.user});
 
-  factory UserFromTokenResponse.fromJson(Map<String, dynamic> json) {
+  factory UserFromTokenResponse.fromJson(DataMap json) {
+    final DataMap userData = json['user'];
+    final UserModel user = UserModel.fromJson(userData);
     return UserFromTokenResponse(
-      user: json['user'],
+      user: user,
     );
   }
 }

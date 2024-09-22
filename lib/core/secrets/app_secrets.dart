@@ -1,5 +1,6 @@
 class AppSecrets {
-  static const baseUrl = "https://pix2life-server.onrender.com/api/v3";
+  static const baseUrl =
+      'https://capital-obviously-terrier.ngrok-free.app/api/v3'; //"https://pix2life-server.onrender.com/api/v3";
 
   static const kTestUrl =
       "https://66ec4b962b6cf2b89c5dfe2a.mockapi.io/api/users";

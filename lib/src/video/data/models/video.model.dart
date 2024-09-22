@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:pix2life/core/utils/typeDef.dart';
-import 'package:pix2life/src/image/domain/entities/image.dart';
+import 'package:pix2life/src/video/domain/entities/video.dart';
 
-class ImageModel extends Image {
-  ImageModel({
+class VideoModel extends Video {
+  VideoModel({
     required super.id,
     required super.filename,
     required super.path,
@@ -17,11 +17,11 @@ class ImageModel extends Image {
     required super.updatedAt,
   });
 
-  ImageModel.empty()
+  VideoModel.empty()
       : this(
           id: '1',
           filename: '_empty.filename',
-          path: '_empty.path',
+          path: '_empty.filepath',
           originalName: '_empty.originalName',
           galleryName: '_empty.galleryName',
           ownerId: '_empty.ownerId',
@@ -31,9 +31,8 @@ class ImageModel extends Image {
           updatedAt: DateTime.now(),
         );
 
-  // Factory method to create an ImageModel object from JSON
-  factory ImageModel.fromJson(DataMap json) {
-    return ImageModel(
+  factory VideoModel.fromJson(DataMap json) {
+    return VideoModel(
       id: json['id'],
       filename: json['filename'],
       path: json['path'],
@@ -47,10 +46,10 @@ class ImageModel extends Image {
     );
   }
 
-  factory ImageModel.fromJSON(String source) =>
-      ImageModel.fromMap(jsonDecode(source) as DataMap);
+  factory VideoModel.fromJSON(String source) =>
+      VideoModel.fromMap(jsonDecode(source) as DataMap);
 
-  ImageModel.fromMap(DataMap map)
+  VideoModel.fromMap(DataMap map)
       : this(
           id: map['id'] as String,
           filename: map['filename'] as String,
@@ -63,20 +62,8 @@ class ImageModel extends Image {
           createdAt: DateTime.parse(map['createdAt'] as String),
           updatedAt: DateTime.parse(map['updatedAt'] as String),
         );
-  DataMap toMap() => {
-        "id": id,
-        "filename": filename,
-        "path": path,
-        "originalName": originalName,
-        "galleryName": galleryName,
-        "ownerId": ownerId,
-        "description": description,
-        "url": url,
-        "createdAt": createdAt,
-        "updatedAt": updatedAt,
-      };
-
-  ImageModel copyWith({
+        
+  VideoModel copyWith({
     String? id,
     String? filename,
     String? path,
@@ -88,7 +75,7 @@ class ImageModel extends Image {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) =>
-      ImageModel(
+      VideoModel(
         id: this.id,
         filename: filename ?? this.filename,
         path: path ?? this.path,
@@ -100,7 +87,4 @@ class ImageModel extends Image {
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
       );
-
-  @override
-  List<Object> get props => [id, filename, galleryName, ownerId, url];
 }

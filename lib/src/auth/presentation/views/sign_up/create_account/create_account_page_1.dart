@@ -18,10 +18,13 @@ class UserEmailSignUpPage extends StatefulWidget {
     Navigator.pushReplacementNamed(context, '/SignIn');
   }
 
-  static void routeToSignUpPage(BuildContext context) {
+  static void routeToSignUpPage(BuildContext context, String userEmail) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const UserDetailsSignUpPage()),
+      MaterialPageRoute(
+          builder: (context) => UserDetailsSignUpPage(
+                userEmail: userEmail,
+              )),
     );
   }
 
@@ -33,7 +36,6 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final logger = createLogger(UserEmailSignUpPage);
-  bool _isLoading = false;
 
   // Future<void> _submitForm() async {
   //   if (_formKey.currentState?.validate() ?? false) {
@@ -249,7 +251,8 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is Authenticated) {
         SuccessSnackBar.show(context: context, message: state.message);
-        UserEmailSignUpPage.routeToSignUpPage(context);
+        UserEmailSignUpPage.routeToSignUpPage(
+            context, _emailController.text.trim());
       } else if (state is AuthFailure) {
         ErrorSnackBar.show(context: context, message: state.message);
       }

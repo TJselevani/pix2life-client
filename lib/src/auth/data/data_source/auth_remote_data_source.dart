@@ -1,3 +1,8 @@
+import 'package:pix2life/core/dtos/check_user_account_dto.dart';
+import 'package:pix2life/core/dtos/create_password_dto.dart';
+import 'package:pix2life/core/dtos/create_user_dto.dart';
+import 'package:pix2life/core/dtos/signIn_user_dto.dart';
+import 'package:pix2life/core/dtos/user_from_token_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/typeDef.dart';
@@ -37,8 +42,6 @@ abstract interface class AuthRemoteDataSource {
   });
 }
 
-const kCreateUseEndpoint = '/users';
-
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   late UserService _userService;
   late AuthManager _authManager;
@@ -52,13 +55,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) async {
     try {
       final DataMap userData = {'email': email, 'password': password};
-      final response = await _userService.signIn(userData);
-      final UserInfo = response.user;
+      final UserSignInResponse response = await _userService.signIn(userData);
+      final UserModel user = response.user;
       final message = response.message;
       final token = response.token;
       await _authManager.storeToken(token);
       logger.i(message);
-      final UserModel user = UserModel.fromJson(UserInfo);
       return user;
     } on ServerException {
       rethrow;
@@ -84,7 +86,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         "phoneNumber": phoneNumber,
         "postCode": postCode,
       };
-      final response = await _userService.createUser(userData);
+      final CreateUserResponse response =
+          await _userService.createUser(userData);
       final UserInfo = response.user;
       final message = response.message;
       final token = response.token;
@@ -106,8 +109,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final DataMap userData = {
         "email": email,
       };
-      final response = await _userService.checkUser(userData);
-      return response;
+      final CheckUserAccountResponse response =
+          await _userService.checkUser(userData);
+      final message = response.message;
+      return message;
     } on ServerException {
       rethrow;
     } catch (e) {
@@ -120,7 +125,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<String> createUserPassword(
       {required String password, required String confirmPassword}) async {
     try {
-      final response =
+      final CreatePasswordResponse response =
           await _userService.createPassword(password, confirmPassword);
       final message = response.message;
       final userEmail = response.userEmail;
@@ -152,9 +157,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> checkAuthStatus({required String token}) async {
     try {
-      final response = await _userService.getUserFromToken();
-      final userInfo = response.user;
-      final UserModel user = UserModel.fromJson(userInfo);
+      final UserFromTokenResponse response =
+          await _userService.getUserFromToken();
+      final UserModel user = response.user;
       return user;
     } on ServerException {
       rethrow;

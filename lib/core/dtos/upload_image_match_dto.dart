@@ -1,6 +1,9 @@
+import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/src/image/data/models/image.model.dart';
+
 class UploadImageMatchResponse {
   final String message;
-  final Map image;
+  final ImageModel image;
 
   UploadImageMatchResponse({
     required this.message,
@@ -8,6 +11,9 @@ class UploadImageMatchResponse {
   });
 
   factory UploadImageMatchResponse.fromJson(Map<String, dynamic> json) {
-    return UploadImageMatchResponse(message: json['message'], image: json['image']);
+    final DataMap img = json['image'];
+    final ImageModel matchedImage = ImageModel.fromJson(img);
+    return UploadImageMatchResponse(
+        message: json['message'], image: matchedImage);
   }
 }

@@ -3,12 +3,12 @@ import 'package:pix2life/core/utils/typeDef.dart';
 import 'package:pix2life/src/image/domain/entities/image.dart';
 
 abstract interface class ImageRepository {
-  ResultFuture<Image> uploadImage({
+  ResultFuture<String> uploadImage({
     required FormData formData,
     required String galleryName,
   });
 
-  ResultFuture<Image> uploadAvatar({
+  ResultFuture<String> uploadAvatar({
     required FormData formData,
   });
 
@@ -18,8 +18,8 @@ abstract interface class ImageRepository {
 
   ResultFuture<List<Image>> fetchImages();
 
-  ResultFuture<Image>  updateImage({
-    required Map<String, dynamic> updateData,
+  ResultFuture<Image> updateImage({
+    required DataMap updateData,
     required String imageId,
   });
 

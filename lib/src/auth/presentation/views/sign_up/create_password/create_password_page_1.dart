@@ -32,7 +32,6 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   final logger = createLogger(UserCreatePasswordPage);
   bool _obscureText = true;
   bool _obscureText2 = true;
-  bool _isLoading = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -264,7 +263,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   }
 
   Widget _buildSubmitButton() {
-    return BlocConsumer(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthFailure) {
           ErrorSnackBar.show(context: context, message: state.message);
@@ -294,7 +293,6 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
             },
           );
         }
-        ;
       },
     );
   }

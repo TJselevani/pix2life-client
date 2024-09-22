@@ -1,10 +1,18 @@
+import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/src/auth/data/models/user.model.dart';
+
 class ResetPasswordResponse {
   final String message;
-  final Map<String, dynamic>  user;
+  final UserModel user;
 
   ResetPasswordResponse({required this.user, required this.message});
 
-  factory ResetPasswordResponse.fromJson(Map<String, dynamic> json) {
-    return ResetPasswordResponse(message: json['message'], user: json['user']);
+  factory ResetPasswordResponse.fromJson(DataMap json) {
+    final DataMap userData = json['user'];
+    final UserModel user = UserModel.fromJson(userData);
+    return ResetPasswordResponse(
+      message: json['message'],
+      user: user,
+    );
   }
 }

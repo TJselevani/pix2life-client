@@ -59,6 +59,7 @@ class UserModel extends User {
           lastLogin: map['lastLogin'] ?? '',
           subscriptionPlan: map['subscriptionPlan'] ?? '',
         );
+        
   DataMap toMap() => {
         "id": id,
         "username": username,

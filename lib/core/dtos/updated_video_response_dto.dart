@@ -1,16 +1,21 @@
+import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/src/video/data/models/video.model.dart';
+
 class UpdatedVideoResponse {
   final String message;
-  final dynamic updatedVideo;
+  final VideoModel updatedVideo;
 
   UpdatedVideoResponse({
     required this.message,
     required this.updatedVideo,
   });
 
-  factory UpdatedVideoResponse.fromJson(Map<String, dynamic> json) {
+  factory UpdatedVideoResponse.fromJson(DataMap json) {
+    final DataMap videoData = json['updatedImage'];
+    final VideoModel video = VideoModel.fromJson(videoData);
     return UpdatedVideoResponse(
       message: json['message'],
-      updatedVideo: json['updatedVideo'],
+      updatedVideo: video,
     );
   }
 }

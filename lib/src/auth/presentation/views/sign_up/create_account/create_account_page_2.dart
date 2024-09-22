@@ -11,13 +11,13 @@ import 'package:pix2life/src/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/auth/presentation/widgets/auth_round_button.dart';
 
 class UserDetailsSignUpPage extends StatefulWidget {
-  final String? userEmail;
+  final String userEmail;
 
   static void routeToPasswordPage(BuildContext context) {
     Navigator.pushReplacementNamed(context, '/Password');
   }
 
-  const UserDetailsSignUpPage({super.key, this.userEmail});
+  const UserDetailsSignUpPage({super.key, required this.userEmail});
 
   @override
   State<UserDetailsSignUpPage> createState() => _UserDetailsSignUpPageState();
@@ -224,7 +224,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
               BlocProvider.of<AuthBloc>(context).add(
                 AuthSignUpEvent(
                   username: _usernameController.text.trim(),
-                  email: widget.userEmail!,
+                  email: widget.userEmail,
                   address: _addressController.text.trim(),
                   phoneNumber: _phoneNumberController.text.trim(),
                   postCode: _postCodeController.text.trim(),
