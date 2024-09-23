@@ -1,5 +1,5 @@
 import 'package:pix2life/core/utils/type_def.dart';
-import 'package:pix2life/src/video/data/models/video.model.dart';
+import 'package:pix2life/src/features/video/data/models/video.model.dart';
 
 class FetchVideoResponse {
   final List<VideoModel> videos;

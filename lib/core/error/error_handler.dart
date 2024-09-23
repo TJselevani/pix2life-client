@@ -8,11 +8,10 @@ class ErrorHandler {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
-        e.type == DioExceptionType.cancel) {
-      throw const ServiceUnavailable(
-        message:
-            'Service Unavailable. Please check your internet connection and try again.',
-      );
+        e.type == DioExceptionType.cancel ||
+        e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.unknown) {
+      throw const ServiceUnavailable();
     } else if (e.error is SocketException) {
       throw const NotFoundError(
         message: 'Unable to connect to the server, please try again later',

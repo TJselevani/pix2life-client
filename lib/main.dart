@@ -1,13 +1,16 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
-import 'package:pix2life/src/auth/presentation/bloc/auth_bloc.dart';
-import 'package:pix2life/src/auth/presentation/views/intro/landing_page.dart';
-import 'package:pix2life/src/auth/presentation/views/sign_in/sign_in_page_1.dart';
-import 'package:pix2life/src/auth/presentation/views/sign_up/create_account/create_account_page_1.dart';
-import 'package:pix2life/src/auth/presentation/views/sign_up/create_password/create_password_page_1.dart';
+import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:pix2life/src/app/pages/intro/landing_page.dart';
+import 'package:pix2life/src/features/auth/presentation/views/sign_in/sign_in_page_1.dart';
+import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_account/create_account_page_1.dart';
+import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_password/create_password_page_1.dart';
 import 'package:pix2life/injection_container.dart';
 
 Future<void> main() async {
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
       title: 'pix2life',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightThemeMode,
-      initialRoute: '/',
+      initialRoute: '/SignIn',
       routes: {
         '/': (context) => const WelcomePage(),
         '/SignIn': (context) => const UserSignInPage(),
@@ -92,19 +95,22 @@ class MyWidget extends StatelessWidget {
 // ├── injection_container.dart
 // └── main.dart
 
-
-// flutter pub run flutter_native_splash:create
-// flutter pub run flutter_launcher_icons:main
-
-// git init
-// git add README.md
-// git commit -m "first commit"
-// git branch -M main
-// git remote add origin https://github.com/TJselevani/pix2life-client.git
-// git push -u origin main
-
-
-// https://www.youtube.com/watch?v=_E3EF1jPumM&t=1253s
-// 6:20 testing cubit
-
-// 6:32:46 --dependency injection
+// lib/
+// ├── core/
+// │   ├── errors/
+// │   ├── utils/
+// │   └── usecases/
+// ├── features/
+// │   ├── authentication/
+// │   ├── images/
+// │   ├── video/
+// │   ├── audio/
+// ├── shared/
+// │   ├── widgets/
+// │   ├── styles/
+// ├── app/
+// │   ├── pages/
+// │   ├── menu/
+// │   ├── multimedia/
+// │   ├── home/
+// │   └── app_bloc.dart

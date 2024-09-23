@@ -1,4 +1,4 @@
-import 'package:pix2life/src/gallery/data/models/gallery.model.dart';
+import 'package:pix2life/src/features/gallery/data/models/gallery.model.dart';
 
 class FetchGalleriesResponse {
   final String message;

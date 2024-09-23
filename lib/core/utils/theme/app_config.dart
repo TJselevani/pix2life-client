@@ -7,5 +7,5 @@ class AppImage {
 }
 
 class AppLogo {
-  static const pix2lifeLogo = 'assets/images/pix2lifeLogo.png';
+  static const pix2lifeLogo = "assets/images/pix2lifelogo.png";
 }

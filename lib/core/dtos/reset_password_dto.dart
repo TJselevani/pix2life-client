@@ -1,5 +1,5 @@
 import 'package:pix2life/core/utils/type_def.dart';
-import 'package:pix2life/src/auth/data/models/user.model.dart';
+import 'package:pix2life/src/features/auth/data/models/user.model.dart';
 
 class ResetPasswordResponse {
   final String message;

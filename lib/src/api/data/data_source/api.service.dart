@@ -26,6 +26,7 @@ class ApiService {
           },
         ),
       );
+      logger.i(response.statusCode);
       logger.i(response.data);
       return response.data;
     } on DioException catch (e) {
@@ -55,7 +56,7 @@ class ApiService {
           },
         ),
       );
-
+      logger.i(response.statusCode);
       logger.i(response.data);
       return response.data;
     } on DioException catch (e) {
@@ -85,7 +86,7 @@ class ApiService {
           },
         ),
       );
-
+      logger.i(response.statusCode);
       logger.i(response.data);
       return response.data;
     } on DioException catch (e) {
@@ -115,7 +116,7 @@ class ApiService {
           },
         ),
       );
-
+      logger.i(response.statusCode);
       logger.i(response.data);
       return response.data;
     } on DioException catch (e) {
@@ -143,6 +144,7 @@ class ApiService {
           },
         ),
       );
+      logger.i(response.statusCode);
       logger.i(response.data);
       return response.data;
     } on DioException catch (e) {

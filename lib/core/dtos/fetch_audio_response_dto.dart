@@ -1,4 +1,4 @@
-import 'package:pix2life/src/audio/data/models/audio.model.dart';
+import 'package:pix2life/src/features/audio/data/models/audio.model.dart';
 
 class FetchAudiosResponse {
   final List<AudioModel> audios;
