@@ -9,18 +9,16 @@ var tVideo = VideoModel.empty();
 var vid = tVideo.copyWith();
 
 class UpdateVideoParams extends Equatable {
-  final String videoId;
-  final VideoModel updateData;
+  final Video video;
 
   const UpdateVideoParams({
-    required this.videoId,
-    required this.updateData,
+    required this.video,
   });
 
-  UpdateVideoParams.empty() : this(videoId: '_empty.videoId', updateData: vid);
+  UpdateVideoParams.empty() : this(video: Video.empty());
 
   @override
-  List<Object?> get props => [videoId];
+  List<Object?> get props => [video];
 }
 
 class UpdateVideo implements UseCase<Video, UpdateVideoParams> {
@@ -28,7 +26,6 @@ class UpdateVideo implements UseCase<Video, UpdateVideoParams> {
   const UpdateVideo(this._videoRepository);
   @override
   ResultFuture<Video> call(params) async {
-    return await _videoRepository.updateVideo(
-        updateData: params.updateData, videoId: params.videoId);
+    return await _videoRepository.updateVideo(video: params.video);
   }
 }

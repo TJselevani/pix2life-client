@@ -13,8 +13,7 @@ abstract interface class AudioRemoteDataSource {
 
   Future<List<AudioModel>> fetchAudios();
 
-  Future<AudioModel> updateAudio(
-      {required AudioModel updateData, required String audioId});
+  Future<AudioModel> updateAudio({required AudioModel audio});
 
   Future<String> uploadAudio(
       {required FormData formData, required String galleryName});
@@ -57,10 +56,10 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
 
   @override
   Future<AudioModel> updateAudio(
-      {required AudioModel updateData, required String audioId}) async {
+      {required AudioModel audio}) async {
     try {
       final UpdateAudioResponse response =
-          await _audioService.updateAudio(updateData, audioId);
+          await _audioService.updateAudio(audio);
       final String message = response.message;
       final AudioModel updatedAudio = response.updatedAudio;
       logger.i(message);

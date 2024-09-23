@@ -25,6 +25,20 @@ class Audio extends Equatable {
     required this.updatedAt,
   });
 
+  Audio.empty()
+      : this(
+          id: '1',
+          filename: '_empty.filename',
+          path: '_empty.path',
+          originalName: '_empty.originalName',
+          galleryName: '_empty.galleryName',
+          ownerId: '_empty.ownerId',
+          description: '_empty.description',
+          url: '_empty.url',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
   @override
   List<Object?> get props => [id, ownerId, url];
 }

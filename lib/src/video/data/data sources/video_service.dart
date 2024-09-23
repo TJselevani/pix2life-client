@@ -27,10 +27,9 @@ class VideoService {
     return FetchVideoResponse.fromJson(imageList);
   }
 
-  Future<UpdatedVideoResponse> updateVideo(
-      VideoModel updateData, String videoId) async {
-    final url = '${AppSecrets.baseUrl}/video/update?videoId=$videoId';
-    final data = await _apiService.updateData(updateData, url);
+  Future<UpdatedVideoResponse> updateVideo(VideoModel video) async {
+    final url = '${AppSecrets.baseUrl}/video/update?videoId=${video.id}';
+    final data = await _apiService.updateData(video.toMap(), url);
     return UpdatedVideoResponse.fromJson(data);
   }
 

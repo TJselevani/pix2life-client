@@ -62,6 +62,18 @@ class VideoModel extends Video {
           createdAt: DateTime.parse(map['createdAt'] as String),
           updatedAt: DateTime.parse(map['updatedAt'] as String),
         );
+  DataMap toMap() => {
+        "id": id,
+        "filename": filename,
+        "path": path,
+        "originalName": originalName,
+        "galleryName": galleryName,
+        "ownerId": ownerId,
+        "description": description,
+        "url": url,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
+      };
 
   VideoModel copyWith({
     String? id,

@@ -5,6 +5,7 @@ import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/data/data%20sources/image_remote_data_source.dart';
 import 'package:pix2life/src/image/data/models/image.model.dart';
+import 'package:pix2life/src/image/domain/entities/image.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 
 class ImageRepositoryImpl implements ImageRepository {
@@ -43,11 +44,21 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<ImageModel> updateImage(
-      {required DataMap updateData, required String imageId}) async {
+  ResultFuture<ImageModel> updateImage({required Image image}) async {
     try {
       final updatedImage = await _remoteDataSource.updateImage(
-          updateData: updateData, imageId: imageId);
+          image: ImageModel(
+        id: image.id,
+        filename: image.filename,
+        path: image.path,
+        originalName: image.originalName,
+        galleryName: image.galleryName,
+        ownerId: image.ownerId,
+        description: image.description,
+        url: image.url,
+        createdAt: image.createdAt,
+        updatedAt: image.updatedAt,
+      ));
       return right(updatedImage);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));

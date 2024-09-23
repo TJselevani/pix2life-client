@@ -29,10 +29,9 @@ class AudioService {
     return FetchAudiosResponse.fromJson(audiosJson);
   }
 
-  Future<UpdateAudioResponse> updateAudio(
-      AudioModel updateData, String audioId) async {
-    final url = '${AppSecrets.baseUrl}/audio/update?audioId=$audioId';
-    final data = await _apiService.updateData(updateData, url);
+  Future<UpdateAudioResponse> updateAudio(AudioModel audio) async {
+    final url = '${AppSecrets.baseUrl}/audio/update?audioId=${audio.id}';
+    final data = await _apiService.updateData(audio.toMap(), url);
     return UpdateAudioResponse.fromJson(data);
   }
 

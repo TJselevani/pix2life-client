@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:pix2life/core/utils/type_def.dart';
-import 'package:pix2life/src/audio/data/models/audio.model.dart';
 import 'package:pix2life/src/audio/domain/entities/audio.dart';
 
 abstract interface class AudioRepository {
@@ -14,8 +13,7 @@ abstract interface class AudioRepository {
   ResultFuture<List<Audio>> fetchAudios();
 
   ResultFuture<Audio> updateAudio({
-    required AudioModel updateData,
-    required String audioId,
+    required Audio audio,
   });
 
   ResultFuture<String> deleteAudio({

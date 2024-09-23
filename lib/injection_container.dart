@@ -1,6 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pix2life/src/audio/data/data%20sources/audio_remote_data_source.dart';
+import 'package:pix2life/src/audio/data/data%20sources/audio_service.dart';
+import 'package:pix2life/src/audio/data/repositories/audio_repository_impl.dart';
+import 'package:pix2life/src/audio/domain/repositories/audio_repository.dart';
+import 'package:pix2life/src/audio/domain/usecases/delete_audio.dart';
+import 'package:pix2life/src/audio/domain/usecases/fetch_audios.dart';
+import 'package:pix2life/src/audio/domain/usecases/update_audio.dart';
+import 'package:pix2life/src/audio/domain/usecases/upload_audio.dart';
+import 'package:pix2life/src/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/auth/data/data_source/auth_manager.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/auth/data/data_source/auth_remote_data_source.dart';
@@ -14,11 +23,45 @@ import 'package:pix2life/src/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/auth/domain/usecases/user_sign_in.dart';
 import 'package:pix2life/src/auth/domain/usecases/user_sign_up.dart';
 import 'package:pix2life/src/auth/presentation/bloc/auth_bloc.dart';
+import 'package:pix2life/src/gallery/data/data_source/gallery_remote_data_source.dart';
+import 'package:pix2life/src/gallery/data/data_source/gallery_service.dart';
+import 'package:pix2life/src/gallery/data/repositories/gallery_repository_impl.dart';
+import 'package:pix2life/src/gallery/domain/repositories/gallery_repository.dart';
+import 'package:pix2life/src/gallery/domain/usecases/create_gallery.dart';
+import 'package:pix2life/src/gallery/domain/usecases/fetch_audios.dart';
+import 'package:pix2life/src/gallery/domain/usecases/fetch_galleries.dart';
+import 'package:pix2life/src/gallery/domain/usecases/fetch_images.dart';
+import 'package:pix2life/src/gallery/domain/usecases/fetch_videos.dart';
+import 'package:pix2life/src/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:pix2life/src/image/data/data%20sources/image_remote_data_source.dart';
+import 'package:pix2life/src/image/data/data%20sources/image_service.dart';
+import 'package:pix2life/src/image/data/repositories/image_repository_impl.dart';
+import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
+import 'package:pix2life/src/image/domain/usecases/delete_image.dart';
+import 'package:pix2life/src/image/domain/usecases/fetch_images.dart';
+import 'package:pix2life/src/image/domain/usecases/match_image.dart';
+import 'package:pix2life/src/image/domain/usecases/update_image.dart';
+import 'package:pix2life/src/image/domain/usecases/upload_avatar.dart';
+import 'package:pix2life/src/image/domain/usecases/upload_image.dart';
+import 'package:pix2life/src/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/video/data/data%20sources/video_remote_data_source.dart';
+import 'package:pix2life/src/video/data/data%20sources/video_service.dart';
+import 'package:pix2life/src/video/data/repositories/video_repository_impl.dart';
+import 'package:pix2life/src/video/domain/repositories/video_repository.dart';
+import 'package:pix2life/src/video/domain/usecases/delete_video.dart';
+import 'package:pix2life/src/video/domain/usecases/fetch_video.dart';
+import 'package:pix2life/src/video/domain/usecases/update_video.dart';
+import 'package:pix2life/src/video/domain/usecases/upload_video.dart';
+import 'package:pix2life/src/video/presentation/bloc/video_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
-  //presentation layer { Application Logic}
+  //#######################################################################
+  // ############# presentation layer { Application Logic } ###############
+  //#######################################################################
+
+  //Authentication Bloc
   sl.registerFactory(
     () => AuthBloc(
       userSignUp: sl(),
@@ -29,8 +72,53 @@ Future<void> initDependencies() async {
       checkAuthStatus: sl(),
     ),
   );
+  //Audio Files Bloc
+  sl.registerFactory(
+    () => AudioBloc(
+      deleteAudio: sl(),
+      fetchAudios: sl(),
+      updateAudio: sl(),
+      uploadAudio: sl(),
+    ),
+  );
 
-  //domain layer { Usecases }
+  //Image Bloc
+  sl.registerFactory(
+    () => ImageBloc(
+      deleteImage: sl(),
+      fetchImages: sl(),
+      matchImage: sl(),
+      updateImage: sl(),
+      uploadImage: sl(),
+      uploadAvatar: sl(),
+    ),
+  );
+
+  //Video Bloc
+  sl.registerFactory(
+    () => VideoBloc(
+      deleteVideo: sl(),
+      fetchVideo: sl(),
+      updateVideo: sl(),
+      uploadVideo: sl(),
+    ),
+  );
+
+  //Galley Bloc
+  sl.registerFactory(
+    () => GalleryBloc(
+      createGallery: sl(),
+      fetchGalleries: sl(),
+      fetchImagesByGallery: sl(),
+      fetchAudiosByGallery: sl(),
+      fetchVideosByGallery: sl(),
+    ),
+  );
+  //#######################################################################
+  //#################### domain layer { Usecases } ########################
+  //#######################################################################
+
+  //Authentication usecases
   sl.registerLazySingleton(() => UserSignUp(sl()));
   sl.registerLazySingleton(() => UserSignIn(sl()));
   sl.registerLazySingleton(() => CheckAuthStatus(sl()));
@@ -38,18 +126,87 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => CreateUserPassword(sl()));
   sl.registerLazySingleton(() => CheckUserAccount(sl()));
 
-  //data layer { repositories }
+  //Audio usecases
+  sl.registerLazySingleton(() => DeleteAudio(sl()));
+  sl.registerLazySingleton(() => FetchAudios(sl()));
+  sl.registerLazySingleton(() => UpdateAudio(sl()));
+  sl.registerLazySingleton(() => UploadAudio(sl()));
+
+  //Image usecases
+  sl.registerLazySingleton(() => DeleteImage(sl()));
+  sl.registerLazySingleton(() => FetchImages(sl()));
+  sl.registerLazySingleton(() => MatchImage(sl()));
+  sl.registerLazySingleton(() => UpdateImage(sl()));
+  sl.registerLazySingleton(() => UploadAvatar(sl()));
+  sl.registerLazySingleton(() => UploadImage(sl()));
+
+  //Video usecases
+  sl.registerLazySingleton(() => DeleteVideo(sl()));
+  sl.registerLazySingleton(() => FetchVideo(sl()));
+  sl.registerLazySingleton(() => UpdateVideo(sl()));
+  sl.registerLazySingleton(() => UploadVideo(sl()));
+
+  //Gallery usecases
+  sl.registerLazySingleton(() => CreateGallery(sl()));
+  sl.registerLazySingleton(() => FetchAudiosByGallery(sl()));
+  sl.registerLazySingleton(() => FetchVideosByGallery(sl()));
+  sl.registerLazySingleton(() => FetchImagesByGallery(sl()));
+  sl.registerLazySingleton(() => FetchGalleries(sl()));
+
+  //#######################################################################
+  //##########################  data layer { repositories } ###############
+  //#######################################################################
+
+  //Authentication Bloc
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(sl(), sl()));
 
-  //data source external dependencies
+  // Audio Bloc
+  sl.registerLazySingleton<AudioRepository>(() => AudioRepositoryImpl(sl()));
+  sl.registerLazySingleton<AudioRemoteDataSource>(
+      () => AudioRemoteDataSourceImpl(sl()));
+
+  // Image Bloc
+  sl.registerLazySingleton<ImageRepository>(() => ImageRepositoryImpl(sl()));
+  sl.registerLazySingleton<ImageRemoteDataSource>(
+      () => ImageRemoteDataSourceImpl(sl()));
+
+  // Video Bloc
+  sl.registerLazySingleton<VideoRepository>(() => VideoRepositoryImpl(sl()));
+  sl.registerLazySingleton<VideoRemoteDataSource>(
+      () => VideoRemoteDataSourceImpl(sl()));
+
+  // Gallery Bloc
+  sl.registerLazySingleton<GalleryRepository>(
+      () => GalleryRepositoryImpl(sl()));
+  sl.registerLazySingleton<GalleryRemoteDataSource>(
+      () => GalleryRemoteDataSourceImpl(sl()));
+
+  //#######################################################################
+  //##################### data source external dependencies ###############
+  //#######################################################################
+
+  //Authentication Bloc
   sl.registerLazySingleton(() => AuthManager());
   sl.registerLazySingleton(() => UserService(sl()));
 
+  //Audio Bloc
+  sl.registerLazySingleton(() => AudioService(sl()));
+
+  //Image Bloc
+  sl.registerLazySingleton(() => ImageService(sl()));
+
+  //Video bloc
+  sl.registerLazySingleton(() => VideoService(sl()));
+
+  //Gallery Bloc
+  sl.registerLazySingleton(() => GalleryService(sl()));
+
+  //Api Service class
   sl.registerLazySingleton(() => ApiService(sl(), sl()));
 
-  //
+  //Flutter Technology dependencies
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => const FlutterSecureStorage());
 }

@@ -22,8 +22,7 @@ abstract interface class ImageRemoteDataSource {
   });
 
   Future<ImageModel> updateImage({
-    required DataMap updateData,
-    required String imageId,
+    required ImageModel image,
   });
 
   Future<String> uploadAvatar({
@@ -89,10 +88,10 @@ class ImageRemoteDataSourceImpl implements ImageRemoteDataSource {
 
   @override
   Future<ImageModel> updateImage(
-      {required DataMap updateData, required String imageId}) async {
+      {required ImageModel image}) async {
     try {
       final UpdateImageResponse response =
-          await _imageService.updateImage(updateData, imageId);
+          await _imageService.updateImage(image);
       final ImageModel images = response.updatedImage;
       final String message = response.message;
       logger.i(message);

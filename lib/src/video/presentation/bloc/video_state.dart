@@ -11,6 +11,48 @@ final class VideoInitial extends VideoState {}
 
 final class VideoLoading extends VideoState {}
 
-final class VideoSuccess extends VideoState {}
+final class VideosLoaded extends VideoState {
+  final List<Video> videos;
 
-final class VideoFailure extends VideoState {}
+  const VideosLoaded({required this.videos});
+
+  @override
+  List<Object?> get props => [videos];
+}
+
+final class VideoLoaded extends VideoState {
+  final Video video;
+
+  const VideoLoaded({required this.video});
+
+  @override
+  List<Object> get props => [video];
+}
+
+final class VideoUpdated extends VideoState {
+  final Video video;
+  final String message;
+
+  const VideoUpdated({required this.message, required this.video});
+
+   @override
+  List<Object> get props => [video, message];
+}
+
+final class VideoSuccess extends VideoState {
+  final String message;
+
+  const VideoSuccess({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class VideoFailure extends VideoState {
+  final String message;
+
+  const VideoFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

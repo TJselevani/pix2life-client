@@ -14,8 +14,7 @@ abstract interface class VideoRemoteDataSource {
 
   Future<List<VideoModel>> fetchVideos();
 
-  Future<VideoModel> updateVideo(
-      {required VideoModel updateData, required String videoId});
+  Future<VideoModel> updateVideo({required VideoModel video});
 
   Future<String> deleteVideo({required String videoId});
 }
@@ -56,11 +55,10 @@ class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
   }
 
   @override
-  Future<VideoModel> updateVideo(
-      {required VideoModel updateData, required String videoId}) async {
+  Future<VideoModel> updateVideo({required VideoModel video}) async {
     try {
       final UpdatedVideoResponse response =
-          await _videoService.updateVideo(updateData, videoId);
+          await _videoService.updateVideo(video);
       final message = response.message;
       final updateVideo = response.updatedVideo;
       logger.i(message);

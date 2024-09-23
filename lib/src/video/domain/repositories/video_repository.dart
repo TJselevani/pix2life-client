@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:pix2life/core/utils/type_def.dart';
-import 'package:pix2life/src/video/data/models/video.model.dart';
 import 'package:pix2life/src/video/domain/entities/video.dart';
 
 abstract interface class VideoRepository {
@@ -14,8 +13,7 @@ abstract interface class VideoRepository {
   ResultFuture<List<Video>> fetchVideos();
 
   ResultFuture<Video> updateVideo({
-    required VideoModel updateData,
-    required String videoId,
+    required Video video,
   });
 
   ResultFuture<String> deleteVideo({

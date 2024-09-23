@@ -5,18 +5,16 @@ import 'package:pix2life/src/image/domain/entities/image.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 
 class UpdateImageParams extends Equatable {
-  final String imageId;
-  final DataMap updateData;
+  final Image image;
 
   const UpdateImageParams({
-    required this.imageId,
-    required this.updateData,
+    required this.image,
   });
 
-  UpdateImageParams.empty() : this(imageId: '_empty.imageId', updateData: {});
+  UpdateImageParams.empty() : this(image: Image.empty());
 
   @override
-  List<Object?> get props => [imageId];
+  List<Object?> get props => [image];
 }
 
 class UpdateImage implements UseCase<Image, UpdateImageParams> {
@@ -24,7 +22,6 @@ class UpdateImage implements UseCase<Image, UpdateImageParams> {
   const UpdateImage(this._imageRepository);
   @override
   ResultFuture<Image> call(params) async {
-    return await _imageRepository.updateImage(
-        updateData: params.updateData, imageId: params.imageId);
+    return await _imageRepository.updateImage(image: params.image);
   }
 }

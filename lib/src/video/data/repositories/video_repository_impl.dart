@@ -5,6 +5,7 @@ import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/video/data/data%20sources/video_remote_data_source.dart';
 import 'package:pix2life/src/video/data/models/video.model.dart';
+import 'package:pix2life/src/video/domain/entities/video.dart';
 import 'package:pix2life/src/video/domain/repositories/video_repository.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
@@ -32,11 +33,21 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
-  ResultFuture<VideoModel> updateVideo(
-      {required VideoModel updateData, required String videoId}) async {
+  ResultFuture<VideoModel> updateVideo({required Video video}) async {
     try {
       final updatedVideo = await _remoteDataSource.updateVideo(
-          updateData: updateData, videoId: videoId);
+          video: VideoModel(
+        id: video.id,
+        filename: video.filename,
+        path: video.path,
+        originalName: video.originalName,
+        galleryName: video.galleryName,
+        ownerId: video.ownerId,
+        description: video.description,
+        url: video.url,
+        createdAt: video.createdAt,
+        updatedAt: video.updatedAt,
+      ));
       return right(updatedVideo);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));

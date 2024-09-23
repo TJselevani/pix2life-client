@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/audio/domain/repositories/audio_repository.dart';
-import 'package:pix2life/src/video/domain/repositories/video_repository.dart';
 
 class UploadAudioParams extends Equatable {
   final FormData formData;

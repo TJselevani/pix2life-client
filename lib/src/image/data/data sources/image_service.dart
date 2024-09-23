@@ -6,6 +6,7 @@ import 'package:pix2life/core/dtos/upload_image_match_dto.dart';
 import 'package:pix2life/core/dtos/upload_image_response_dto.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
+import 'package:pix2life/src/image/data/models/image.model.dart';
 
 class ImageService {
   late final ApiService _apiService;
@@ -36,10 +37,9 @@ class ImageService {
     return FetchImagesResponse.fromJson(data);
   }
 
-  Future<UpdateImageResponse> updateImage(
-      Map<String, dynamic> updateData, String imageId) async {
-    final url = '${AppSecrets.baseUrl}/image/update?imageId=$imageId';
-    final data = await _apiService.updateData(updateData, url);
+  Future<UpdateImageResponse> updateImage(ImageModel image) async {
+    final url = '${AppSecrets.baseUrl}/image/update?imageId=${image.id}';
+    final data = await _apiService.updateData(image.toMap(), url);
     return UpdateImageResponse.fromJson(data);
   }
 

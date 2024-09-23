@@ -19,8 +19,7 @@ abstract interface class ImageRepository {
   ResultFuture<List<Image>> fetchImages();
 
   ResultFuture<Image> updateImage({
-    required DataMap updateData,
-    required String imageId,
+    required Image image,
   });
 
   ResultFuture<String> deleteImage({

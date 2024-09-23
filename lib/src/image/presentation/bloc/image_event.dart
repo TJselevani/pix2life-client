@@ -8,14 +8,52 @@ sealed class ImageEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class ImageUploadEvent extends ImageEvent {}
+final class ImageUploadEvent extends ImageEvent {
+  final FormData formData;
+  final String galleryName;
 
-final class ImageMatchEvent extends ImageEvent {}
+  const ImageUploadEvent({required this.formData, required this.galleryName});
 
-final class ImageDeleteEvent extends ImageEvent {}
+  @override
+  List<Object> get props => [formData, galleryName];
+}
 
-final class ImageUpdateEvent extends ImageEvent {}
+final class ImageMatchEvent extends ImageEvent {
+  final FormData formData;
+
+  const ImageMatchEvent({required this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+final class ImageDeleteEvent extends ImageEvent {
+  final String imageId;
+
+  const ImageDeleteEvent({required this.imageId});
+
+  @override
+  List<Object> get props => [imageId];
+}
+
+final class ImageUpdateEvent extends ImageEvent {
+  final Image image;
+
+  const ImageUpdateEvent({required this.image});
+
+  @override
+  List<Object> get props => [image];
+}
 
 final class ImageFetchEvent extends ImageEvent {}
 
-final class ImageUploadAvatarEvent extends ImageEvent {}
+final class ImagesFetchEvent extends ImageEvent {}
+
+final class ImageUploadAvatarEvent extends ImageEvent {
+  final FormData formData;
+
+  const ImageUploadAvatarEvent({required this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
