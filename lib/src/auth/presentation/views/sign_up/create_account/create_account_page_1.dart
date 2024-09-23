@@ -235,7 +235,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
             controller: _emailController,
             labelText: 'Email',
             hintText: 'Enter your Email',
-            prefixIcon: Icon(
+            prefixIcon: const Icon(
               Icons.email_outlined,
               size: 20,
               color: AppPalette.redColor1,
@@ -258,7 +258,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
       }
     }, builder: (context, state) {
       if (state is AuthLoading) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       } else {

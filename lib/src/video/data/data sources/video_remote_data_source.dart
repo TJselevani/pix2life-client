@@ -9,25 +9,19 @@ import 'package:pix2life/src/video/data/data%20sources/video_service.dart';
 import 'package:pix2life/src/video/data/models/video.model.dart';
 
 abstract interface class VideoRemoteDataSource {
-  Future<String> uploadVideo({
-    required FormData formData,
-    required String galleryName,
-  });
+  Future<String> uploadVideo(
+      {required FormData formData, required String galleryName});
 
   Future<List<VideoModel>> fetchVideos();
 
-  Future<VideoModel> updateVideo({
-    required VideoModel updateData,
-    required String videoId,
-  });
+  Future<VideoModel> updateVideo(
+      {required VideoModel updateData, required String videoId});
 
-  Future<String> deleteVideo({
-    required String videoId,
-  });
+  Future<String> deleteVideo({required String videoId});
 }
 
 class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
-  late VideoService _videoService;
+  late final VideoService _videoService;
   VideoRemoteDataSourceImpl(this._videoService);
   final logger = createLogger(VideoRemoteDataSourceImpl);
 
@@ -51,9 +45,8 @@ class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
   Future<List<VideoModel>> fetchVideos() async {
     try {
       final FetchVideoResponse response = await _videoService.fetchVideos();
-      final message = response.videos;
-      logger.i(message);
-      return message;
+      final List<VideoModel> videos = response.videos;
+      return videos;
     } on ServerException {
       rethrow;
     } catch (e) {

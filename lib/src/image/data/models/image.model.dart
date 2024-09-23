@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/domain/entities/image.dart';
 
 class ImageModel extends Image {
-  ImageModel({
+  const ImageModel({
     required super.id,
     required super.filename,
     required super.path,
@@ -102,5 +102,5 @@ class ImageModel extends Image {
       );
 
   @override
-  List<Object> get props => [id, filename, galleryName, ownerId, url];
+  List<Object> get props => [id, ownerId, url];
 }

@@ -8,12 +8,12 @@ import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 
 class ImageService {
-  late ApiService _apiService;
+  late final ApiService _apiService;
   ImageService(this._apiService);
 
   Future<UploadImageResponse> uploadImage(
       FormData formData, String? galleryName) async {
-    final url = '${AppSecrets.baseUrl}/image/upload?galleryName=${galleryName}';
+    final url = '${AppSecrets.baseUrl}/image/upload?galleryName=$galleryName';
     final data = await _apiService.uploadFile(formData, url);
     return UploadImageResponse.fromJson(data);
   }
@@ -25,7 +25,7 @@ class ImageService {
   }
 
   Future<UploadImageMatchResponse> matchImage(FormData formData) async {
-    final url = '${AppSecrets.baseUrl}/image/upload/match';
+    const url = '${AppSecrets.baseUrl}/image/upload/match';
     final data = await _apiService.uploadFile(formData, url);
     return UploadImageMatchResponse.fromJson(data);
   }
@@ -38,13 +38,13 @@ class ImageService {
 
   Future<UpdateImageResponse> updateImage(
       Map<String, dynamic> updateData, String imageId) async {
-    final url = '${AppSecrets.baseUrl}/image/update?imageId=${imageId}';
+    final url = '${AppSecrets.baseUrl}/image/update?imageId=$imageId';
     final data = await _apiService.updateData(updateData, url);
     return UpdateImageResponse.fromJson(data);
   }
 
   Future<DeleteDataResponse> deleteImage(String imageId) async {
-    final url = '${AppSecrets.baseUrl}/image/destroy?imageId=${imageId}';
+    final url = '${AppSecrets.baseUrl}/image/destroy?imageId=$imageId';
     final data = await _apiService.deleteData(url);
     return DeleteDataResponse.fromJson(data);
   }

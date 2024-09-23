@@ -14,14 +14,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/image/presentation/bloc/image_bloc.dart';
 
 class UploadProfilePicPage extends StatefulWidget {
-  static RouteToHomePage(context) {
+  static routeToHomePage(context) {
     Navigator.pushReplacementNamed(context, '/Home');
   }
 
   static routeToGuide(context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Placeholder()),
+      MaterialPageRoute(builder: (context) => const Placeholder()),
     );
   }
 
@@ -35,7 +35,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   // final MediaService mediaService = MediaService();
   final ImagePicker _picker = ImagePicker();
   final log = createLogger(UploadProfilePicPage);
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool _isSet = false;
   bool _isPending = false;
   bool _isUploaded = false;
@@ -139,7 +139,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
         bottomLeft: Radius.circular(37.r),
         bottomRight: Radius.circular(37.r),
       ),
-      gradient: LinearGradient(
+      gradient: const LinearGradient(
         colors: [AppPalette.whiteColor, AppPalette.whiteColor],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -290,7 +290,8 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
               if (_isSet) {
                 await _uploadImage();
               }
-              UploadProfilePicPage.RouteToHomePage(context);
+              // ignore: use_build_context_synchronously
+              UploadProfilePicPage.routeToHomePage(context);
             },
           );
         }

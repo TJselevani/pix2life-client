@@ -9,12 +9,12 @@ class ErrorHandler {
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
         e.type == DioExceptionType.cancel) {
-      throw ServiceUnavailable(
+      throw const ServiceUnavailable(
         message:
             'Service Unavailable. Please check your internet connection and try again.',
       );
     } else if (e.error is SocketException) {
-      throw NotFoundError(
+      throw const NotFoundError(
         message: 'Unable to connect to the server, please try again later',
       );
     }
@@ -43,12 +43,12 @@ class ErrorHandler {
         case 503:
           throw ServiceUnavailable(message: message);
         default:
-          throw ApplicationError(
+          throw const ApplicationError(
               message: 'An unexpected error occurred. Please try again later!',
               statusCode: 500);
       }
     } else {
-      throw ApplicationError(
+      throw const ApplicationError(
         message: 'An unexpected error occurred. Please try again later.',
         statusCode: 505,
       );

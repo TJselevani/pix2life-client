@@ -11,7 +11,7 @@ class User extends Equatable {
   final String lastLogin;
   final String subscriptionPlan;
 
-  User({
+  const User({
     required this.id,
     required this.username,
     required this.email,
@@ -23,7 +23,7 @@ class User extends Equatable {
     required this.subscriptionPlan,
   });
 
-  User.empty()
+  const User.empty()
       : this(
           id: '1',
           username: '_empty.username',

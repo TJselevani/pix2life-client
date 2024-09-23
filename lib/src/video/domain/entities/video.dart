@@ -12,7 +12,7 @@ class Video extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Video({
+  const Video({
     required this.id,
     required this.filename,
     required this.path,

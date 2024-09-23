@@ -15,21 +15,21 @@ void main() {
     usecase = CreateUserPassword(repository);
   });
 
-  final params = CreateUserPasswordParams.empty();
-  final String message = '';
+  const params = CreateUserPasswordParams.empty();
+  const String message = '';
   
   test('Should call the [AuthRepository.createUserPassword]', () async {
     //arrange
     when(() => repository.createUserPassword(
           password: any(named: 'password'),
           confirmPassword: any(named: 'confirmPassword'),
-        )).thenAnswer((_) async => Right(message));
+        )).thenAnswer((_) async => const Right(message));
 
     //act
     final result = await usecase(params);
 
     //assert
-    expect(result, equals(Right<dynamic, String>(message)));
+    expect(result, equals(const Right<dynamic, String>(message)));
 
     verify(() => repository.createUserPassword(
           password: params.password,

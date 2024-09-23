@@ -11,7 +11,6 @@ class Utility {
       return DateFormat.yMMMd().add_jm().format(dateTime);
     } catch (e) {
       // Handle any parsing errors
-      print('Error parsing timestamp: $e');
       return 'Invalid date';
     }
   }
@@ -29,7 +28,6 @@ class Utility {
       return timeago.format(dateTime, locale: 'en_short');
     } catch (e) {
       // Handle any parsing errors
-      print('Error parsing timestamp: $e');
       return 'Invalid date';
     }
   }

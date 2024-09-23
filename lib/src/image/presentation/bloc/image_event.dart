@@ -1,7 +1,12 @@
 part of 'image_bloc.dart';
 
 @immutable
-sealed class ImageEvent {}
+sealed class ImageEvent extends Equatable {
+  const ImageEvent();
+
+  @override
+  List<Object?> get props => [];
+}
 
 final class ImageUploadEvent extends ImageEvent {}
 

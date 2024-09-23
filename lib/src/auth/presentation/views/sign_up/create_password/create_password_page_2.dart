@@ -8,14 +8,14 @@ import 'package:pix2life/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/auth/presentation/widgets/auth_round_button.dart';
 
 class CreateAccountSuccessPage extends StatefulWidget {
-  static Route(context) {
+  static routeToProfilePicPage(context) {
     Navigator.pushReplacementNamed(context, '/Avatar');
   }
 
   const CreateAccountSuccessPage({super.key});
 
   @override
-  _CreateAccountSuccessPageState createState() =>
+  State<CreateAccountSuccessPage> createState() =>
       _CreateAccountSuccessPageState();
 }
 
@@ -90,7 +90,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
           confettiController: _controller,
           blastDirectionality: BlastDirectionality.explosive,
           shouldLoop: true,
-          colors: [
+          colors: const [
             Colors.red,
             Colors.blue,
             Colors.green,
@@ -187,7 +187,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
         name: "Let's Explore",
         onPressed: () {
           _controller.play();
-          CreateAccountSuccessPage.Route(context);
+          CreateAccountSuccessPage.routeToProfilePicPage(context);
         },
       ),
     );

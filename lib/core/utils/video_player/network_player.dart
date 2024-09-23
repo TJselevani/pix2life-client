@@ -54,15 +54,15 @@ class _NetworkPlayerWidgetState extends State<NetworkPlayerWidget> {
 
   buildAddButton() {
     return Container(
-      padding: EdgeInsets.all(32),
+      padding: const EdgeInsets.all(32),
       child: Row(
         children: [
           Expanded(
               child: TextFormField(
             controller: _textController,
-            decoration: InputDecoration(hintText: 'Enter Video Url'),
+            decoration: const InputDecoration(hintText: 'Enter Video Url'),
           )),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           FloatingActionButton(
             onPressed: () async {
               if (_textController.text.trim().isEmpty) return;

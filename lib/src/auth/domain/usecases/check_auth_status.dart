@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/entities/user.dart';
 import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
 
 class CheckAuthStatusParams extends Equatable {
   final String token;
 
-  CheckAuthStatusParams({
+  const CheckAuthStatusParams({
     required this.token,
   });
 
-  CheckAuthStatusParams.empty() : this(token: '_empty.token');
+  const CheckAuthStatusParams.empty() : this(token: '_empty.token');
 
   @override
   List<Object?> get props => [token];

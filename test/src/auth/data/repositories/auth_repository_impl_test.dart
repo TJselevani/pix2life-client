@@ -12,7 +12,7 @@ class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 void main() {
   late AuthRemoteDataSource remoteDataSource;
   late AuthRepositoryImpl repositoryImpl;
-  final UserModel user = UserModel.empty();
+  const UserModel user = UserModel.empty();
 
   setUp(() {
     remoteDataSource = MockAuthRemoteDataSource();
@@ -23,7 +23,7 @@ void main() {
     const String email = '_whatever.email';
     const String password = '_whatever.password';
 
-    final tException = ServerException(
+    const tException = ServerException(
       message: 'Unknown Error Occured',
       statusCode: 500,
     );
@@ -49,7 +49,7 @@ void main() {
           await repositoryImpl.userSignIn(email: email, password: password);
 
       //assert
-      expect(result, equals(Right(user)));
+      expect(result, equals(const Right(user)));
 
       verify(() =>
               remoteDataSource.userSignIn(email: email, password: password))

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 
 class GetImageResponse {
   final FormData file;

@@ -7,8 +7,8 @@ import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 
 class ApiService {
-  late FlutterSecureStorage _storage;
-  late Dio _dio;
+  late final FlutterSecureStorage _storage;
+  late final Dio _dio;
   ApiService(this._dio, this._storage);
 
   final logger = createLogger(ApiService);

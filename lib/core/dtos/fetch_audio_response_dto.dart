@@ -1,16 +1,17 @@
+import 'package:pix2life/src/audio/data/models/audio.model.dart';
 
-// class FetchAudiosResponse {
-//   final List<Audio> audios;
+class FetchAudiosResponse {
+  final List<AudioModel> audios;
 
-//   FetchAudiosResponse({required this.audios});
+  FetchAudiosResponse({required this.audios});
 
-//   factory FetchAudiosResponse.fromJson(Map<String, dynamic> json) {
-//     var audiosJson = json['audios'] as List;
-//     List<Audio> audioList =
-//         audiosJson.map((image) => Audio.fromJson(image)).toList();
+  factory FetchAudiosResponse.fromJson(Map<String, dynamic> json) {
+    var audiosJson = json['audios'] as List;
+    List<AudioModel> audioList =
+        audiosJson.map((image) => AudioModel.fromJson(image)).toList();
 
-//     return FetchAudiosResponse(
-//       audios: audioList,
-//     );
-//   }
-// }
+    return FetchAudiosResponse(
+      audios: audioList,
+    );
+  }
+}

@@ -1,5 +1,5 @@
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/domain/entities/image.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 

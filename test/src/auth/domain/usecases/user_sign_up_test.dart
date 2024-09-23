@@ -16,8 +16,8 @@ void main() {
     usecase = UserSignUp(repository);
   });
 
-  final params = UserSignUpParams.empty();
-  final User user = User.empty();
+  const params = UserSignUpParams.empty();
+  const User user = User.empty();
 
   test('Should call the [AuthRepository.userSignUp]', () async {
     //arrange
@@ -29,13 +29,13 @@ void main() {
         phoneNumber: any(named: 'phoneNumber'),
         postCode: any(named: 'postCode'),
       ),
-    ).thenAnswer((_) async => Right(user));
+    ).thenAnswer((_) async => const Right(user));
 
     //act
     final result = await usecase(params);
 
     //assert
-    expect(result, equals(Right<dynamic, User>(user)));
+    expect(result, equals(const Right<dynamic, User>(user)));
     verify(() => repository.userSignUp(
           username: params.username,
           email: params.email,

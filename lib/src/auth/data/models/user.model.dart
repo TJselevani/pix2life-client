@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/entities/user.dart';
 
 class UserModel extends User {
-  UserModel({
+  const UserModel({
     required super.id,
     required super.username,
     required super.email,
@@ -17,7 +17,7 @@ class UserModel extends User {
   });
 
   //For Running Test
-  UserModel.empty()
+  const UserModel.empty()
       : this(
           id: '1',
           username: '_empty.username',

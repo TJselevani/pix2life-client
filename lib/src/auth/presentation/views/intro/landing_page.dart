@@ -21,7 +21,7 @@ class WelcomePage extends StatefulWidget {
   }
 
   @override
-  _WelcomePageState createState() => _WelcomePageState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
@@ -74,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage> {
         topLeft: Radius.circular(37.r),
         topRight: Radius.circular(37.r),
       ),
-      gradient: LinearGradient(
+      gradient: const LinearGradient(
         colors: [AppPalette.blackColor, AppPalette.blackColor],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -91,7 +91,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Widget _buildPageView(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 307.h,
       width: 285.w,
       child: PageView.builder(

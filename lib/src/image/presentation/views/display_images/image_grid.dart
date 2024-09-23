@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -12,15 +11,17 @@ class ImageGalleryPage extends StatefulWidget {
   const ImageGalleryPage({super.key});
 
   @override
-  _ImageGalleryPageState createState() => _ImageGalleryPageState();
+  State<ImageGalleryPage> createState() => _ImageGalleryPageState();
 }
 
 class _ImageGalleryPageState extends State<ImageGalleryPage> {
   late Future<List<Map<String, dynamic>>> _images;
   final log = createLogger(ImageGalleryPage);
 
+  // ignore: unused_field
   String _searchQuery = "";
-  List<Map<String, dynamic>> _allImages = [];
+  final List<Map<String, dynamic>> _allImages = [];
+  // ignore: unused_field
   List<Map<String, dynamic>> _filteredImages = [];
   bool _isSearchVisible = false;
   String? _selectedImageName = 'Image Gallery';
@@ -97,12 +98,12 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                     // Navigator.of(context).pop();
                     // Navigator.push(
                     //   context,
-                      // MaterialPageRoute(
-                      //   builder: (context) => EditMediaScreen(
-                      //     data: image,
-                      //     type: 'image',
-                      //   ),
-                      // ),
+                    // MaterialPageRoute(
+                    //   builder: (context) => EditMediaScreen(
+                    //     data: image,
+                    //     type: 'image',
+                    //   ),
+                    // ),
                     // );
                   },
                   style: TextButton.styleFrom(
@@ -112,7 +113,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text('Update'),
+                  child: const Text('Update'),
                 ),
                 SizedBox(width: 70.w),
                 TextButton(
@@ -140,7 +141,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text('Delete'),
+                  child: const Text('Delete'),
                 ),
               ],
             ),
@@ -246,7 +247,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                                 Icon(Icons.error, size: 24.sp),
                             fit: BoxFit.cover,
                           )
-                        : Center(child: Text('No image selected')),
+                        : const Center(child: Text('No image selected')),
                   ),
                 ),
                 Expanded(

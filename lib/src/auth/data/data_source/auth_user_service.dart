@@ -1,6 +1,6 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:pix2life/core/dtos/check_user_account_dto.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
@@ -10,13 +10,13 @@ import 'package:pix2life/core/dtos/forgot_password_dto.dart';
 import 'package:pix2life/core/dtos/resend_code_dto.dart';
 import 'package:pix2life/core/dtos/reset_password_dto.dart';
 import 'package:pix2life/core/dtos/route_access_dto.dart';
-import 'package:pix2life/core/dtos/signIn_user_dto.dart';
+import 'package:pix2life/core/dtos/sign_in_user_dto.dart';
 import 'package:pix2life/core/dtos/user_from_token_dto.dart';
 import 'package:pix2life/core/dtos/verify_email_dto.dart';
 import 'package:pix2life/core/dtos/verify_reset_code_response.dart';
 
 class UserService {
-  late ApiService _apiService;
+  late final ApiService _apiService;
   UserService(this._apiService);
 
   Future<CheckUserAccountResponse> checkUser(DataMap userData) async {

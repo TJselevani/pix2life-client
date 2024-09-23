@@ -1,14 +1,14 @@
-import 'package:dio/src/form_data.dart';
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:pix2life/core/error/api_failure.dart';
 import 'package:pix2life/core/error/exceptions.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/video/data/data%20sources/video_remote_data_source.dart';
 import 'package:pix2life/src/video/data/models/video.model.dart';
 import 'package:pix2life/src/video/domain/repositories/video_repository.dart';
 
 class VideoRepositoryImpl implements VideoRepository {
-  late VideoRemoteDataSource _remoteDataSource;
+  late final VideoRemoteDataSource _remoteDataSource;
   VideoRepositoryImpl(this._remoteDataSource);
 
   @override

@@ -15,7 +15,7 @@ class AppTheme {
       );
 
   static final lightThemeMode = ThemeData.light().copyWith(
-    progressIndicatorTheme: ProgressIndicatorThemeData(
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: AppPalette.redColor1,
     ),
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -25,7 +25,7 @@ class AppTheme {
     primaryColor: AppPalette.redColor1,
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
           color: AppPalette.greyColor0,
           fontFamily: 'Poppins',
           fontSize: 14,
@@ -41,8 +41,8 @@ class AppTheme {
     ),
   );
 
-  static final DarkThemeMode = ThemeData.dark().copyWith(
-    progressIndicatorTheme: ProgressIndicatorThemeData(
+  static final darkThemeMode = ThemeData.dark().copyWith(
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: AppPalette.redColor1,
     ),
     // colorScheme: ColorScheme(
@@ -54,7 +54,7 @@ class AppTheme {
     primaryColor: AppPalette.redColor1,
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
           color: AppPalette.greyColor0,
           fontFamily: 'Poppins',
           fontSize: 14,

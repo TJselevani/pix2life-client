@@ -99,7 +99,7 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
           confettiController: _controller,
           blastDirectionality: BlastDirectionality.explosive,
           shouldLoop: true,
-          colors: [
+          colors: const [
             Colors.red,
             Colors.blue,
             Colors.green,

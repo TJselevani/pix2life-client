@@ -1,11 +1,11 @@
 import 'package:pix2life/core/dtos/check_user_account_dto.dart';
 import 'package:pix2life/core/dtos/create_password_dto.dart';
 import 'package:pix2life/core/dtos/create_user_dto.dart';
-import 'package:pix2life/core/dtos/signIn_user_dto.dart';
+import 'package:pix2life/core/dtos/sign_in_user_dto.dart';
 import 'package:pix2life/core/dtos/user_from_token_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/data/data_source/auth_manager.dart';
 import 'package:pix2life/src/auth/data/data_source/auth_user_service.dart';
 import 'package:pix2life/src/auth/data/models/user.model.dart';
@@ -43,8 +43,8 @@ abstract interface class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  late UserService _userService;
-  late AuthManager _authManager;
+  late final UserService _userService;
+  late final AuthManager _authManager;
   AuthRemoteDataSourceImpl(this._userService, this._authManager);
   final logger = createLogger(AuthRemoteDataSourceImpl);
 
@@ -88,12 +88,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       };
       final CreateUserResponse response =
           await _userService.createUser(userData);
-      final UserInfo = response.user;
+      final userInfo = response.user;
       final message = response.message;
       final token = response.token;
       await _authManager.storeToken(token);
       logger.i(message);
-      final UserModel user = UserModel.fromJson(UserInfo);
+      final UserModel user = UserModel.fromJson(userInfo);
       return user;
     } on ServerException {
       rethrow;
@@ -144,7 +144,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       // ignore: unused_local_variable
       final response = await _userService.logOut();
-      final message = '';
+      const message = '';
       return message;
     } on ServerException {
       rethrow;

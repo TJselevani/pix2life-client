@@ -15,19 +15,19 @@ void main() {
     usecase = CheckUserAccount(repository);
   });
 
-  final params = CheckUserAccountParams.empty();
-  final String message = '';
+  const params = CheckUserAccountParams.empty();
+  const String message = '';
 
   test('Should call the [AuthRepository.checkUserAccount]', () async {
     //arrange
     when(() => repository.checkUserAccount(email: any(named: 'email')))
-        .thenAnswer((_) async => Right(message));
+        .thenAnswer((_) async => const Right(message));
 
     //act
     final result = await usecase(params);
 
     //assert
-    expect(result, equals(Right<dynamic, String>(message)));
+    expect(result, equals(const Right<dynamic, String>(message)));
     verify(() => repository.checkUserAccount(email: params.email)).called(1);
 
     verifyNoMoreInteractions(repository);

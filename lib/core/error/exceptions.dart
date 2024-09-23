@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 
 // ServerException for general server errors.
 class ServerException extends Equatable implements Exception {
   final String message;
   final int statusCode;
 
-  ServerException({String? message, int? statusCode})
+  const ServerException({String? message, int? statusCode})
       : message = message ?? 'ServerException',
         statusCode = statusCode ?? 500;
 
@@ -19,7 +19,7 @@ class ApplicationError extends Equatable implements Exception {
   final String message;
   final int statusCode;
 
-  ApplicationError({String? message, int? statusCode})
+  const ApplicationError({String? message, int? statusCode})
       : message = message ?? 'ApplicationError',
         statusCode = statusCode ?? 505;
 

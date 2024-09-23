@@ -1,22 +1,22 @@
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
 
-class logOutUserParams extends Equatable {
+class LogOutUserParams extends Equatable {
   final String token;
 
-  logOutUserParams({
+  const LogOutUserParams({
     required this.token,
   });
 
-  logOutUserParams.empty() : this(token: '_empty.token');
+  const LogOutUserParams.empty() : this(token: '_empty.token');
 
   @override
   List<Object?> get props => [token];
 }
 
-class LogOutUser implements UseCase<String, logOutUserParams> {
+class LogOutUser implements UseCase<String, LogOutUserParams> {
   final AuthRepository _authRepository;
   const LogOutUser(this._authRepository);
   @override

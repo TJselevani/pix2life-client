@@ -321,7 +321,7 @@ class _HoverButtonState extends State<HoverButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
 
     _animation = Tween<double>(begin: 0, end: 10).animate(CurvedAnimation(
@@ -365,14 +365,14 @@ class _HoverButtonState extends State<HoverButton>
             ),
             child: ElevatedButton(
               onPressed: widget.onPressed,
-              child: Text(
-                '${widget.name}',
-                style: TextStyle(color: AppPalette.whiteColor),
-              ),
               style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  textStyle: TextStyle(fontSize: 18),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  textStyle: const TextStyle(fontSize: 18),
                   backgroundColor: AppPalette.blackColor),
+              child: Text(
+                widget.name,
+                style: const TextStyle(color: AppPalette.whiteColor),
+              ),
             ),
           ),
         );

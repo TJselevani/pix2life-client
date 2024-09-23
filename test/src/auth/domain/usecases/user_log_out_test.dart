@@ -15,19 +15,19 @@ void main() {
     usecase = LogOutUser(repository);
   });
 
-  final params = logOutUserParams.empty();
-  final String message = '';
+  const params = LogOutUserParams.empty();
+  const String message = '';
 
   test('Should call the [AuthRepository.logOutUser]', () async {
     //arrange
     when(() => repository.logOutUser(token: any(named: 'token')))
-        .thenAnswer((_) async => Right(message));
+        .thenAnswer((_) async => const Right(message));
 
     //act
     final result = await usecase(params);
 
     //assert
-    expect(result, equals(Right<dynamic, String>(message)));
+    expect(result, equals(const Right<dynamic, String>(message)));
 
     verify(() => repository.logOutUser(token: params.token)).called(1);
 

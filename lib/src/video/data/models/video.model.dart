@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/video/domain/entities/video.dart';
 
 class VideoModel extends Video {
-  VideoModel({
+  const VideoModel({
     required super.id,
     required super.filename,
     required super.path,
@@ -62,7 +62,7 @@ class VideoModel extends Video {
           createdAt: DateTime.parse(map['createdAt'] as String),
           updatedAt: DateTime.parse(map['updatedAt'] as String),
         );
-        
+
   VideoModel copyWith({
     String? id,
     String? filename,

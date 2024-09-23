@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 
 class UploadImageParams extends Equatable {
   final String galleryName;
   final FormData formData;
 
-  UploadImageParams({
+  const UploadImageParams({
     required this.galleryName,
     required this.formData,
   });

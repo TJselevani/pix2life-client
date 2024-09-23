@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/entities/user.dart';
 import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
 
@@ -11,7 +11,7 @@ class UserSignUpParams extends Equatable {
   final String phoneNumber;
   final String postCode;
 
-  UserSignUpParams.empty()
+  const UserSignUpParams.empty()
       : this(
           username: '_empty.username',
           email: '_empty.email',
@@ -20,7 +20,7 @@ class UserSignUpParams extends Equatable {
           postCode: '_empty.postCode',
         );
 
-  UserSignUpParams({
+  const UserSignUpParams({
     required this.username,
     required this.email,
     required this.address,

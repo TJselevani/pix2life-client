@@ -22,7 +22,7 @@ class UserCreatePasswordPage extends StatefulWidget {
   }
 
   @override
-  _UserCreatePasswordPageState createState() => _UserCreatePasswordPageState();
+  State<UserCreatePasswordPage> createState() => _UserCreatePasswordPageState();
 }
 
 class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {

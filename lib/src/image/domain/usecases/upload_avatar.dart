@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 
 class UploadAvatarParams extends Equatable {
   final FormData formData;
 
-  UploadAvatarParams({
+  const UploadAvatarParams({
     required this.formData,
   });
 

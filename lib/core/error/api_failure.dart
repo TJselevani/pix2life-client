@@ -1,8 +1,8 @@
 import 'package:pix2life/core/error/exceptions.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 
 class ApiFailure extends ServerException {
-  ApiFailure({
+  const ApiFailure({
     required String message,
     required int statusCode,
   }) : super(message: message, statusCode: statusCode);

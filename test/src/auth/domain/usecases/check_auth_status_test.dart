@@ -16,23 +16,20 @@ void main() {
     usecase = CheckAuthStatus(repository);
   });
 
-  final params = CheckAuthStatusParams.empty();
-  final User user = User.empty();
+  const params = CheckAuthStatusParams.empty();
+  const User user = User.empty();
 
   test('Should call the [AuthRepository.checkAuthStatus]', () async {
     //arrange
-    when(
-      () => repository.checkAuthStatus(token: any(named: 'token'))
-    ).thenAnswer((_) async => Right(user));
+    when(() => repository.checkAuthStatus(token: any(named: 'token')))
+        .thenAnswer((_) async => const Right(user));
 
     //act
     final result = await usecase(params);
 
     //assert
-    expect(result, equals(Right<dynamic, User>(user)));
-    verify(
-      () => repository.checkAuthStatus(token: params.token)
-    ).called(1);
+    expect(result, equals(const Right<dynamic, User>(user)));
+    verify(() => repository.checkAuthStatus(token: params.token)).called(1);
 
     verifyNoMoreInteractions(repository);
   });

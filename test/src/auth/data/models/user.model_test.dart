@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/data/models/user.model.dart';
 import 'package:pix2life/src/auth/domain/entities/user.dart';
 
 import '../../../../fixtures/fixtures_reader.dart';
 
 void main() {
-  final tModel = UserModel.empty();
+  const tModel = UserModel.empty();
 
   test('should be a subclass of [User] entity', () {
     //assert

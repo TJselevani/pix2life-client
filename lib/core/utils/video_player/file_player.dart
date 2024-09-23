@@ -54,7 +54,7 @@ class _FilePlayerWidgetState extends State<FilePlayerWidget> {
 
   buildAddButton() {
     return Container(
-      padding: EdgeInsets.all(32),
+      padding: const EdgeInsets.all(32),
       child: FloatingActionButton(
         onPressed: () async {
           final file = await pickVideoFile();

@@ -16,17 +16,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return widget.controller.value.isInitialized
         ? Container(
             alignment: Alignment.topCenter,
-            child: BuildVideo(),
+            child: buildVideo(),
           )
-        : Container(
-            // height: 200,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+        : const Center(
+          child: CircularProgressIndicator(),
+        );
   }
 
-  Widget BuildVideo() {
+  Widget buildVideo() {
     return Stack(children: [
       buildVideoPlayer(),
       Positioned.fill(

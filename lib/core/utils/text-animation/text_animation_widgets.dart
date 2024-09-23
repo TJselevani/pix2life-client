@@ -11,14 +11,14 @@ class DisappearingText extends StatefulWidget {
   final Duration displayDuration;
 
   const DisappearingText({
-    Key? key,
+    super.key,
     required this.text,
     this.displayDuration = const Duration(seconds: 3),
     required this.isVisible,
-  }) : super(key: key);
+  });
 
   @override
-  _DisappearingTextState createState() => _DisappearingTextState();
+  State<DisappearingText> createState() => _DisappearingTextState();
 }
 
 class _DisappearingTextState extends State<DisappearingText> {
@@ -83,8 +83,8 @@ class _DisappearingTextState extends State<DisappearingText> {
 }
 
 class Confetti extends StatefulWidget {
-  final controller;
-  const Confetti({super.key, this.controller});
+  final ConfettiController controller;
+  const Confetti({super.key, required this.controller});
 
   @override
   State<Confetti> createState() => _ConfettiState();
@@ -97,7 +97,7 @@ class _ConfettiState extends State<Confetti> {
       confettiController: widget.controller,
       blastDirectionality: BlastDirectionality.explosive,
       shouldLoop: true,
-      colors: [
+      colors: const [
         Colors.red,
         Colors.blue,
         Colors.green,
@@ -113,7 +113,7 @@ class FadeInText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return const Text(
       'PIX2LIFE',
       style: TextStyle(
           fontFamily: 'Montserrat',
@@ -129,7 +129,7 @@ class SlideInText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return const Text(
       'Slide In',
       style: TextStyle(
           fontFamily: 'Montserrat',
@@ -147,7 +147,7 @@ class ScaleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return const Text(
       'Scale',
       style: TextStyle(
           fontFamily: 'Montserrat',
@@ -166,7 +166,7 @@ class RotateText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return const Text(
       'Rotate',
       style: TextStyle(
           fontFamily: 'Montserrat',
@@ -178,4 +178,3 @@ class RotateText extends StatelessWidget {
         .rotate(begin: -1.0, end: 0.0, duration: const Duration(seconds: 2));
   }
 }
-

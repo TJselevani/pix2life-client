@@ -34,7 +34,7 @@ class BasicOverlayWidget extends StatelessWidget {
         : Container(
             alignment: Alignment.center,
             color: Colors.black26,
-            child: Icon(
+            child: const Icon(
               Icons.play_arrow,
               color: Colors.white,
               size: 80,

@@ -9,7 +9,7 @@ class AppPalette {
   static const Color fontTitleBlackColor = Color(0xFF000000);
   static const Color fontTitleBlackColor2 = Color(0xFF020204);
 
-  static const Color fontTextWhiteColor = Color(0xffffffff99);
+  static const Color fontTextWhiteColor = Color(0xffffffff);
   static const Color fontTextGreyColor = Color(0xFF969AA8);
 
   static const Color greenColor = Color(0xFF4f772d);

@@ -10,7 +10,7 @@ class AppConstraints {
   );
 
   static BoxConstraints looseConstraints = BoxConstraints.loose(
-    Size(200.0, 200.0),
+    const Size(200.0, 200.0),
   );
 
   static const BoxConstraints expandedConstraints = BoxConstraints.expand(

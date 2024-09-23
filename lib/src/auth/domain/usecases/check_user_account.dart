@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
 
 class CheckUserAccountParams extends Equatable {
   final String email;
 
-  CheckUserAccountParams({
+  const CheckUserAccountParams({
     required this.email,
   });
 
-  CheckUserAccountParams.empty() : this(email: '_empty.email');
+  const CheckUserAccountParams.empty() : this(email: '_empty.email');
 
   @override
   List<Object?> get props => [email];

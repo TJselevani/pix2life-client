@@ -15,7 +15,7 @@ Future<void> main() async {
   await initDependencies();
   runApp(
     ScreenUtilInit(
-      designSize: Size(375, 804),
+      designSize: const Size(375, 804),
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [BlocProvider(create: (context) => sl<AuthBloc>())],
@@ -38,12 +38,12 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightThemeMode,
       initialRoute: '/',
       routes: {
-        '/': (context) => WelcomePage(),
-        '/SignIn': (context) => UserSignInPage(),
-        '/SignUp': (context) => UserEmailSignUpPage(),
-        '/Home': (context) => MyWidget(),
-        '/Password': (context) => UserCreatePasswordPage(),
-        '/Avatar': (context) => MyWidget(),
+        '/': (context) => const WelcomePage(),
+        '/SignIn': (context) => const UserSignInPage(),
+        '/SignUp': (context) => const UserEmailSignUpPage(),
+        '/Home': (context) => const MyWidget(),
+        '/Password': (context) => const UserCreatePasswordPage(),
+        '/Avatar': (context) => const MyWidget(),
       },
     );
   }

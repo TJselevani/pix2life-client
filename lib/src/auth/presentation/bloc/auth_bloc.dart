@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,7 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password, confirmPassword: event.confirmPassword));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (message) => emit(Authenticated(message: 'Valid email address')),
+      (message) => emit(Authenticated(message: message)),
     );
   }
 
@@ -65,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _checkUserAccount(CheckUserAccountParams(email: event.email));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (message) => emit(Authenticated(message: 'Valid email address')),
+      (message) => emit(Authenticated(message: message)),
     );
   }
 
@@ -77,11 +76,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response =
           await _checkAuthStatus(CheckAuthStatusParams(token: token));
       response.fold(
-        (failure) => emit(AuthFailure(message: failure.message)),
+        (failure) => emit(AuthFailure(message: failure.errorMessage)),
         (user) => emit(AuthSuccess(user: user, message: 'Authenticated')),
       );
     } else {
-      emit(AuthUnauthenticated());
+      emit(const AuthUnauthenticated());
     }
   }
 
@@ -109,8 +108,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     ));
     response.fold(
-      (l) => emit(AuthFailure(message: '')),
-      (r) => emit(AuthSuccess(user: r, message: 'Log in Successful')),
+      (failure) => emit(AuthFailure(message: failure.errorMessage)),
+      (user) => emit(AuthSuccess(user: user, message: 'Log in Successful')),
     );
   }
 
@@ -118,13 +117,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthLogoutEvent event, Emitter<AuthState> emit) async {
     final String token = _authManager.getToken() as String;
     if (token.isNotEmpty) {
-      final response = await _logOutUser(logOutUserParams(token: token));
+      final response = await _logOutUser(LogOutUserParams(token: token));
       response.fold(
         (failure) => emit(AuthFailure(message: failure.errorMessage)),
-        (user) => emit(Authenticated(message: 'Successfully logged out')),
+        (user) => emit(const Authenticated(message: 'Successfully logged out')),
       );
     } else {
-      emit(AuthFailure(message: 'Failed to Sign Out'));
+      emit(const AuthFailure(message: 'Failed to Sign Out'));
     }
   }
 }

@@ -1,10 +1,10 @@
-import 'package:dio/src/form_data.dart';
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:pix2life/core/error/api_failure.dart';
 import 'package:pix2life/core/error/exceptions.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/data/data%20sources/image_remote_data_source.dart';
-import 'package:pix2life/src/image/domain/entities/image.dart';
+import 'package:pix2life/src/image/data/models/image.model.dart';
 import 'package:pix2life/src/image/domain/repositories/image_repository.dart';
 
 class ImageRepositoryImpl implements ImageRepository {
@@ -22,7 +22,7 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<List<Image>> fetchImages() async {
+  ResultFuture<List<ImageModel>> fetchImages() async {
     try {
       final imageList = await _remoteDataSource.fetchImages();
       return right(imageList);
@@ -32,7 +32,7 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<Image> matchImage({required FormData formData}) async {
+  ResultFuture<ImageModel> matchImage({required FormData formData}) async {
     try {
       final matchedImage =
           await _remoteDataSource.matchImage(formData: formData);
@@ -43,7 +43,7 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<Image> updateImage(
+  ResultFuture<ImageModel> updateImage(
       {required DataMap updateData, required String imageId}) async {
     try {
       final updatedImage = await _remoteDataSource.updateImage(

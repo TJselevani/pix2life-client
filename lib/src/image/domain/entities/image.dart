@@ -12,7 +12,7 @@ class Image extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Image({
+  const Image({
     required this.id,
     required this.filename,
     required this.path,

@@ -6,7 +6,7 @@ import 'package:pix2life/core/dtos/upload_image_match_dto.dart';
 import 'package:pix2life/core/dtos/upload_image_response_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/data/data%20sources/image_service.dart';
 import 'package:pix2life/src/image/data/models/image.model.dart';
 

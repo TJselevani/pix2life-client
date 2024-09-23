@@ -1,4 +1,4 @@
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/image/data/models/image.model.dart';
 
 class FetchImagesResponse {

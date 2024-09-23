@@ -51,5 +51,5 @@ Future<void> initDependencies() async {
 
   //
   sl.registerLazySingleton(() => Dio());
-  sl.registerLazySingleton(() => FlutterSecureStorage());
+  sl.registerLazySingleton(() => const FlutterSecureStorage());
 }

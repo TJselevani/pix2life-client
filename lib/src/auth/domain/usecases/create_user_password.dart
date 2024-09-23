@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 import 'package:pix2life/core/usecases/usecase.dart';
-import 'package:pix2life/core/utils/typeDef.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/auth/domain/repositories/auth_repository.dart';
 
 class CreateUserPasswordParams extends Equatable {
   final String password;
   final String confirmPassword;
 
-  CreateUserPasswordParams({
+  const CreateUserPasswordParams({
     required this.password,
     required this.confirmPassword,
   });
 
-  CreateUserPasswordParams.empty()
+  const CreateUserPasswordParams.empty()
       : this(
           password: '_empty.password',
           confirmPassword: '_empty.confirmPassword',

@@ -23,7 +23,7 @@ class UploadMediaPage extends StatefulWidget {
 }
 
 class _UploadMediaPageState extends State<UploadMediaPage> {
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   // final ImagePicker _picker = ImagePicker();
   final log = createLogger(UploadMediaPage);
   List<XFile>? _images = [];
@@ -91,6 +91,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     }
   }
 
+  // ignore: unused_element
   Future<void> _uploadMedia<T>(
     List<XFile>? mediaList,
     Future Function(FormData formData, String galleryName) uploadFunction,
@@ -238,7 +239,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
               color: Colors.black.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(-3, 3),
+              offset: const Offset(-3, 3),
             ),
           ],
         ),
@@ -247,7 +248,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
         child: _isLoading
             ? _buildUploadedMediaList() //Center(child: CircularProgressIndicator())
             : GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
@@ -281,7 +282,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 : AppPalette.redColor1.withOpacity(0.7),
             spreadRadius: 4,
             blurRadius: 5,
-            offset: Offset(-3, 3),
+            offset: const Offset(-3, 3),
           ),
         ],
       ),
@@ -296,8 +297,8 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   width: ScreenUtil().setWidth(230),
                   child: ListTile(
                     leading: _uploadingMedia.contains(media.name)
-                        ? Icon(Icons.cloud)
-                        : Icon(Icons.cloud_circle),
+                        ? const Icon(Icons.cloud)
+                        : const Icon(Icons.cloud_circle),
                     title: Text(
                       media.name,
                       style: TextStyle(
@@ -305,13 +306,13 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                       ),
                     ),
                     trailing: _uploadDone.contains(media.name)
-                        ? Icon(Icons.check, color: Colors.green)
+                        ? const Icon(Icons.check, color: Colors.green)
                         : null,
                   ),
                 );
               },
             )
-          : Center(child: FadeInText()),
+          : const Center(child: FadeInText()),
     );
   }
 
@@ -374,7 +375,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   context: context, message: 'No media selected');
           }
         },
-        child: Center(
+        child: const Center(
           child: SquareButton(name: 'SAVE GALLERY'),
         ),
       ),
@@ -425,14 +426,14 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
         return Center(
           child: ListTile(
             leading: _uploadingMedia.contains(media.name)
-                ? Icon(Icons.cloud)
-                : Icon(Icons.cloud_circle),
+                ? const Icon(Icons.cloud)
+                : const Icon(Icons.cloud_circle),
             title: Text(
               media.name,
               style: TextStyle(fontFamily: 'Poppins', fontSize: 11.sp),
             ),
             trailing: _uploadDone.contains(media.name)
-                ? Icon(Icons.check, color: Colors.green)
+                ? const Icon(Icons.check, color: Colors.green)
                 : null,
           ),
         );
@@ -457,7 +458,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
           SizedBox(height: ScreenUtil().setHeight(10)),
           DropdownButton<String>(
             value: _selectedOption,
-            hint: Text('Select gallery'),
+            hint: const Text('Select gallery'),
             items: galleryNames.map((String name) {
               return DropdownMenuItem<String>(
                 value: name,

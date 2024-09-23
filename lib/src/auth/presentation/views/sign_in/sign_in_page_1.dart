@@ -29,7 +29,7 @@ class UserSignInPage extends StatefulWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Placeholder(), //const UserForgotPasswordPage(),
+        builder: (context) => const Placeholder(), //const UserForgotPasswordPage(),
       ),
     );
   }
@@ -204,7 +204,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             controller: _emailController,
             labelText: 'Email',
             hintText: 'Enter your Email',
-            prefixIcon: Icon(
+            prefixIcon: const Icon(
               Icons.email_outlined,
               size: 20,
               color: AppPalette.redColor1,
@@ -237,7 +237,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             labelText: 'Password',
             hintText: 'Enter your Password',
             isObscureText: _obscureText,
-            prefixIcon: Icon(
+            prefixIcon: const Icon(
               Icons.lock_outline_rounded,
               size: 20,
               color: AppPalette.redColor1,
@@ -316,8 +316,8 @@ class _UserSignInPageState extends State<UserSignInPage> {
       },
       builder: (context, state) {
         if (state is AuthLoading) {
-          return Center(
-            child: const CircularProgressIndicator(),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         } else {
           return RoundedButton(
