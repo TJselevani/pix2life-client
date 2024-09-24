@@ -21,7 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogOutUser _logOutUser;
   final CreateUserPassword _createUserPassword;
   final CheckAuthStatus _checkAuthStatus;
-  final AuthManager _authManager = AuthManager();
+  final AuthManager _authManager;
   final logger = createLogger(AuthBloc);
 
   AuthBloc({
@@ -31,12 +31,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required LogOutUser logOutUSer,
     required CreateUserPassword createUserPassword,
     required CheckAuthStatus checkAuthStatus,
+    required AuthManager authManager,
   })  : _userSignUp = userSignUp,
         _userSignIn = userSignIn,
         _checkUserAccount = checkUserAccount,
         _logOutUser = logOutUSer,
         _createUserPassword = createUserPassword,
         _checkAuthStatus = checkAuthStatus,
+        _authManager = authManager,
         super(AuthInitial()) {
     on<AuthCheckAccountEvent>(_onCheckAccountEvent);
     on<AuthSignUpEvent>(_onSignUpEvent);

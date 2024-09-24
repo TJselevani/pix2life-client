@@ -7,9 +7,9 @@ class SuccessSnackBar {
   static void show({
     required BuildContext context,
     required String message,
-    Color backgroundColor = AppPalette.whiteColor2,
-    Color textColor = AppPalette.greenColor,
-    Color iconColor = AppPalette.greenColor,
+    Color backgroundColor = AppPalette.primaryWhite,
+    Color textColor = AppPalette.green,
+    Color iconColor = AppPalette.green,
     int durationInSeconds = 3,
   }) {
     if (_overlayEntry != null) {

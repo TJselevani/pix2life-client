@@ -1,158 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'app_palette.dart';
 
 class AppTheme {
-  // A helper method to create borders for input fields
-  static _borderLayout(
+  static OutlineInputBorder _borderLayout(
           [Color color = AppPalette.transparent,
           BorderStyle style = BorderStyle.none]) =>
       OutlineInputBorder(
-        borderSide: BorderSide(
-          color: color,
-          width: 1,
-          style: style,
-        ),
+        borderSide: BorderSide(color: color, width: 1, style: style),
         borderRadius: BorderRadius.circular(10),
       );
 
-  // Define the light theme
-  static final lightThemeMode = ThemeData(
+  // Light Theme
+  static final lightTheme = ThemeData(
     brightness: Brightness.light,
-    fontFamily: 'Poppins', // Global font family
-    primaryColor: AppPalette.redColor1,
-    scaffoldBackgroundColor: AppPalette.appLightThemeBackgroundColor,
+    primaryColor: AppPalette.red,
+    scaffoldBackgroundColor: AppPalette.lightBackground,
+    fontFamily: 'Poppins',
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPalette.appLightThemeBackgroundColor,
+      backgroundColor: AppPalette.lightBackground,
       titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'Poppins',
-      ),
-      iconTheme: IconThemeData(color: Colors.black),
+          color: AppPalette.primaryBlack,
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+      iconTheme: IconThemeData(color: AppPalette.primaryBlack),
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        color: Colors.black,
-        fontFamily: 'Poppins',
-        fontSize: 14,
-      ),
-      bodyMedium: TextStyle(
-        color: Colors.black,
-        fontFamily: 'Poppins',
-        fontSize: 16,
-      ),
+      bodyLarge: TextStyle(color: AppPalette.primaryBlack, fontSize: 14),
+      bodyMedium: TextStyle(color: AppPalette.primaryBlack, fontSize: 16),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.all(10),
-      hintStyle: const TextStyle(
-        color: AppPalette.greyColor0,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        fontFamily: 'Poppins',
-      ),
       filled: true,
-      fillColor: AppPalette.inputBackgroundColor1,
+      fillColor: AppPalette.inputBackground,
       border: InputBorder.none,
       enabledBorder: _borderLayout(),
-      focusedBorder: _borderLayout(AppPalette.greyColor3, BorderStyle.solid),
-      errorBorder: _borderLayout(AppPalette.errorColor, BorderStyle.solid),
-      focusedErrorBorder:
-          _borderLayout(AppPalette.blueColor5, BorderStyle.solid),
+      focusedBorder: _borderLayout(AppPalette.primaryGrey, BorderStyle.solid),
+      errorBorder: _borderLayout(AppPalette.errorRed, BorderStyle.solid),
     ),
   );
 
-  // Define the dark theme
-  static final darkThemeMode = ThemeData(
+  // Dark Theme
+  static final darkTheme = ThemeData(
     brightness: Brightness.dark,
-    fontFamily: 'Poppins', // Global font family
-    primaryColor: AppPalette.redColor1,
-    scaffoldBackgroundColor: AppPalette.appDarkThemeBackgroundColor1,
+    primaryColor: AppPalette.red,
+    scaffoldBackgroundColor: AppPalette.darkBackground,
+    fontFamily: 'Poppins',
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPalette.appDarkThemeBackgroundColor1,
+      backgroundColor: AppPalette.darkBackground,
       titleTextStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'Poppins',
-      ),
-      iconTheme: IconThemeData(color: Colors.white),
+          color: AppPalette.fontWhite,
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+      iconTheme: IconThemeData(color: AppPalette.fontWhite),
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        color: Colors.white,
-        fontFamily: 'Poppins',
-        fontSize: 14,
-      ),
-      bodyMedium: TextStyle(
-        color: Colors.white,
-        fontFamily: 'Poppins',
-        fontSize: 16,
-      ),
+      bodyLarge: TextStyle(color: AppPalette.fontWhite, fontSize: 14),
+      bodyMedium: TextStyle(color: AppPalette.fontWhite, fontSize: 16),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.all(10),
-      hintStyle: const TextStyle(
-        color: AppPalette.greyColor0,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        fontFamily: 'Poppins',
-      ),
       filled: true,
-      fillColor: AppPalette.inputBackgroundColor1,
+      fillColor: AppPalette.inputBackground,
       border: InputBorder.none,
       enabledBorder: _borderLayout(),
-      focusedBorder: _borderLayout(AppPalette.greyColor3, BorderStyle.solid),
-      errorBorder: _borderLayout(AppPalette.errorColor, BorderStyle.solid),
-      focusedErrorBorder:
-          _borderLayout(AppPalette.blueColor5, BorderStyle.solid),
+      focusedBorder: _borderLayout(AppPalette.primaryGrey, BorderStyle.solid),
+      errorBorder: _borderLayout(AppPalette.errorRed, BorderStyle.solid),
     ),
   );
 
-  // Define a custom theme inspired by Material You
-  static final materialYouThemeMode = ThemeData(
-    useMaterial3: true, // Enable Material You features
-    fontFamily: 'Poppins', // Global font family
-    colorScheme: ColorScheme.fromSeed(seedColor: AppPalette.blueColor5),
-    scaffoldBackgroundColor: AppPalette.inputBackgroundColor1,
+  // Material You Theme
+  static final materialYouTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(seedColor: AppPalette.blueAccent),
+    scaffoldBackgroundColor: AppPalette.inputBackground,
+    fontFamily: 'Poppins',
     appBarTheme: AppBarTheme(
-      backgroundColor: AppPalette.blueColor5.withOpacity(0.9),
+      backgroundColor: AppPalette.blueAccent.withOpacity(0.9),
       titleTextStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'Poppins',
-      ),
-      iconTheme: const IconThemeData(color: Colors.white),
+          color: AppPalette.fontWhite,
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+      iconTheme: const IconThemeData(color: AppPalette.fontWhite),
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        color: Colors.black,
-        fontFamily: 'Poppins',
-        fontSize: 14,
-      ),
-      bodyMedium: TextStyle(
-        color: Colors.black,
-        fontFamily: 'Poppins',
-        fontSize: 16,
-      ),
+      bodyLarge: TextStyle(color: AppPalette.primaryBlack, fontSize: 14),
+      bodyMedium: TextStyle(color: AppPalette.primaryBlack, fontSize: 16),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      contentPadding: const EdgeInsets.all(27),
-      hintStyle: const TextStyle(
-        color: AppPalette.greyColor0,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        fontFamily: 'Poppins',
-      ),
       filled: true,
-      fillColor: AppPalette.inputBackgroundColor1,
+      fillColor: AppPalette.inputBackground,
       border: InputBorder.none,
       enabledBorder: _borderLayout(),
-      focusedBorder: _borderLayout(AppPalette.greyColor3, BorderStyle.solid),
-      errorBorder: _borderLayout(AppPalette.errorColor, BorderStyle.solid),
-      focusedErrorBorder:
-          _borderLayout(AppPalette.blueColor5, BorderStyle.solid),
+      focusedBorder: _borderLayout(AppPalette.primaryGrey, BorderStyle.solid),
+      errorBorder: _borderLayout(AppPalette.errorRed, BorderStyle.solid),
     ),
   );
 }

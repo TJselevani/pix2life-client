@@ -112,7 +112,7 @@ class ProfileScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   image: const DecorationImage(
-                    image: NetworkImage('https://via.placeholder.com/150'),
+                    image: NetworkImage('https://random.imagecdn.app/150/150'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(20.r),

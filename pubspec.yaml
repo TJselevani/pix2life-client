@@ -59,6 +59,8 @@ dependencies:
   get_it: ^7.7.0
   equatable: ^2.0.5
   simple_animations: ^5.0.2
+  shared_preferences: ^2.3.2
+  flutter_zoom_drawer: ^3.2.0
 
 dev_dependencies:
   flutter_test:

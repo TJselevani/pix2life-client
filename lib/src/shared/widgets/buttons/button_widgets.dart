@@ -12,7 +12,7 @@ class AuthFlatButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppPalette.blueColor, AppPalette.blueColor],
+          colors: [AppPalette.primaryBlue, AppPalette.primaryBlue],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -29,7 +29,7 @@ class AuthFlatButton extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
-            color: AppPalette.whiteColor,
+            color: AppPalette.primaryWhite,
             fontSize: 17,
             fontWeight: FontWeight.bold,
           ),
@@ -50,7 +50,7 @@ class AuthGradientButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppPalette.blueColor5, AppPalette.blueColor5],
+          colors: [AppPalette.primaryBlue, AppPalette.primaryBlue],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -75,7 +75,7 @@ class AuthGradientButton extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
-            color: AppPalette.whiteColor,
+            color: AppPalette.primaryWhite,
             fontSize: 17,
             fontWeight: FontWeight.bold,
           ),
@@ -97,13 +97,13 @@ class ChooseButton extends StatelessWidget {
       height: 37,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppPalette.blackColor, AppPalette.blackColor],
+          colors: [AppPalette.primaryBlack, AppPalette.primaryBlack],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-          color: AppPalette.whiteColor,
+          color: AppPalette.primaryWhite,
           width: 1.0,
         ),
       ),
@@ -126,7 +126,7 @@ class ChooseButton extends StatelessWidget {
             name,
             textAlign: TextAlign.left, // Align text to the left
             style: const TextStyle(
-              color: AppPalette.greyColor,
+              color: AppPalette.primaryGrey,
               fontSize: 17,
               fontWeight: FontWeight.bold,
             ),
@@ -151,7 +151,7 @@ class IconTextButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
-        backgroundColor: AppPalette.redColor1,
+        backgroundColor: AppPalette.red,
         padding: const EdgeInsets.symmetric(
             horizontal: 20, vertical: 10), // text color
       ),
@@ -184,7 +184,7 @@ class NormalFlatButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppPalette.whiteColor2, AppPalette.whiteColor3],
+          colors: [AppPalette.primaryWhite, AppPalette.primaryWhite],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -201,7 +201,7 @@ class NormalFlatButton extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
-            color: AppPalette.greyColor2,
+            color: AppPalette.primaryGrey,
             fontFamily: 'Poppins',
             fontSize: 17,
             fontWeight: FontWeight.bold,
@@ -226,8 +226,8 @@ class RoundedButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: useColor
-              ? [AppPalette.greenColor, AppPalette.greenColor]
-              : [AppPalette.redColor1, AppPalette.redColor1],
+              ? [AppPalette.green, AppPalette.green]
+              : [AppPalette.red, AppPalette.red],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -245,7 +245,7 @@ class RoundedButton extends StatelessWidget {
           name,
           style: const TextStyle(
             fontFamily: 'Poppins',
-            color: AppPalette.whiteColor,
+            color: AppPalette.primaryWhite,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -266,7 +266,7 @@ class SquareButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppPalette.redColor1, AppPalette.redColor],
+          colors: [AppPalette.red, AppPalette.red],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -291,7 +291,7 @@ class SquareButton extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
-            color: AppPalette.whiteColor2,
+            color: AppPalette.primaryWhite,
             fontFamily: 'Poppins',
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -366,12 +366,13 @@ class _HoverButtonState extends State<HoverButton>
             child: ElevatedButton(
               onPressed: widget.onPressed,
               style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   textStyle: const TextStyle(fontSize: 18),
-                  backgroundColor: AppPalette.blackColor),
+                  backgroundColor: AppPalette.primaryBlack),
               child: Text(
                 widget.name,
-                style: const TextStyle(color: AppPalette.whiteColor),
+                style: const TextStyle(color: AppPalette.primaryWhite),
               ),
             ),
           ),

@@ -7,9 +7,9 @@ class ErrorSnackBar {
   static void show({
     required BuildContext context,
     required String message,
-    Color backgroundColor = AppPalette.whiteColor2,
-    Color textColor = AppPalette.redColor1,
-    Color iconColor = AppPalette.redColor1,
+    Color backgroundColor = AppPalette.primaryWhite,
+    Color textColor = AppPalette.fontWhite,
+    Color iconColor = AppPalette.red,
     int durationInSeconds = 3,
   }) {
     if (_overlayEntry != null) {

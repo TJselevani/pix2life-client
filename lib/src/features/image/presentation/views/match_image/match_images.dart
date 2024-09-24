@@ -213,13 +213,13 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
       width: ScreenUtil().setWidth(150),
       height: ScreenUtil().setHeight(150),
       decoration: const BoxDecoration(
-        color: AppPalette.redColor1,
+        color: AppPalette.red,
         shape: BoxShape.rectangle,
       ),
       child: isLoading
           ? Center(
               child: LoadingAnimationWidget.beat(
-                color: AppPalette.whiteColor,
+                color: AppPalette.primaryWhite,
                 size: ScreenUtil().setWidth(50),
               ),
             )
@@ -262,7 +262,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           icon: Icon(
             icon,
             size: ScreenUtil().setWidth(40),
-            color: AppPalette.redColor1,
+            color: AppPalette.red,
           ),
         ),
         Text(
@@ -279,7 +279,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.whiteColor,
+      backgroundColor: AppPalette.primaryWhite,
       body: Column(
         children: [
           Expanded(
@@ -299,7 +299,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: ScreenUtil().setSp(24),
-                        color: AppPalette.redColor1,
+                        color: AppPalette.red,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -343,7 +343,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
                           text:
                               'Take a photo using your camera or pick an image from the gallery to match the image using our service.',
                           style: TextStyle(
-                            color: AppPalette.greyColor0,
+                            color: AppPalette.primaryGrey,
                             fontFamily: 'Poppins',
                             fontSize: ScreenUtil().setSp(14),
                             fontWeight: FontWeight.w400,
@@ -361,7 +361,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           if (_isReady)
             _isLoading
                 ? LoadingAnimationWidget.bouncingBall(
-                    color: AppPalette.redColor1,
+                    color: AppPalette.red,
                     size: ScreenUtil().setWidth(30),
                   )
                 : RoundedButton(

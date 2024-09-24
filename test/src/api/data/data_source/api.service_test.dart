@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pix2life/core/error/error_handler.dart';
 import 'package:pix2life/core/error/exceptions.dart';
-import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 
 class MockDio extends Mock implements Dio {}
@@ -25,7 +24,7 @@ void main() {
   });
 
   group('ApiService', () {
-    const String testUri = '$kBaseUrl$kCreateUserEndpoint';
+    const String testUri = '';
     const String token = 'test_token';
 
     // Mock secure storage to return a token

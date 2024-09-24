@@ -7,6 +7,7 @@ import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_manager.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_service.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_user_service.dart';
 import 'package:pix2life/src/features/auth/data/models/user.model.dart';
 
@@ -45,6 +46,7 @@ abstract interface class AuthRemoteDataSource {
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   late final UserService _userService;
   late final AuthManager _authManager;
+  late final AuthService _authService;
   AuthRemoteDataSourceImpl(this._userService, this._authManager);
   final logger = createLogger(AuthRemoteDataSourceImpl);
 
@@ -60,6 +62,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final message = response.message;
       final token = response.token;
       await _authManager.storeToken(token);
+      await _authService.storeUser(user, token);
       logger.i(message);
       return user;
     } on ServerException {
@@ -91,9 +94,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final userInfo = response.user;
       final message = response.message;
       final token = response.token;
-      await _authManager.storeToken(token);
-      logger.i(message);
       final UserModel user = UserModel.fromJson(userInfo);
+      await _authManager.storeToken(token);
+      await _authService.storeUser(user, token);
+      logger.i(message);
       return user;
     } on ServerException {
       rethrow;

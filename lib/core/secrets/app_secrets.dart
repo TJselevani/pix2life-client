@@ -16,7 +16,3 @@ class AppSecrets {
   static const paypalSecretKey =
       'EFm7UCatPL83olEEWP816vnJYWRmQag4j_Hhu0kGzryHoI2sJOIPmTzrjH3vz_BnuqirO_ypO3awovbK';
 }
-
-const kBaseUrl = 'https://66ec4b962b6cf2b89c5dfe2a.mockapi.io/api/';
-const kGetAllUsersEndpoint = '/users';
-const kCreateUserEndpoint = '/users';

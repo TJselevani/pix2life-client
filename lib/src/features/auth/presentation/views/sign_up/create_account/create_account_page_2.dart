@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
@@ -43,7 +43,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.blackColor,
+      backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
         backgroundColor: AppPalette.transparent,
         elevation: 0,
@@ -90,7 +90,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
       child: Container(
         width: 50.w,
         height: 5.h,
-        color: AppPalette.blackColor,
+        color: AppPalette.primaryBlack,
       ),
     );
   }
@@ -104,7 +104,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
             text: TextSpan(
               text: 'Create your account',
               style: TextStyle(
-                color: AppPalette.fontTitleBlackColor2,
+                color: AppPalette.fontBlack,
                 fontFamily: 'Poppins',
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w600,
@@ -120,7 +120,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
             text: TextSpan(
               text: 'Next step to create your account',
               style: TextStyle(
-                color: AppPalette.fontTextGreyColor,
+                color: AppPalette.fontGrey,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Poppins',
@@ -194,7 +194,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
             prefixIcon: Icon(
               icon,
               size: 20.sp,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
             suffixIcon: null,
           ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_in/sign_in_page_2.dart';
@@ -29,7 +29,8 @@ class UserSignInPage extends StatefulWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const Placeholder(), //const UserForgotPasswordPage(),
+        builder: (context) =>
+            const Placeholder(), //const UserForgotPasswordPage(),
       ),
     );
   }
@@ -62,7 +63,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.blackColor,
+      backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
         backgroundColor: AppPalette.transparent,
         elevation: 0,
@@ -121,7 +122,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.blackColor,
+      color: AppPalette.primaryBlack,
     );
   }
 
@@ -132,7 +133,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
         text: TextSpan(
           text: 'Welcome back',
           style: TextStyle(
-            color: AppPalette.fontTitleBlackColor2,
+            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -150,7 +151,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
         text: TextSpan(
           text: 'EVERY PICTURE HAS A STORY TO TELL',
           style: TextStyle(
-            color: AppPalette.fontTextGreyColor,
+            color: AppPalette.fontGrey,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             fontFamily: 'Poppins',
@@ -207,7 +208,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             prefixIcon: const Icon(
               Icons.email_outlined,
               size: 20,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
             suffixIcon: null,
           ),
@@ -240,7 +241,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             prefixIcon: const Icon(
               Icons.lock_outline_rounded,
               size: 20,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
             suffixIcon: IconButton(
               icon: Icon(
@@ -248,7 +249,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
               ),
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
               onPressed: _togglePasswordVisibility,
             ),
           ),
@@ -264,7 +265,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Checkbox(
-            activeColor: AppPalette.redColor1,
+            activeColor: AppPalette.red,
             value: _rememberMe,
             onChanged: (bool? value) {
               setState(() {
@@ -279,8 +280,9 @@ class _UserSignInPageState extends State<UserSignInPage> {
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400,
               fontSize: 13.sp,
-              color:
-                  _rememberMe ? AppPalette.blackColor : AppPalette.greyColor0,
+              color: _rememberMe
+                  ? AppPalette.primaryBlack
+                  : AppPalette.primaryGrey,
             ),
           ),
           const Spacer(),
@@ -292,7 +294,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
                 fontSize: 13.sp,
-                color: AppPalette.redColor1,
+                color: AppPalette.red,
               ),
             ),
           ),
@@ -345,7 +347,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w400,
         fontSize: 13.sp,
-        color: AppPalette.greyColor0,
+        color: AppPalette.primaryGrey,
       ),
     );
   }
@@ -360,7 +362,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
-            color: AppPalette.blackColor,
+            color: AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),
@@ -370,7 +372,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
                 fontSize: 12.sp,
-                color: AppPalette.redColor1,
+                color: AppPalette.red,
               ),
             ),
           ],

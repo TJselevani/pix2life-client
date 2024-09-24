@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
@@ -17,8 +16,8 @@ class RoundedButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: useColor
-              ? [AppPalette.greenColor, AppPalette.greenColor]
-              : [AppPalette.redColor1, AppPalette.redColor1],
+              ? [AppPalette.green, AppPalette.green]
+              : [AppPalette.red, AppPalette.red],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -36,7 +35,7 @@ class RoundedButton extends StatelessWidget {
           name,
           style: TextStyle(
             fontFamily: 'Poppins',
-            color: AppPalette.whiteColor,
+            color: AppPalette.primaryWhite,
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),

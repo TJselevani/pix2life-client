@@ -75,7 +75,7 @@ class _DisappearingTextState extends State<DisappearingText> {
               fontSize: 10,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
           )
         : Container(); // Return an empty container when the text disappears
@@ -102,7 +102,7 @@ class _ConfettiState extends State<Confetti> {
         Colors.blue,
         Colors.green,
         Colors.yellow,
-        AppPalette.redColor1,
+        AppPalette.red,
       ],
     );
   }
@@ -119,7 +119,7 @@ class FadeInText extends StatelessWidget {
           fontFamily: 'Montserrat',
           fontSize: 40,
           fontWeight: FontWeight.w500,
-          color: AppPalette.blackColor3),
+          color: AppPalette.primaryBlack),
     ).animate().fadeIn(duration: const Duration(seconds: 2));
   }
 }
@@ -135,7 +135,7 @@ class SlideInText extends StatelessWidget {
           fontFamily: 'Montserrat',
           fontSize: 40,
           fontWeight: FontWeight.w500,
-          color: AppPalette.blackColor3),
+          color: AppPalette.primaryBlack),
     )
         .animate()
         .slideX(begin: -1.0, end: 0.0, duration: const Duration(seconds: 2));
@@ -153,7 +153,7 @@ class ScaleText extends StatelessWidget {
           fontFamily: 'Montserrat',
           fontSize: 40,
           fontWeight: FontWeight.w500,
-          color: AppPalette.blackColor3),
+          color: AppPalette.primaryBlack),
     ).animate().scale(
         begin: const Offset(0, 0),
         end: const Offset(1, 2),
@@ -172,7 +172,7 @@ class RotateText extends StatelessWidget {
           fontFamily: 'Montserrat',
           fontSize: 40,
           fontWeight: FontWeight.w500,
-          color: AppPalette.blackColor3),
+          color: AppPalette.primaryBlack),
     )
         .animate()
         .rotate(begin: -1.0, end: 0.0, duration: const Duration(seconds: 2));

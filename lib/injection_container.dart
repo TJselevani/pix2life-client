@@ -13,6 +13,7 @@ import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_manager.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_remote_data_source.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_service.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_user_service.dart';
 import 'package:pix2life/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:pix2life/src/features/auth/domain/repositories/auth_repository.dart';
@@ -53,6 +54,7 @@ import 'package:pix2life/src/features/video/domain/usecases/fetch_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/update_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/upload_video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
@@ -70,6 +72,7 @@ Future<void> initDependencies() async {
       logOutUSer: sl(),
       createUserPassword: sl(),
       checkAuthStatus: sl(),
+      authManager: sl(),
     ),
   );
   //Audio Files Bloc
@@ -188,7 +191,8 @@ Future<void> initDependencies() async {
   //#######################################################################
 
   //Authentication Bloc
-  sl.registerLazySingleton(() => AuthManager());
+  sl.registerLazySingleton(() => AuthManager(sl()));
+  sl.registerLazySingleton(() => AuthService(sl()));
   sl.registerLazySingleton(() => UserService(sl()));
 
   //Audio Bloc
@@ -209,4 +213,5 @@ Future<void> initDependencies() async {
   //Flutter Technology dependencies
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => const FlutterSecureStorage());
+  sl.registerLazySingleton(() async => SharedPreferences.getInstance());
 }

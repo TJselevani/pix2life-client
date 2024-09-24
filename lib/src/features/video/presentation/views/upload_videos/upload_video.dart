@@ -142,7 +142,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.whiteColor,
+      backgroundColor: AppPalette.primaryWhite,
       body: Padding(
         padding: EdgeInsets.fromLTRB(
           ScreenUtil().setWidth(15),
@@ -162,7 +162,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     fontFamily: 'Montserrat',
                     fontSize: ScreenUtil().setSp(20),
                     fontWeight: FontWeight.w700,
-                    color: AppPalette.blackColor2,
+                    color: AppPalette.primaryBlack,
                   ),
                 ),
               SizedBox(height: ScreenUtil().setHeight(10)),
@@ -174,7 +174,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   fontFamily: 'Montserrat',
                   fontSize: ScreenUtil().setSp(20),
                   fontWeight: FontWeight.w700,
-                  color: AppPalette.blackColor3,
+                  color: AppPalette.primaryBlack,
                 ),
               ),
               SizedBox(height: ScreenUtil().setHeight(1)),
@@ -184,7 +184,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 _isLoading
                     ? Center(
                         child: LoadingAnimationWidget.prograssiveDots(
-                          color: AppPalette.redColor1,
+                          color: AppPalette.red,
                           size: ScreenUtil().setWidth(50),
                         ),
                       )
@@ -197,7 +197,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   fontFamily: 'Montserrat',
                   fontSize: ScreenUtil().setSp(14),
                   fontWeight: FontWeight.w400,
-                  color: AppPalette.greyColor2,
+                  color: AppPalette.primaryGrey,
                 ),
               ),
               SizedBox(height: ScreenUtil().setHeight(15)),
@@ -251,7 +251,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
           BoxShadow(
             color: _copyMedia != null && _copyMedia!.isNotEmpty
                 ? Colors.black.withOpacity(0.2)
-                : AppPalette.redColor1.withOpacity(0.7),
+                : AppPalette.red.withOpacity(0.7),
             spreadRadius: 4,
             blurRadius: 5,
             offset: const Offset(-3, 3),
@@ -367,7 +367,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
             fontFamily: 'Montserrat',
             fontSize: ScreenUtil().setSp(15),
             fontWeight: FontWeight.w900,
-            color: AppPalette.greyColor2,
+            color: AppPalette.primaryGrey,
           ),
         ),
         ..._uploadNotes.map((note) => Padding(
@@ -379,7 +379,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     fontFamily: 'Montserrat',
                     fontSize: ScreenUtil().setSp(11),
                     fontWeight: FontWeight.w700,
-                    color: AppPalette.greyColor2,
+                    color: AppPalette.primaryGrey,
                   ),
                 ),
                 textAlign: TextAlign.center,
@@ -428,7 +428,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
               fontFamily: 'Montserrat',
               fontSize: ScreenUtil().setSp(16),
               fontWeight: FontWeight.w500,
-              color: AppPalette.blackColor2,
+              color: AppPalette.primaryBlack,
             ),
           ),
           SizedBox(height: ScreenUtil().setHeight(10)),
@@ -471,7 +471,7 @@ class ImageSelectionContainer extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
-          color: AppPalette.greyColor,
+          color: AppPalette.primaryGrey,
           width: 1.0,
         ),
       ),

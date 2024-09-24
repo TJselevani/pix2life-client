@@ -1,28 +1,26 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
-import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/features/auth/domain/entities/user.dart';
-import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/app/pages/guide/guide.dart';
+import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
 
 class UploadProfilePicPage extends StatefulWidget {
-  static routeToHomePage(context) {
+  static roteToHomePage(context) {
     Navigator.pushReplacementNamed(context, '/Home');
   }
 
-  static routeToGuide(context) {
+  static routeToGuidePage(context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const Placeholder()),
+      MaterialPageRoute(builder: (context) => const GuidePage()),
     );
   }
 
@@ -33,10 +31,9 @@ class UploadProfilePicPage extends StatefulWidget {
 }
 
 class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
-  // final MediaService mediaService = MediaService();
   final ImagePicker _picker = ImagePicker();
   final log = createLogger(UploadProfilePicPage);
-  final bool _isLoading = false;
+  bool _isLoading = false;
   bool _isSet = false;
   bool _isPending = false;
   bool _isUploaded = false;
@@ -55,50 +52,50 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     }
   }
 
-  // Future<void> _uploadImage() async {
-  //   if (!mounted) return;
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
+  Future<void> _uploadImage() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = true;
+    });
 
-  //   XFile image = _image!;
-  //   FormData formData = FormData.fromMap({
-  //     "file": await MultipartFile.fromFile(image.path, filename: image.name),
-  //   });
+    // XFile image = _image!;
+    // FormData formData = FormData.fromMap({
+    //   "file": await MultipartFile.fromFile(image.path, filename: image.name),
+    // });
 
-  //   try {
-  //     final response = await mediaService.uploadAvatar(formData);
+    try {
+      // final response = await mediaService.uploadAvatar(formData);
 
-  //     if (!mounted) return;
+      if (!mounted) return;
 
-  //     setState(() {
-  //       context.read<AuthBloc>().add(UserUpdatedEvent());
-  //       SuccessSnackBar.show(context: context, message: response.message);
-  //       log.i('Successfully uploaded Avatar Image: ${image.name}');
-  //       _isPending = false;
-  //       _isUploaded = true;
-  //     });
-  //   } catch (e) {
-  //     if (!mounted) return;
-  //     setState(() {
-  //       ErrorSnackBar.show(context: context, message: 'Avatar Upload Failed');
-  //       log.e('Upload failed for Avatar ${image.name}: $e');
-  //     });
-  //   }
-  //
-  //   if (!mounted) return;
-  //   setState(() {
-  //     _isLoading = false;
-  //     _isPending = false;
-  //     _isSet = false;
-  //     _image = null;
-  //   });
-  // }
+      setState(() {
+        // context.read<AuthBloc>().add(UserUpdatedEvent());
+        // SuccessSnackBar.show(context: context, message: response.message);
+        // log.i('Successfully uploaded Avatar Image: ${image.name}');
+        _isPending = false;
+        _isUploaded = true;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        // ErrorSnackBar.show(context: context, message: 'Avatar Upload Failed');
+        // log.e('Upload failed for Avatar ${image.name}: $e');
+      });
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      _isPending = false;
+      _isSet = false;
+      _image = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final User authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthSuccess).user;
+    // final User authUser =
+    //     (BlocProvider.of<AuthBloc>(context).state as AuthSuccess).user;
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
@@ -114,8 +111,8 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _buildHeader(authUser),
-              _buildProfileImage(authUser),
+              _buildHeader({}),
+              _buildProfileImage({}),
               SizedBox(height: 40.h),
               _buildChooseImageButton(),
               if (_isPending) _buildUploadIcon(),
@@ -148,7 +145,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     );
   }
 
-  Widget _buildHeader(User authUser) {
+  Widget _buildHeader(authUser) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -171,7 +168,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
                 text: TextSpan(
                   text: authUser.email,
                   style: TextStyle(
-                    color: AppPalette.fontBlack,
+                    color: AppPalette.primaryBlack,
                     fontFamily: 'Poppins',
                     fontSize: 22.sp,
                     fontWeight: FontWeight.w600,
@@ -187,7 +184,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     );
   }
 
-  Widget _buildProfileImage(User authUser) {
+  Widget _buildProfileImage(authUser) {
     return Hero(
       tag: AppImage.welcomeImage,
       child: Container(
@@ -204,7 +201,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
               : NetworkImage(
                   authUser.avatarUrl.isNotEmpty
                       ? authUser.avatarUrl
-                      : AppImage.avatarUrl,
+                      : AppImage.randomImage,
                 ),
         ),
       ),
@@ -276,32 +273,22 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   }
 
   Widget _buildProceedButton() {
-    return BlocConsumer<ImageBloc, ImageState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        if (state is AuthLoading) {
-          return LoadingAnimationWidget.bouncingBall(
-            color: AppPalette.primaryBlack,
-            size: 50.sp,
-          );
-        } else {
-          return RoundedButton(
-            name: "Let's proceed",
-            onPressed: () async {
-              if (_isSet) {
-                await _uploadImage();
-              }
-              // ignore: use_build_context_synchronously
-              UploadProfilePicPage.routeToHomePage(context);
-            },
-          );
-        }
-      },
+    return Center(
+      child: _isLoading
+          ? LoadingAnimationWidget.bouncingBall(
+              color: AppPalette.primaryBlack,
+              size: 50.sp,
+            )
+          : RoundedButton(
+              name: "Let's proceed",
+              onPressed: () async {
+                if (_isSet) {
+                  await _uploadImage();
+                }
+                // ignore: use_build_context_synchronously
+                UploadProfilePicPage.roteToHomePage(context);
+              },
+            ),
     );
-  }
-
-  _uploadImage() {
-    BlocProvider.of<ImageBloc>(context)
-        .add(ImageUploadEvent(formData: FormData.fromMap({}), galleryName: ''));
   }
 }

@@ -107,8 +107,8 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                     // );
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: AppPalette.redColor,
-                    foregroundColor: AppPalette.whiteColor,
+                    backgroundColor: AppPalette.red,
+                    foregroundColor: AppPalette.primaryWhite,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -135,8 +135,8 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                     }
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: AppPalette.redColor1,
-                    foregroundColor: AppPalette.whiteColor,
+                    backgroundColor: AppPalette.red,
+                    foregroundColor: AppPalette.primaryWhite,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -154,7 +154,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.whiteColor,
+      backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
         title: GestureDetector(
           onTap: _toggleSearchVisibility,
@@ -164,7 +164,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppPalette.whiteColor,
+        backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.refresh, size: 24.sp),
@@ -195,7 +195,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: LoadingAnimationWidget.waveDots(
-                color: AppPalette.redColor1,
+                color: AppPalette.red,
                 size: 50.sp,
               ),
             );
@@ -239,7 +239,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                             imageUrl: _selectedImageUrl!,
                             placeholder: (context, url) => Center(
                               child: LoadingAnimationWidget.discreteCircle(
-                                color: AppPalette.redColor1,
+                                color: AppPalette.red,
                                 size: 50.sp,
                               ),
                             ),
@@ -318,7 +318,7 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
                                         placeholder: (context, url) => Center(
                                           child: LoadingAnimationWidget
                                               .twoRotatingArc(
-                                            color: AppPalette.redColor1,
+                                            color: AppPalette.red,
                                             size: 30.sp,
                                           ),
                                         ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
@@ -43,7 +43,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
     userEmail = authUser.email;
 
     return Scaffold(
-      backgroundColor: AppPalette.blackColor,
+      backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
         backgroundColor: AppPalette.transparent,
         elevation: 0,
@@ -95,7 +95,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
             Colors.blue,
             Colors.green,
             Colors.yellow,
-            AppPalette.redColor1,
+            AppPalette.red,
           ],
         ),
       ),
@@ -106,7 +106,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.blackColor,
+      color: AppPalette.primaryBlack,
     );
   }
 
@@ -117,7 +117,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
           text: TextSpan(
             text: userEmail,
             style: TextStyle(
-              color: AppPalette.fontTitleBlackColor2,
+              color: AppPalette.fontBlack,
               fontFamily: 'Poppins',
               fontSize: 22.sp,
               fontWeight: FontWeight.w600,
@@ -130,7 +130,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
           text: TextSpan(
             text: 'Yey! Account setup Successful',
             style: TextStyle(
-              color: AppPalette.fontTitleBlackColor2,
+              color: AppPalette.fontBlack,
               fontFamily: 'Poppins',
               fontSize: 24.sp,
               fontWeight: FontWeight.w600,
@@ -146,7 +146,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
               text:
                   'You will be moved to home screen momentarily. Enjoy the features!',
               style: TextStyle(
-                color: AppPalette.greyColor0,
+                color: AppPalette.primaryGrey,
                 fontFamily: 'Poppins',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,

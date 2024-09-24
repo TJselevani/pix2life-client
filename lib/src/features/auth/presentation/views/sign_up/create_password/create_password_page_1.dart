@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_password/create_password_page_2.dart';
@@ -96,7 +96,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.blackColor,
+      backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
         backgroundColor: AppPalette.transparent,
         elevation: 0,
@@ -146,7 +146,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
       child: Container(
         width: 50.w,
         height: 5.h,
-        color: AppPalette.blackColor,
+        color: AppPalette.primaryBlack,
       ),
     );
   }
@@ -158,7 +158,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
         text: TextSpan(
           text: 'Create password',
           style: TextStyle(
-            color: AppPalette.fontTitleBlackColor2,
+            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -176,7 +176,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
         text: TextSpan(
           text: 'Finishing up',
           style: TextStyle(
-            color: AppPalette.fontTextGreyColor,
+            color: AppPalette.fontGrey,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             fontFamily: 'Poppins',
@@ -245,7 +245,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
             prefixIcon: Icon(
               Icons.lock_outline_rounded,
               size: 20.sp,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
             suffixIcon: IconButton(
               icon: Icon(
@@ -253,7 +253,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
               ),
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
               onPressed: toggleVisibility,
             ),
           ),

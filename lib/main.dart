@@ -5,9 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
+import 'package:pix2life/src/app/menu/drawer.dart';
+import 'package:pix2life/src/app/navigation/main_navigation_page.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
+import 'package:pix2life/src/app/pages/upload-screen/select_media_upload.dart';
+import 'package:pix2life/src/app/pages/main/landing_page.dart.dart';
+import 'package:pix2life/src/app/pages/main/audios/audio_player_page.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:pix2life/src/app/pages/intro/landing_page.dart';
+import 'package:pix2life/src/app/pages/intro/welcome_page.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_in/sign_in_page_1.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_account/create_account_page_1.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_password/create_password_page_1.dart';
@@ -29,8 +34,22 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final ThemeMode _themeMode = ThemeMode.system; // Start with system theme
+
+  // void _switchTheme(ThemeMode themeMode) {
+  //   setState(() {
+  //     _themeMode = themeMode;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     final log = createLogger(MyApp);
@@ -38,13 +57,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'pix2life',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightThemeMode,
-      initialRoute: '/SignIn',
+      theme: AppTheme.lightTheme,
+      // darkTheme: AppTheme.darkTheme,
+      // themeMode: _themeMode,
+      initialRoute: '/',
       routes: {
         '/': (context) => const WelcomePage(),
         '/SignIn': (context) => const UserSignInPage(),
         '/SignUp': (context) => const UserEmailSignUpPage(),
-        '/Home': (context) => const MyWidget(),
+        '/Home': (context) => const MainPageNavigation(),
         '/Password': (context) => const UserCreatePasswordPage(),
         '/Avatar': (context) => const MyWidget(),
       },

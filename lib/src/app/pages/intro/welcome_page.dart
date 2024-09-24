@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
@@ -37,9 +37,9 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.whiteColor,
+      backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
-        backgroundColor: AppPalette.whiteColor,
+        backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
       ),
       body: Container(
@@ -75,7 +75,7 @@ class _WelcomePageState extends State<WelcomePage> {
         topRight: Radius.circular(37.r),
       ),
       gradient: const LinearGradient(
-        colors: [AppPalette.blackColor, AppPalette.blackColor],
+        colors: [AppPalette.primaryBlack, AppPalette.primaryBlack],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
@@ -86,7 +86,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.whiteColor,
+      color: AppPalette.primaryWhite,
     );
   }
 
@@ -117,7 +117,7 @@ class _WelcomePageState extends State<WelcomePage> {
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: AppPalette.redColor1,
+        color: AppPalette.red,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -153,8 +153,8 @@ class _WelcomePageState extends State<WelcomePage> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _currentPage == index
-                ? AppPalette.redColor1
-                : AppPalette.redColor.withOpacity(0.3),
+                ? AppPalette.red
+                : AppPalette.red.withOpacity(0.3),
           ),
         );
       }),
@@ -217,7 +217,7 @@ class _WelcomePageState extends State<WelcomePage> {
             margin: EdgeInsets.only(top: 30.h),
             child: Center(
               child: LoadingAnimationWidget.fourRotatingDots(
-                color: AppPalette.redColor1,
+                color: AppPalette.red,
                 size: 30.sp,
               ),
             ),

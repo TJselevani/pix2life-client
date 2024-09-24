@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/theme/app_config.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_account/create_account_page_2.dart';
@@ -84,7 +84,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.blackColor,
+      backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
         backgroundColor: AppPalette.transparent,
         elevation: 0,
@@ -143,7 +143,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.blackColor,
+      color: AppPalette.primaryBlack,
     );
   }
 
@@ -154,7 +154,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
         text: TextSpan(
           text: 'Create your account',
           style: TextStyle(
-            color: AppPalette.fontTitleBlackColor2,
+            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
         text: TextSpan(
           text: 'First step to create your account',
           style: TextStyle(
-            color: AppPalette.fontTextGreyColor,
+            color: AppPalette.fontGrey,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             fontFamily: 'Poppins',
@@ -238,7 +238,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
             prefixIcon: const Icon(
               Icons.email_outlined,
               size: 20,
-              color: AppPalette.redColor1,
+              color: AppPalette.red,
             ),
             suffixIcon: null,
           ),
@@ -291,7 +291,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
-            color: AppPalette.blackColor,
+            color: AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),
@@ -301,7 +301,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
                 fontSize: 12.sp,
-                color: AppPalette.redColor1,
+                color: AppPalette.red,
               ),
             ),
           ],
