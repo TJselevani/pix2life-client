@@ -92,7 +92,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _buildPageView(BuildContext context) {
     return SizedBox(
-      height: 307.h,
+      height: 307.h, // You can adjust this to make it more flexible
       width: 285.w,
       child: PageView.builder(
         controller: _pageController,
@@ -113,30 +113,41 @@ class _WelcomePageState extends State<WelcomePage> {
     final double leftPercent = index * 0.25;
     final double rightPercent = (index + 1) * 0.25;
 
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: AppPalette.red,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: OverflowBox(
-                maxWidth: MediaQuery.of(context).size.width,
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  alignment: Alignment(-1.0 + 2.5 * leftPercent, rightPercent),
-                  child: Image.asset(
-                    AppImage.welcomeImage,
-                    fit: BoxFit.fitHeight,
+    return Padding(
+      padding: const EdgeInsets.all(8.0), // Add padding to avoid edge overflow
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: AppPalette.red,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Stack(
+                children: [
+                  // Use LayoutBuilder to get the actual width/height constraints
+                  Positioned.fill(
+                    child: OverflowBox(
+                      maxWidth: constraints.maxWidth, // Use parent constraints
+                      alignment: Alignment.center,
+                      child: FractionallySizedBox(
+                        widthFactor: 1.0, // Keep full width
+                        alignment:
+                            Alignment(-1.0 + 2.5 * leftPercent, rightPercent),
+                        child: Image.asset(
+                          AppImage.welcomeImage,
+                          fit: BoxFit.cover, // Adjust this to avoid overflow
+                          width: constraints.maxWidth, // Use constraints
+                          height: constraints.maxHeight, // Use constraints
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ],
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -200,7 +211,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _buildActionButton(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthenticatedUser) {
           SuccessSnackBar.show(context: context, message: state.message);
           WelcomePage.routeToHomePage(context);
         } else if (state is AuthUnauthenticated) {

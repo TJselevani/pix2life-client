@@ -1,49 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/src/features/image/domain/entities/image.dart';
-import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/features/video/domain/entities/video.dart';
+import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
+import 'package:pix2life/src/shared/widgets/video_player/network_video_thumbnail_widget.dart';
 
-class ImageGridPage extends StatefulWidget {
-  const ImageGridPage({super.key});
+class VideoGridPage extends StatefulWidget {
+  const VideoGridPage({super.key});
 
   @override
-  State<ImageGridPage> createState() => _ImageGridPageState();
+  State<VideoGridPage> createState() => _VideoGridPageState();
 }
 
-class _ImageGridPageState extends State<ImageGridPage> {
-  String _selectedImageName = 'Image Gallery';
-  String? _selectedImageUrl;
+class _VideoGridPageState extends State<VideoGridPage> {
+  String _selectedVideoName = 'video Gallery';
+  String? _selectedVideoUrl;
 
   @override
   void initState() {
     super.initState();
-    final currentState = context.read<ImageBloc>().state;
+    // final currentState = context.read<VideoBloc>().state;
+      context.read<VideoBloc>().add(VideosFetchEvent());
 
-    // Only trigger the fetch event if the data has not been loaded yet
-    if (currentState is! ImagesLoaded) {
-      context.read<ImageBloc>().add(ImagesFetchEvent());
-    }
+    // Trigger the event to fetch videos
+    // if (currentState is! VideosLoaded) {
+    //   context.read<VideoBloc>().add(VideosFetchEvent());
+    // }
   }
 
-  void _showImageInfo(Photo image) {
+  void _showVideoInfo(Video video) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(image.filename),
+          title: Text(video.filename),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('File Name: ${image.filename}'),
-              Text('Description: ${image.description}'),
-              Text('Gallery: ${image.galleryName}'),
-              Text('Created: ${image.createdAt}'),
+              Text('File Name: ${video.filename}'),
+              Text('Description: ${video.description}'),
+              Text('Gallery: ${video.galleryName}'),
+              Text('Created: ${video.createdAt}'),
             ],
           ),
           actions: [
@@ -72,7 +73,7 @@ class _ImageGridPageState extends State<ImageGridPage> {
       backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
         title: Text(
-          _selectedImageName,
+          _selectedVideoName,
           style: TextStyle(fontSize: 20.sp),
         ),
         centerTitle: true,
@@ -81,32 +82,32 @@ class _ImageGridPageState extends State<ImageGridPage> {
         leading: IconButton(
           icon: Icon(Icons.refresh, size: 24.sp),
           onPressed: () {
-            context.read<ImageBloc>().add(ImagesFetchEvent());
+            context.read<VideoBloc>().add(VideosFetchEvent()); // Refresh videos
           },
         ),
       ),
-      body: BlocConsumer<ImageBloc, ImageState>(
+      body: BlocConsumer<VideoBloc, VideoState>(
         listener: (context, state) {
-          if (state is ImageFailure) {
+          if (state is VideoFailure) {
             ErrorSnackBar.show(context: context, message: state.message);
           }
         },
         builder: (context, state) {
-          if (state is ImageFailure) {
+          if (state is VideoFailure) {
             return Center(child: Text('Error: ${state.message}'));
           }
-          if (state is ImageLoading) {
+          if (state is VideoLoading) {
             return Center(
               child: LoadingAnimationWidget.waveDots(
                 color: AppPalette.red,
                 size: 50.sp,
               ),
             );
-          } else if (state is ImagesLoaded) {
-            final images = state.images;
+          } else if (state is VideosLoaded) {
+            final videos = state.videos;
 
-            if (images.isEmpty) {
-              return const Center(child: Text('No images found'));
+            if (videos.isEmpty) {
+              return const Center(child: Text('No Videos found'));
             }
 
             return Padding(
@@ -118,19 +119,19 @@ class _ImageGridPageState extends State<ImageGridPage> {
                   mainAxisSpacing: 16.0,
                   childAspectRatio: 1.0, // Square images
                 ),
-                itemCount: images.length,
+                itemCount: videos.length,
                 itemBuilder: (context, index) {
-                  final image = images[index];
+                  final video = videos[index];
 
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        _selectedImageName = image.filename;
-                        _selectedImageUrl = image.url;
+                        _selectedVideoName = video.filename;
+                        _selectedVideoUrl = video.url;
                       });
                     },
                     onLongPress: () {
-                      _showImageInfo(image);
+                      _showVideoInfo(video);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -144,18 +145,9 @@ class _ImageGridPageState extends State<ImageGridPage> {
                           ),
                         ],
                       ),
-                      child: CachedNetworkImage(
-                        imageUrl: image.url,
-                        fadeInCurve: Curves.easeIn,
-                        placeholder: (context, url) => Center(
-                          child: LoadingAnimationWidget.twoRotatingArc(
-                            color: AppPalette.red,
-                            size: 30.sp,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error, size: 24.sp),
-                        fit: BoxFit.cover,
+                      child: VideoThumbnailWidget(
+                       
+                        videoUrl: video.url,
                       ),
                     ),
                   );

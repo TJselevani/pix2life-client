@@ -11,12 +11,14 @@ final class AuthInitial extends AuthState {}
 
 final class AuthLoading extends AuthState {}
 
-final class Authenticated extends AuthState {
+final class AuthenticatedUser extends AuthState {
+  final User user;
   final String message;
-  const Authenticated({required this.message});
+
+  const AuthenticatedUser({required this.user, required this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [user, message];
 }
 
 final class AuthUnauthenticated extends AuthState {
@@ -28,16 +30,12 @@ final class AuthUnauthenticated extends AuthState {
 }
 
 final class AuthSuccess extends AuthState {
-  final User user;
   final String message;
 
-  const AuthSuccess({
-    required this.user,
-    required this.message,
-  });
+  const AuthSuccess({required this.message});
 
   @override
-  List<Object> get props => [user, message];
+  List<Object> get props => [message];
 }
 
 final class AuthFailure extends AuthState {

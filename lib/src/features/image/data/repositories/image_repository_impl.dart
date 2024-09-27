@@ -44,7 +44,7 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<ImageModel> updateImage({required Image image}) async {
+  ResultFuture<ImageModel> updateImage({required Photo image}) async {
     try {
       final updatedImage = await _remoteDataSource.updateImage(
           image: ImageModel(

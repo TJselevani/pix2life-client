@@ -19,10 +19,12 @@ class ProfileScreen extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 24.w),
-          onPressed: () {},
-        ),
+        // leading: IconButton(
+        //   icon: Icon(CupertinoIcons.arrow_merge, size: 24.w),
+        //   onPressed: () {
+        //     ZoomDrawer.of(context)!.toggle();
+        //   },
+        // ),
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert, size: 24.w),

@@ -20,7 +20,7 @@ abstract interface class VideoRemoteDataSource {
 }
 
 class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
-  late final VideoService _videoService;
+  final VideoService _videoService;
   VideoRemoteDataSourceImpl(this._videoService);
   final logger = createLogger(VideoRemoteDataSourceImpl);
 
@@ -45,6 +45,7 @@ class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
     try {
       final FetchVideoResponse response = await _videoService.fetchVideos();
       final List<VideoModel> videos = response.videos;
+      logger.i('Retrieved ${videos.length} Videos');
       return videos;
     } on ServerException {
       rethrow;

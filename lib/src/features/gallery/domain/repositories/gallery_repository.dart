@@ -14,7 +14,7 @@ abstract interface class GalleryRepository {
 
   ResultFuture<List<Gallery>> fetchGalleries();
 
-  ResultFuture<List<Image>> fetchImagesByGallery({
+  ResultFuture<List<Photo>> fetchImagesByGallery({
     required String galleryName,
   });
 

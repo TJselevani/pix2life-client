@@ -23,9 +23,7 @@ class ApplicationError extends Equatable implements Exception {
       : message = message ?? 'ApplicationError',
         statusCode = statusCode ?? 505;
 
-  DataMap serialize() {
-    return {'message': message, 'status': statusCode};
-  }
+  DataMap serialize() => {'message': message, 'status': statusCode};
 
   @override
   String toString() => message;

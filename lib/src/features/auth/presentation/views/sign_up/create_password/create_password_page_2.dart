@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
 
 class CreateAccountSuccessPage extends StatefulWidget {
@@ -38,10 +36,6 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthSuccess).user;
-    userEmail = authUser.email;
-
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(

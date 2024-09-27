@@ -18,11 +18,11 @@ class MatchImageParams extends Equatable {
   List<Object> get props => [formData];
 }
 
-class MatchImage implements UseCase<Image, MatchImageParams> {
+class MatchImage implements UseCase<Photo, MatchImageParams> {
   final ImageRepository _imageRepository;
   const MatchImage(this._imageRepository);
   @override
-  ResultFuture<Image> call(params) async {
+  ResultFuture<Photo> call(params) async {
     return await _imageRepository.matchImage(formData: params.formData);
   }
 }

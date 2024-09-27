@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthManager {
-  late final FlutterSecureStorage _storage;
+  final FlutterSecureStorage _storage;
   AuthManager(this._storage);
 
   Future<void> storeToken(String token) async {

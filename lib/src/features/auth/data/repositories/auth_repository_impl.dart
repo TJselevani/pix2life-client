@@ -4,6 +4,7 @@ import 'package:pix2life/core/error/api_failure.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/auth/data/models/user.model.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_remote_data_source.dart';
+import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -81,6 +82,16 @@ class AuthRepositoryImpl implements AuthRepository {
       {required String token}) async {
     try {
       final user = await _remoteDataSource.checkAuthStatus(token: token);
+      return right(user);
+    } on ServerException catch (e) {
+      return left(ApiFailure.fromServerException(e));
+    }
+  }
+
+  @override
+  ResultFuture<User> retrieveAuthUser() async {
+    try {
+      final user = await _remoteDataSource.retrieveAuthUser();
       return right(user);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));

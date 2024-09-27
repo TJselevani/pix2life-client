@@ -4,7 +4,7 @@ import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 abstract interface class AuthRepository {
   const AuthRepository();
 
-  ResultFuture<String>  checkUserAccount({
+  ResultFuture<String> checkUserAccount({
     required String email,
   });
 
@@ -16,12 +16,12 @@ abstract interface class AuthRepository {
     required String postCode,
   });
 
-  ResultFuture<String>  createUserPassword({
+  ResultFuture<String> createUserPassword({
     required String password,
     required String confirmPassword,
   });
 
-  ResultFuture<User>  userSignIn({
+  ResultFuture<User> userSignIn({
     required String email,
     required String password,
   });
@@ -30,7 +30,9 @@ abstract interface class AuthRepository {
     required String token,
   });
 
-  ResultFuture<User>  checkAuthStatus({
+  ResultFuture<User> checkAuthStatus({
     required String token,
   });
+
+  ResultFuture<User> retrieveAuthUser();
 }

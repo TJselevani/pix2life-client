@@ -8,7 +8,7 @@ class ErrorSnackBar {
     required BuildContext context,
     required String message,
     Color backgroundColor = AppPalette.primaryWhite,
-    Color textColor = AppPalette.fontWhite,
+    Color textColor = AppPalette.red,
     Color iconColor = AppPalette.red,
     int durationInSeconds = 3,
   }) {

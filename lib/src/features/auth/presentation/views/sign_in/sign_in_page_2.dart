@@ -38,7 +38,7 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
   @override
   Widget build(BuildContext context) {
     final authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthSuccess).user;
+        (BlocProvider.of<AuthBloc>(context).state as AuthenticatedUser).user;
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

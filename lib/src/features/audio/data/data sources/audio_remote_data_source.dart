@@ -20,7 +20,7 @@ abstract interface class AudioRemoteDataSource {
 }
 
 class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
-  late final AudioService _audioService;
+  final AudioService _audioService;
   AudioRemoteDataSourceImpl(this._audioService);
   final logger = createLogger(AudioRemoteDataSourceImpl);
 
@@ -45,6 +45,7 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
     try {
       final FetchAudiosResponse response = await _audioService.fetchAudios();
       final List<AudioModel> audios = response.audios;
+      logger.i('Retrieved ${audios.length} Audio files');
       return audios;
     } on ServerException {
       rethrow;
@@ -55,8 +56,7 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
   }
 
   @override
-  Future<AudioModel> updateAudio(
-      {required AudioModel audio}) async {
+  Future<AudioModel> updateAudio({required AudioModel audio}) async {
     try {
       final UpdateAudioResponse response =
           await _audioService.updateAudio(audio);

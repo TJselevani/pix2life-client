@@ -20,7 +20,7 @@ class MenuScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 20.h),
-              const infoCard(
+              const InfoCard(
                 name: 'tjselevani',
                 title: 'Developer',
               ),
@@ -55,10 +55,10 @@ class MenuScreen extends StatelessWidget {
   }
 }
 
-class infoCard extends StatelessWidget {
+class InfoCard extends StatelessWidget {
   final String name;
   final String title;
-  const infoCard({
+  const InfoCard({
     super.key,
     required this.name,
     required this.title,

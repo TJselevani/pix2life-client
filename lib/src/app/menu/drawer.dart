@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/app/menu/menu-options.dart';
-import 'package:pix2life/src/app/navigation/main_navigation_page.dart';
+import 'package:pix2life/src/app/menu/menu_options.dart';
+import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -62,7 +62,7 @@ class _TestScreenState extends State<TestScreen>
         builder: (context, child) {
           return Transform.scale(
             scale: scaleAnimation.value,
-            child: const MainPageNavigation(),
+            child: const ProfileScreen(),
           );
         },
       ),

@@ -98,7 +98,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   @override
   Widget build(BuildContext context) {
     final User authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthSuccess).user;
+        (BlocProvider.of<AuthBloc>(context).state as AuthenticatedUser).user;
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

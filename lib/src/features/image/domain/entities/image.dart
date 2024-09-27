@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class Image extends Equatable {
+class Photo extends Equatable {
   final String id;
   final String filename;
   final String path;
@@ -12,7 +12,7 @@ class Image extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const Image({
+  const Photo({
     required this.id,
     required this.filename,
     required this.path,
@@ -25,7 +25,7 @@ class Image extends Equatable {
     required this.updatedAt,
   });
 
-  Image.empty()
+  Photo.empty()
       : this(
           id: '1',
           filename: '_empty.filename',

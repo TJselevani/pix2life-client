@@ -78,6 +78,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
       padding: EdgeInsets.all(8.w),
       margin: EdgeInsets.symmetric(horizontal: 1.w),
       width: double.infinity,
+      height: double.infinity,
       decoration: _buildBackgroundDecoration(),
       child: SingleChildScrollView(
         child: Form(
@@ -307,7 +308,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
   Widget _buildSignInButton() {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthenticatedUser) {
           logger.i(state.message);
           SuccessSnackBar.show(context: context, message: state.message);
           UserSignInPage.routeToSuccessPage(context);
@@ -319,7 +320,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
       builder: (context, state) {
         if (state is AuthLoading) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator.adaptive(),
           );
         } else {
           return RoundedButton(

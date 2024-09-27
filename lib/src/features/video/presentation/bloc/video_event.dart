@@ -19,7 +19,7 @@ final class VideoDeleteEvent extends VideoEvent {
 
 final class VideosFetchEvent extends VideoEvent {}
 
-final class VideoFetchEvent extends VideoEvent {}
+// final class VideoFetchEvent extends VideoEvent {}
 
 final class VideoUpdateEvent extends VideoEvent {
   final Video video;

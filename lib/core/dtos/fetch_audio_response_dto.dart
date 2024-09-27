@@ -5,10 +5,10 @@ class FetchAudiosResponse {
 
   FetchAudiosResponse({required this.audios});
 
-  factory FetchAudiosResponse.fromJson(Map<String, dynamic> json) {
-    var audiosJson = json['audios'] as List;
+  factory FetchAudiosResponse.fromJson(List json) {
+    var audiosJson = json;
     List<AudioModel> audioList =
-        audiosJson.map((image) => AudioModel.fromJson(image)).toList();
+        audiosJson.map((audio) => AudioModel.fromJson(audio)).toList();
 
     return FetchAudiosResponse(
       audios: audioList,

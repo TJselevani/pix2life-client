@@ -9,7 +9,7 @@ import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 
 class GalleryService {
-  late final ApiService _apiService;
+  final ApiService _apiService;
   GalleryService(this._apiService);
   final log = createLogger(GalleryService);
 

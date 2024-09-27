@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
 
-class ImageModel extends Image {
+class ImageModel extends Photo {
   const ImageModel({
     required super.id,
     required super.filename,

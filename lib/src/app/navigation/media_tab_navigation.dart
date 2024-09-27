@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/src/features/audio/presentation/pages/display_audios/audio_grid.dart';
+import 'package:pix2life/src/features/image/presentation/views/display_images/image_grid.dart';
+import 'package:pix2life/src/features/video/presentation/views/display_videos/video_grid.dart';
 
 class MediaTabNavigation extends StatefulWidget {
   const MediaTabNavigation({super.key});
@@ -80,9 +83,9 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
             // ImageGalleryPage(), //Images
             // AudioGalleryPage(), //Audios
             // VideoGalleryPage(), //Videos
-            Placeholder(),
-            Placeholder(),
-            Placeholder(),
+            ImageGridPage(),
+            AudioGridPage(),
+            VideoGridPage(),
           ],
         ),
       ),

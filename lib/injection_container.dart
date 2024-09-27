@@ -20,6 +20,7 @@ import 'package:pix2life/src/features/auth/domain/repositories/auth_repository.d
 import 'package:pix2life/src/features/auth/domain/usecases/check_auth_status.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_user_account.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/create_user_password.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_up.dart';
@@ -54,7 +55,6 @@ import 'package:pix2life/src/features/video/domain/usecases/fetch_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/update_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/upload_video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
@@ -72,9 +72,11 @@ Future<void> initDependencies() async {
       logOutUSer: sl(),
       createUserPassword: sl(),
       checkAuthStatus: sl(),
+      retrieveAuthUser: sl(),
       authManager: sl(),
     ),
   );
+
   //Audio Files Bloc
   sl.registerFactory(
     () => AudioBloc(
@@ -128,6 +130,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => LogOutUser(sl()));
   sl.registerLazySingleton(() => CreateUserPassword(sl()));
   sl.registerLazySingleton(() => CheckUserAccount(sl()));
+  sl.registerLazySingleton(() => RetrieveAuthUser(sl()));
 
   //Audio usecases
   sl.registerLazySingleton(() => DeleteAudio(sl()));
@@ -211,7 +214,16 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => ApiService(sl(), sl()));
 
   //Flutter Technology dependencies
-  sl.registerLazySingleton(() => Dio());
-  sl.registerLazySingleton(() => const FlutterSecureStorage());
-  sl.registerLazySingleton(() async => SharedPreferences.getInstance());
+  sl.registerLazySingleton<Dio>(() => Dio());
+  sl.registerLazySingleton<FlutterSecureStorage>(
+      () => const FlutterSecureStorage());
+  // sl.registerLazySingletonAsync<SharedPreferences>(
+  //     () => SharedPreferences.getInstance());
+
+  // try {
+  //   await sl.allReady(); // Wait for all async initializations to complete
+  // } catch (e) {
+  //   // Handle initialization failure, maybe log or retry
+  //   print("Error during initialization: $e");
+  // }
 }

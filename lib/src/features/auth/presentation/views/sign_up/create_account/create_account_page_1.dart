@@ -249,7 +249,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
 
   Widget _buildContinueButton() {
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-      if (state is Authenticated) {
+      if (state is AuthSuccess) {
         SuccessSnackBar.show(context: context, message: state.message);
         UserEmailSignUpPage.routeToSignUpPage(
             context, _emailController.text.trim());

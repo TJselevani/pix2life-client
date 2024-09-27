@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/app/navigation/media_tab_navigation.dart';
-import 'package:pix2life/src/app/navigation/upload_tab_navigation.dart';
+import 'package:pix2life/src/app/pages/main/audios/audio_player_page.dart';
 import 'package:pix2life/src/app/pages/main/landing_page.dart.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
-import 'package:pix2life/src/app/pages/upload-screen/select_media_upload.dart';
-import 'package:pix2life/src/shared/widgets/logo/app_logo.dart';
+import 'package:pix2life/src/app/menu/menu_options.dart';
+import 'package:pix2life/src/app/pages/upload-screen/test.dart';
 
 class MainPageNavigation extends StatefulWidget {
   const MainPageNavigation({super.key});
@@ -20,15 +21,43 @@ class MainPageNavigation extends StatefulWidget {
   State<MainPageNavigation> createState() => _MainPageNavigationState();
 }
 
-class _MainPageNavigationState extends State<MainPageNavigation> {
+class _MainPageNavigationState extends State<MainPageNavigation>
+    with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
 
+  // Drawer controller
+  final ZoomDrawerController _drawerController = ZoomDrawerController();
+
+  // Animation Controller for drawer open/close
+  late AnimationController _animationController;
+  late Animation<double> scaleAnimation;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    scaleAnimation = Tween<double>(begin: 1.0, end: 0.8).animate(
+      CurvedAnimation(
+          parent: _animationController, curve: Curves.fastOutSlowIn),
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  // Pages for navigation
   static final List<Widget> _pages = <Widget>[
-    const Daisy(), //FirstPage
-    const MediaTabNavigation(), // Third Page
-    const UploadScreen(), //Second Page
-    const UploadTabNavigation(), // Fourth Page
-    const ProfileScreen(), // Fourth Page
+    const Daisy(), // FirstPage
+    const MediaTabNavigation(), // SecondPage
+    const UploadScreen(), // ThirdPage
+    const AudioPlayerPage(), // FourthPage
+    const ProfileScreen(), // FifthPage
   ];
 
   void _onItemTapped(int index) {
@@ -37,96 +66,104 @@ class _MainPageNavigationState extends State<MainPageNavigation> {
     });
   }
 
+  // Trigger animations when drawer state changes
+  void _onDrawerToggle(bool isOpen) {
+    if (isOpen) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Initialize ScreenUtil to adapt sizes based on screen size
+    // Initialize ScreenUtil for responsive UI
     ScreenUtil.init(context,
         designSize: const Size(375, 804), minTextAdapt: true);
 
-    return Scaffold(
-      backgroundColor: AppPalette.lightBackground,
-      // appBar: _buildAppBar(),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppPalette.lightBackground,
-      title: _buildAuthLogo(),
-    );
-  }
-
-  Widget _buildAuthLogo() {
-    return Align(
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () {},
-        child: SizedBox(
-          width: ScreenUtil().setWidth(200),
-          height: ScreenUtil().setHeight(190),
-          child: const Pix2lifeLogo(),
+    return ZoomDrawer(
+      controller: _drawerController,
+      menuScreen: const MenuScreen(),
+      mainScreen: Scaffold(
+        backgroundColor: AppPalette.lightBackground,
+        // Display a button at the top left if the last tab (ProfileScreen) is selected
+        body: Stack(
+          children: [
+            AnimatedBuilder(
+              animation: scaleAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: scaleAnimation.value,
+                  child: _pages[_selectedIndex],
+                );
+              },
+            ),
+            if (_selectedIndex ==
+                _pages.length -
+                    1) // Only show button on last page (ProfileScreen)
+              Positioned(
+                top: 30.h, // Adjust top positioning
+                left: 5.w, // Adjust left positioning
+                child: IconButton(
+                  icon: Icon(CupertinoIcons.arrow_merge,
+                      color: AppPalette.navyBlue, size: 24.sp),
+                  onPressed: () {
+                    _drawerController.toggle!();
+                  },
+                ),
+              ),
+          ],
         ),
+        bottomNavigationBar: _buildBottomNavigationBar(),
       ),
+      borderRadius: 24.0,
+      showShadow: true,
+      angle: 0,
+      slideWidth: MediaQuery.of(context).size.width * 0.55,
+      openCurve: Curves.fastOutSlowIn,
+      closeCurve: Curves.easeInBack,
+      duration: const Duration(milliseconds: 300),
+      menuBackgroundColor: AppPalette.navyBlue,
     );
   }
 
   BottomNavigationBar _buildBottomNavigationBar() {
     return BottomNavigationBar(
       elevation: 0,
-      selectedFontSize: ScreenUtil().setSp(17),
-      items: <BottomNavigationBarItem>[
-        _buildBottomNavigationBarItem(
-          icon: CupertinoIcons.home, //Icons.airplay_rounded, //home_filled
-          label: 'Home',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: CupertinoIcons.app, //all_inclusive_rounded,
-          label: 'Blocks', //perm_media_rounded
-        ),
-        _buildBottomNavigationBarItem(
-          icon: CupertinoIcons.add_circled, // Icons.architecture_rounded,
-          label: 'upload',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: CupertinoIcons.app, // Icons.architecture_rounded,
-          label: 'cells',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: CupertinoIcons.person, // Icons.architecture_rounded,
-          label: 'Menu',
-        ),
+      items: [
+        _buildBottomNavigationBarItem(CupertinoIcons.home), // Home
+        _buildBottomNavigationBarItem(CupertinoIcons.app), // Blocks
+        _buildBottomNavigationBarItem(CupertinoIcons.add_circled), // Upload
+        _buildBottomNavigationBarItem(CupertinoIcons.app), // Cells
+        _buildBottomNavigationBarItem(CupertinoIcons.person), // Profile/Menu
       ],
       currentIndex: _selectedIndex,
       selectedItemColor: AppPalette.red,
-      unselectedItemColor: AppPalette.blueAccent,
-      selectedLabelStyle: TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(16),
-        color: AppPalette.red,
-      ),
-      unselectedLabelStyle: TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(12),
-      ),
+      unselectedItemColor: AppPalette.red,
+      backgroundColor: AppPalette.lightBackground,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
       onTap: _onItemTapped,
+      type: BottomNavigationBarType.fixed,
     );
   }
 
-  BottomNavigationBarItem _buildBottomNavigationBarItem({
-    required IconData icon,
-    required String label,
-  }) {
+  BottomNavigationBarItem _buildBottomNavigationBarItem(IconData icon) {
     return BottomNavigationBarItem(
-      backgroundColor: AppPalette.lightBackground,
-      icon: Icon(
-        icon,
-        color: AppPalette.red,
+      icon: Icon(icon),
+      activeIcon: Container(
+        decoration: BoxDecoration(
+          color: AppPalette.red, // Filled color for the selected item
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          icon,
+          color: Colors.white, // White icon color when selected
+        ),
       ),
-      label: label,
+      label: '', // No label
     );
   }
 }

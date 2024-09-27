@@ -15,12 +15,12 @@ final class GalleriesLoaded extends GalleryState {
   final List<Gallery> galleries;
   const GalleriesLoaded({required this.galleries});
 
-   @override
+  @override
   List<Object> get props => [galleries];
 }
 
 final class GalleryImagesLoaded extends GalleryState {
-  final List<Image> images;
+  final List<Photo> images;
 
   const GalleryImagesLoaded({required this.images});
 

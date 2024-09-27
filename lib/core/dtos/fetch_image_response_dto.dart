@@ -1,4 +1,3 @@
-import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/data/models/image.model.dart';
 
 class FetchImagesResponse {
@@ -6,8 +5,8 @@ class FetchImagesResponse {
 
   FetchImagesResponse({required this.images});
 
-  factory FetchImagesResponse.fromJson(DataMap json) {
-    var imagesJson = json['images'] as List;
+  factory FetchImagesResponse.fromJson(List json) {
+    var imagesJson = json;
     List<ImageModel> imageList =
         imagesJson.map((image) => ImageModel.fromJson(image)).toList();
 

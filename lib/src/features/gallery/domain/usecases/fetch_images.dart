@@ -19,11 +19,11 @@ class FetchImagesByGalleryParams extends Equatable {
 }
 
 class FetchImagesByGallery
-    implements UseCase<List<Image>, FetchImagesByGalleryParams> {
+    implements UseCase<List<Photo>, FetchImagesByGalleryParams> {
   final GalleryRepository _galleryRepository;
   const FetchImagesByGallery(this._galleryRepository);
   @override
-  ResultFuture<List<Image>> call(params) async {
+  ResultFuture<List<Photo>> call(params) async {
     return await _galleryRepository.fetchImagesByGallery(
         galleryName: params.galleryName);
   }

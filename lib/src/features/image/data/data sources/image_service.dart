@@ -9,7 +9,7 @@ import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/image/data/models/image.model.dart';
 
 class ImageService {
-  late final ApiService _apiService;
+  final ApiService _apiService;
   ImageService(this._apiService);
 
   Future<UploadImageResponse> uploadImage(

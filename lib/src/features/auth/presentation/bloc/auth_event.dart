@@ -63,3 +63,5 @@ final class AuthCreatePasswordEvent extends AuthEvent {
 final class AuthCheckAuthStatusEvent extends AuthEvent {}
 
 final class AuthLogoutEvent extends AuthEvent {}
+
+final class AuthRetrieveAuthenticatedUserEvent extends AuthEvent {}

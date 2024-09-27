@@ -5,12 +5,11 @@ import 'package:pix2life/core/dtos/updated_video_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_video_response_dto.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/video/data/models/video.model.dart';
 
 class VideoService {
-  late final ApiService _apiService;
+  final ApiService _apiService;
   VideoService(this._apiService);
   final log = createLogger(ApiService);
 
@@ -23,8 +22,8 @@ class VideoService {
 
   Future<FetchVideoResponse> fetchVideos() async {
     const url = '${AppSecrets.baseUrl}/video/user/all';
-    final DataMap imageList = await _apiService.fetchData(url);
-    return FetchVideoResponse.fromJson(imageList);
+    final data = await _apiService.fetchData(url);
+    return FetchVideoResponse.fromJson(data);
   }
 
   Future<UpdatedVideoResponse> updateVideo(VideoModel video) async {

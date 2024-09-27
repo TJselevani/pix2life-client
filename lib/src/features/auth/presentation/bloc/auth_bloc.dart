@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_auth_status.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_user_account.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/create_user_password.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_up.dart';
@@ -21,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogOutUser _logOutUser;
   final CreateUserPassword _createUserPassword;
   final CheckAuthStatus _checkAuthStatus;
+  final RetrieveAuthUser _retrieveAuthUser;
   final AuthManager _authManager;
   final logger = createLogger(AuthBloc);
 
@@ -31,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required LogOutUser logOutUSer,
     required CreateUserPassword createUserPassword,
     required CheckAuthStatus checkAuthStatus,
+    required RetrieveAuthUser retrieveAuthUser,
     required AuthManager authManager,
   })  : _userSignUp = userSignUp,
         _userSignIn = userSignIn,
@@ -38,6 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _logOutUser = logOutUSer,
         _createUserPassword = createUserPassword,
         _checkAuthStatus = checkAuthStatus,
+        _retrieveAuthUser = retrieveAuthUser,
         _authManager = authManager,
         super(AuthInitial()) {
     on<AuthCheckAccountEvent>(_onCheckAccountEvent);
@@ -46,6 +52,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLogoutEvent>(_onLogoutEvent);
     on<AuthCreatePasswordEvent>(_onCreatePasswordEvent);
     on<AuthCheckAuthStatusEvent>(_onCheckAuthStatusEvent);
+    on<AuthRetrieveAuthenticatedUserEvent>(
+        _onAuthRetrieveAuthenticatedUserEvent);
   }
 
   Future<void> _onCreatePasswordEvent(
@@ -55,7 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password, confirmPassword: event.confirmPassword));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (message) => emit(Authenticated(message: message)),
+      (message) => emit(AuthSuccess(message: message)),
     );
   }
 
@@ -66,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _checkUserAccount(CheckUserAccountParams(email: event.email));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (message) => emit(Authenticated(message: message)),
+      (message) => emit(AuthSuccess(message: message)),
     );
   }
 
@@ -79,7 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await _checkAuthStatus(CheckAuthStatusParams(token: token));
       response.fold(
         (failure) => emit(AuthFailure(message: failure.errorMessage)),
-        (user) => emit(AuthSuccess(user: user, message: 'Authenticated')),
+        (user) => emit(AuthenticatedUser(user: user, message: 'Authenticated')),
       );
     } else {
       emit(const AuthUnauthenticated());
@@ -98,7 +106,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (user) => emit(AuthSuccess(user: user, message: 'Sign up Successful')),
+      (user) =>
+          emit(AuthenticatedUser(user: user, message: 'SignUp Successful')),
     );
   }
 
@@ -111,7 +120,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ));
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (user) => emit(AuthSuccess(user: user, message: 'Log in Successful')),
+      (user) =>
+          emit(AuthenticatedUser(user: user, message: 'Log in Successful')),
     );
   }
 
@@ -122,10 +132,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await _logOutUser(LogOutUserParams(token: token));
       response.fold(
         (failure) => emit(AuthFailure(message: failure.errorMessage)),
-        (user) => emit(const Authenticated(message: 'Successfully logged out')),
+        (user) => emit(const AuthSuccess(message: 'Successfully logged out')),
       );
     } else {
       emit(const AuthFailure(message: 'Failed to Sign Out'));
     }
+  }
+
+  FutureOr<void> _onAuthRetrieveAuthenticatedUserEvent(
+      AuthRetrieveAuthenticatedUserEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final response = await _retrieveAuthUser();
+    response.fold(
+      (failure) => emit(AuthFailure(message: failure.errorMessage)),
+      (user) =>
+          emit(AuthenticatedUser(user: user, message: 'Retrieval Successful')),
+    );
   }
 }

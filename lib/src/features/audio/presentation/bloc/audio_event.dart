@@ -18,7 +18,7 @@ final class AudioDeleteEvent extends AudioEvent {
 
 final class AudiosFetchEvent extends AudioEvent {}
 
-final class AudioFetchEvent extends AudioEvent {}
+// final class AudioFetchEvent extends AudioEvent {}
 
 final class AudioUpdateEvent extends AudioEvent {
   final Audio audio;

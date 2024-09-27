@@ -25,7 +25,7 @@ abstract interface class GalleryRemoteDataSource {
 }
 
 class GalleryRemoteDataSourceImpl implements GalleryRemoteDataSource {
-  late final GalleryService _galleryService;
+  final GalleryService _galleryService;
   GalleryRemoteDataSourceImpl(this._galleryService);
   final logger = createLogger(GalleryRemoteDataSourceImpl);
 

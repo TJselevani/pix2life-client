@@ -37,7 +37,7 @@ final class ImageDeleteEvent extends ImageEvent {
 }
 
 final class ImageUpdateEvent extends ImageEvent {
-  final Image image;
+  final Photo image;
 
   const ImageUpdateEvent({required this.image});
 
@@ -45,7 +45,7 @@ final class ImageUpdateEvent extends ImageEvent {
   List<Object> get props => [image];
 }
 
-final class ImageFetchEvent extends ImageEvent {}
+// final class ImageFetchEvent extends ImageEvent {}
 
 final class ImagesFetchEvent extends ImageEvent {}
 

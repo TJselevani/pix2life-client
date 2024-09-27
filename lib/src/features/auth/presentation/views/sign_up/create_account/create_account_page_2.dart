@@ -207,7 +207,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
   Widget _buildSubmitButton() {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthenticatedUser) {
           SuccessSnackBar.show(context: context, message: state.message);
           UserDetailsSignUpPage.routeToPasswordPage(context);
         } else if (state is AuthFailure) {

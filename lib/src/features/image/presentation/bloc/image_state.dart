@@ -12,7 +12,7 @@ final class ImageInitial extends ImageState {}
 final class ImageLoading extends ImageState {}
 
 final class ImagesLoaded extends ImageState {
-  final List<Image> images;
+  final List<Photo> images;
 
   const ImagesLoaded({required this.images});
 
@@ -21,7 +21,7 @@ final class ImagesLoaded extends ImageState {
 }
 
 final class ImageLoaded extends ImageState {
-  final Image image;
+  final Photo image;
 
   const ImageLoaded({required this.image});
 
@@ -30,7 +30,7 @@ final class ImageLoaded extends ImageState {
 }
 
 final class ImageUpdated extends ImageState {
-  final Image image;
+  final Photo image;
   final String message;
 
   const ImageUpdated({required this.image, required this.message});

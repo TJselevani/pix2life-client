@@ -12,14 +12,14 @@ abstract interface class ImageRepository {
     required FormData formData,
   });
 
-  ResultFuture<Image> matchImage({
+  ResultFuture<Photo> matchImage({
     required FormData formData,
   });
 
-  ResultFuture<List<Image>> fetchImages();
+  ResultFuture<List<Photo>> fetchImages();
 
-  ResultFuture<Image> updateImage({
-    required Image image,
+  ResultFuture<Photo> updateImage({
+    required Photo image,
   });
 
   ResultFuture<String> deleteImage({

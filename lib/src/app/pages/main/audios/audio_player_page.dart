@@ -8,10 +8,6 @@ class AudioPlayerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FB),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF5965F2),
-        elevation: 0,
-      ),
       body: Column(
         children: [
           _buildHeaderSection(),
@@ -30,7 +26,7 @@ class AudioPlayerPage extends StatelessWidget {
   // Header section with user greeting and task progress
   Widget _buildHeaderSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
       decoration: const BoxDecoration(
         color: Color(0xFF5965F2),
         borderRadius: BorderRadius.only(

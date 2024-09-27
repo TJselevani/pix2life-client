@@ -38,7 +38,7 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
         _uploadAvatar = uploadAvatar,
         super(ImageInitial()) {
     on<ImageDeleteEvent>(_onImageDeleteEvent);
-    on<ImageFetchEvent>(_onImageFetchEvent);
+    on<ImagesFetchEvent>(_onImagesFetchEvent);
     on<ImageMatchEvent>(_onImageMatchEvent);
     on<ImageUpdateEvent>(_onImageUpdateEvent);
     on<ImageUploadEvent>(_onImageUploadEvent);
@@ -56,8 +56,8 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
     );
   }
 
-  FutureOr<void> _onImageFetchEvent(
-      ImageFetchEvent event, Emitter<ImageState> emit) async {
+  FutureOr<void> _onImagesFetchEvent(
+      ImagesFetchEvent event, Emitter<ImageState> emit) async {
     emit(ImageLoading());
     final response = await _fetchImages();
     response.fold(

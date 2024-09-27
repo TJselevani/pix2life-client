@@ -1,4 +1,3 @@
-import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/video/data/models/video.model.dart';
 
 class FetchVideoResponse {
@@ -6,8 +5,8 @@ class FetchVideoResponse {
 
   FetchVideoResponse({required this.videos});
 
-  factory FetchVideoResponse.fromJson(DataMap json) {
-    var videosJson = json['video'] as List;
+  factory FetchVideoResponse.fromJson(List json) {
+    var videosJson = json;
     List<VideoModel> videoList =
         videosJson.map((video) => VideoModel.fromJson(video)).toList();
 

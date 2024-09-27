@@ -30,6 +30,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   final _confirmPasswordController = TextEditingController();
   final _passwordController = TextEditingController();
   final logger = createLogger(UserCreatePasswordPage);
+
   bool _obscureText = true;
   bool _obscureText2 = true;
 
@@ -43,54 +44,6 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
     setState(() {
       _obscureText2 = !_obscureText2;
     });
-  }
-
-  // Future<void> _submitForm() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     try {
-  //       final password = _passwordController.text.trim();
-  //       final confirmPassword = _confirmPasswordController.text.trim();
-  //       final response =
-  //           await userService.createPassword(password, confirmPassword);
-
-  //       if (!mounted) return; // Check if the widget is still mounted
-
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-
-  //       logger.i('User ::: !!!!! ${response.userEmail}');
-  //       logger.i(response.message);
-
-  //       SuccessSnackBar.show(
-  //           context: context,
-  //           message: '${response.userEmail} ${response.message}');
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) =>
-  //               CreateAccountSuccessPage(userEmail: response.userEmail),
-  //         ),
-  //       );
-  //     } catch (e) {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       logger.e('Error: $e');
-  //       ErrorSnackBar.show(message: '$e', context: context);
-  //     }
-  //   }
-  // }
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
   }
 
   @override
@@ -269,7 +222,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
           ErrorSnackBar.show(context: context, message: state.message);
         }
 
-        if (state is Authenticated) {
+        if (state is AuthSuccess) {
           SuccessSnackBar.show(context: context, message: state.message);
           UserCreatePasswordPage.routeToSuccessPage(context);
         }
