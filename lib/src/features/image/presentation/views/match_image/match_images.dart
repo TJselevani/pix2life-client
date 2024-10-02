@@ -4,24 +4,24 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
+import 'package:pix2life/core/constants.dart';
+import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:pix2life/src/features/image/domain/entities/image.dart';
+import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/features/image/presentation/widgets/gallery_popup_dialog.dart';
+import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';
 
 class ImageMatchScreen extends StatefulWidget {
-  static routeToHomePage(context) {
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => MainPage()),
-    // );
-    Navigator.pushReplacementNamed(context, '/Home');
-  }
-
   const ImageMatchScreen({super.key});
 
   @override
@@ -38,6 +38,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   File? _imageFile;
   String? _matchedImage;
   String? _galleryName;
+  String? _imageUrl;
 
   @override
   void initState() {
@@ -60,11 +61,11 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
-        _isReady = true; // Mark as ready to match
+        _isReady = true;
       });
     } else {
       setState(() {
-        _isReady = false; // Reset if no file is picked
+        _isReady = false;
       });
     }
   }
@@ -75,139 +76,84 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
-        _isReady = true; // Mark as ready to match
+        _isReady = true;
       });
     } else {
       setState(() {
-        _isReady = false; // Reset if no file is picked
+        _isReady = false;
       });
     }
   }
 
-  Future<void> _uploadMatchImage() async {
-    if (!mounted) return;
+  Future<void> _uploadImage(FormData formData) async {
+    BlocProvider.of<ImageBloc>(context)
+        .add(ImageMatchEvent(formData: formData));
+  }
+
+  Future<void> _uploadMatchImage(
+      File? media, Function(FormData) uploadFunction) async {
+    if (media == null) {
+      ErrorSnackBar.show(context: context, message: 'No media to upload');
+      return;
+    }
+
     setState(() {
       _matchedImage = null;
       _isLoading = true;
       _isSet = false;
     });
 
-    File image = _imageFile!;
-    // ignore: unused_local_variable
+    File image = media;
+    final filename = image.path.split('/').last;
     FormData formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(image.path,
-          filename: image.path.split('/').last),
+      "file": await MultipartFile.fromFile(image.path, filename: filename),
     });
+    log.i('Uploading file: $filename, path: ${image.path}');
 
     try {
-      // final response = await mediaService.matchImage(formData);
-      // setState(() {
-      //   _isSet = true;
-      //   _matchedImage = response.image['url'];
-      //   _galleryName = response.image['galleryName'];
-      // });
-
-      if (!mounted) return;
-
-      // SuccessSnackBar.show(context: context, message: response.message);
-      log.i('Successfully Matched Image: ${image.path.split('/').last}');
+      await uploadFunction(formData); // Trigger the actual upload function
+      setState(() {
+        _isSet = true;
+      });
     } catch (e) {
-      if (!mounted) return;
-      // ErrorSnackBar.show(context: context, message: 'Match Failed');
-      log.e('Image Matching Failed ${image.path.split('/').last}: $e');
+      log.e('Image Matching Failed $filename: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
   }
 
-  Future<void> _showGalleryImages(String galleryName) async {
-    try {
-      // final response = await mediaService.fetchImagesByGallery(galleryName);
-      List images = []; //response.images;
-      showDialog(
-        // ignore: use_build_context_synchronously
+  Future<void> _showGalleryImages(
+      BuildContext context, String galleryName) async {
+    // Dispatch the event to fetch gallery images
+    BlocProvider.of<GalleryBloc>(context)
+        .add(GalleryFetchImagesEvent(galleryName: galleryName));
+
+    // Listen to the Bloc state for images
+    final galleryState = BlocProvider.of<GalleryBloc>(context).state;
+
+    if (galleryState is GalleryImagesLoaded) {
+      // Images have been successfully loaded
+      GalleryDialog.showGalleryImagesDialog(
         context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            child: Stack(
-              children: [
-                // Blurred background
-                Positioned.fill(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                      child: Container(
-                        color: Colors.transparent, // Remove the black overlay
-                      ),
-                    ),
-                  ),
-                ),
-                // Gallery images display
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          galleryName,
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        SizedBox(
-                          height: 300.h,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: images.length,
-                            itemBuilder: (context, index) {
-                              final image = images[index];
-                              return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.w),
-                                  child: Image.network(
-                                    image.url,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error,
-                                            stackTrace) =>
-                                        const Icon(Icons.image_not_supported),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+        images: galleryState.images, // Pass the loaded images
+        galleryName: galleryName, // Pass the gallery name
       );
-    } catch (e) {
-      log.e('Failed to fetch images: $e');
-      // ErrorSnackBar.show(context: context, message: 'Failed to fetch images');
+    } else if (galleryState is GalleryFailure) {
+      // Handle the failure case
+      ErrorSnackBar.show(
+        context: context,
+        message: 'Failed to fetch gallery images',
+      );
+    } else if (galleryState is GalleryLoading) {
+      SuccessSnackBar.show(context: context, message: 'Fetching Gallery ...');
     }
   }
 
-  Widget _buildImageContainer({
+  Widget _buildFileImageContainer({
     required String label,
     File? imageFile,
-    String? imageUrl,
-    bool isLoading = false,
   }) {
     return Container(
       width: ScreenUtil().setWidth(150),
@@ -216,40 +162,108 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
         color: AppPalette.red,
         shape: BoxShape.rectangle,
       ),
-      child: isLoading
-          ? Center(
-              child: LoadingAnimationWidget.beat(
-                color: AppPalette.primaryWhite,
-                size: ScreenUtil().setWidth(50),
-              ),
+      child: imageFile != null
+          ? Image.file(
+              imageFile,
+              fit: BoxFit.cover,
             )
-          : imageFile != null
-              ? Image.file(
-                  imageFile,
-                  fit: BoxFit.cover,
-                )
-              : imageUrl != null && imageUrl.isNotEmpty
-                  ? GestureDetector(
-                      onTap: () => _showGalleryImages(_galleryName!),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.image_not_supported),
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
-                          fontSize: ScreenUtil().setSp(12),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+          : Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontSize: ScreenUtil().setSp(12),
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+    );
+  }
+
+  Widget _buildNetworkImageContainer({
+    required String label,
+    String? imageUrl,
+    bool isLoading = false,
+  }) {
+    return BlocConsumer<ImageBloc, ImageState>(
+      listener: (context, state) {
+        // Listening for ImageLoaded state to set imageUrl and galleryName
+        if (state is ImageLoaded) {
+          setState(() {
+            _imageUrl = state.image.url;
+            _galleryName = state.image.galleryName;
+          });
+        }
+      },
+      builder: (context, state) {
+        if (isLoading) {
+          // Show loading widget when uploading
+          return Center(
+            child: LoadingAnimationWidget.beat(
+              color: AppPalette.red,
+              size: ScreenUtil().setWidth(50),
+            ),
+          );
+        } else if (state is ImageLoaded &&
+            imageUrl != null &&
+            imageUrl.isNotEmpty) {
+          // Show the network image when loaded and available
+          return GestureDetector(
+            onTap: () {
+              // On tap, show gallery images if galleryName is set
+              if (_galleryName != null) {
+                _showGalleryImages(context, _galleryName!);
+              }
+            },
+            child: Container(
+              width: ScreenUtil().setWidth(150),
+              height: ScreenUtil().setHeight(150),
+              decoration: const BoxDecoration(
+                color: AppPalette.red,
+                shape: BoxShape.rectangle,
+              ),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.image_not_supported),
+              ),
+            ),
+          );
+        } else if (state is ImageLoading) {
+          // Show a loading animation when the image is being loaded
+          return Center(
+            child: LoadingAnimationWidget.beat(
+              color: AppPalette.red,
+              size: ScreenUtil().setWidth(50),
+            ),
+          );
+        } else {
+          // Default view when no image is available or loading
+          return Container(
+            width: ScreenUtil().setWidth(150),
+            height: ScreenUtil().setHeight(150),
+            decoration: const BoxDecoration(
+              color: AppPalette.red,
+              shape: BoxShape.rectangle,
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontSize: ScreenUtil().setSp(12),
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -269,7 +283,6 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           label,
           style: const TextStyle(
             fontFamily: 'Poppins',
-            // color: AppPalette.blackColor,
           ),
         ),
       ],
@@ -279,97 +292,146 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primaryWhite,
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(ScreenUtil().setWidth(8)),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().setWidth(37)),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Text(
-                      'Image Matching',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: ScreenUtil().setSp(24),
-                        color: AppPalette.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    if (_isSet)
-                      DisappearingText(
-                        text: 'Tap on the Matched Image',
-                        isVisible: _isSet,
-                      ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildImageContainer(
-                          label: 'Your Image',
-                          imageFile: _imageFile,
+      backgroundColor: AppPalette.lightBackground,
+      body: MultiBlocListener(
+        listeners: [
+          // Listener to show loading while uploading image
+          BlocListener<ImageBloc, ImageState>(
+            listener: (context, state) {
+              if (state is ImageLoading) {
+                setState(() {
+                  _isLoading = true;
+                });
+              } else if (state is ImageLoaded) {
+                setState(() {
+                  _isLoading = false;
+                  _matchedImage = state.image.url;
+                  _galleryName = state.image.galleryName;
+                });
+                SuccessSnackBar.show(context: context, message: 'Match Found');
+              } else if (state is ImageFailure) {
+                setState(() {
+                  _isLoading = false;
+                });
+                ErrorSnackBar.show(
+                    context: context, message: 'Image Match failed');
+              }
+            },
+          ),
+          // Listener to handle fetching of gallery images
+          BlocListener<GalleryBloc, GalleryState>(
+            listener: (context, state) {
+              if (state is GalleryImagesLoaded) {
+                SuccessSnackBar.show(
+                    context: context,
+                    message:
+                        'Successfully fetched ${state.images.length} gallery images');
+              }
+
+              if (state is GalleryFailure) {
+                ErrorSnackBar.show(
+                    context: context,
+                    message: 'Failed to fetch gallery images');
+              }
+            },
+          ),
+        ],
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(ScreenUtil().setWidth(18)),
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      Text(
+                        'Image Matching',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: ScreenUtil().setSp(24),
+                          color: AppPalette.red,
+                          fontWeight: FontWeight.w600,
                         ),
-                        SizedBox(width: ScreenUtil().setWidth(20)),
-                        _buildImageContainer(
-                          label: 'Matched Image',
-                          imageUrl: _matchedImage,
-                          isLoading: _isLoading,
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      if (_isSet)
+                        DisappearingText(
+                          text: 'Tap on the Matched Image',
+                          isVisible: _isSet,
                         ),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildActionButton(
-                            Icons.camera, 'Take Photo', _takePhoto),
-                        _buildActionButton(Icons.browse_gallery,
-                            'Search Gallery', _pickImageFromGallery),
-                      ],
-                    ),
-                    SizedBox(height: ScreenUtil().setHeight(50)),
-                    SizedBox(
-                      width: ScreenUtil().setWidth(319),
-                      child: RichText(
-                        text: TextSpan(
-                          text:
-                              'Take a photo using your camera or pick an image from the gallery to match the image using our service.',
-                          style: TextStyle(
-                            color: AppPalette.primaryGrey,
-                            fontFamily: 'Poppins',
-                            fontSize: ScreenUtil().setSp(14),
-                            fontWeight: FontWeight.w400,
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Left container with your image
+                          _buildFileImageContainer(
+                            label: 'Your Image',
+                            imageFile: _imageFile,
                           ),
-                        ),
-                        textAlign: TextAlign.center,
+                          // SizedBox(width: ScreenUtil().setWidth(20)),
+                          // Right container with matched image and loading state
+                          BlocBuilder<ImageBloc, ImageState>(
+                            builder: (context, state) {
+                              return _buildNetworkImageContainer(
+                                label: 'Matched Image',
+                                imageUrl: _matchedImage,
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildActionButton(
+                              Icons.camera, 'Take Photo', _takePhoto),
+                          _buildActionButton(Icons.browse_gallery,
+                              'Search Gallery', _pickImageFromGallery),
+                        ],
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(50)),
+                      SizedBox(
+                        width: ScreenUtil().setWidth(319),
+                        child: RichText(
+                          text: TextSpan(
+                            text:
+                                'Take a photo using your camera or pick an image from the gallery to match the image using our service.',
+                            style: TextStyle(
+                              color: AppPalette.primaryGrey,
+                              fontFamily: 'Poppins',
+                              fontSize: ScreenUtil().setSp(14),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: ScreenUtil().setHeight(30)),
-          if (_isReady)
-            _isLoading
-                ? LoadingAnimationWidget.bouncingBall(
-                    color: AppPalette.red,
-                    size: ScreenUtil().setWidth(30),
-                  )
-                : RoundedButton(
-                    name: "Match Image",
-                    onPressed: _uploadMatchImage,
-                  ),
-          SizedBox(height: ScreenUtil().setHeight(20)),
-        ],
+            SizedBox(height: ScreenUtil().setHeight(30)),
+            if (_isReady)
+              _isLoading
+                  ? LoadingAnimationWidget.bouncingBall(
+                      color: AppPalette.red,
+                      size: ScreenUtil().setWidth(30),
+                    )
+                  : RoundedButton(
+                      name: "Match Image",
+                      onPressed: () {
+                        if (_imageFile != null) {
+                          _uploadMatchImage(_imageFile, _uploadImage);
+                        }
+                      },
+                    ),
+            SizedBox(height: ScreenUtil().setHeight(20)),
+          ],
+        ),
       ),
     );
   }

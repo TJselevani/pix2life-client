@@ -32,8 +32,10 @@ class AppConstraints {
 class AppImage {
   static const gallery1 = 'assets/images/A.jpg';
   static const gallery2 = 'assets/images/R.jpeg';
+  static const camera = 'assets/images/camera.png';
   static const welcomeImage = 'assets/images/pic1.png';
   static const welcomeImage2 = 'assets/images/pic2.png';
+  static const welcomeImage3 = 'assets/images/pic3.png';
   static const whiteIconImage = 'assets/images/whiteIcon.png';
   static const randomImage = 'https://random.imagecdn.app/150/150';
   static const avatarUrl =
@@ -43,5 +45,3 @@ class AppImage {
 class AppLogo {
   static const pix2lifeLogo = "assets/images/pix2lifelogo.png";
 }
-
-

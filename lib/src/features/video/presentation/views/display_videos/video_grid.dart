@@ -6,7 +6,7 @@ import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/video/domain/entities/video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
-import 'package:pix2life/src/shared/widgets/video_player/network_video_thumbnail_widget.dart';
+import 'package:pix2life/src/shared/widgets/video-player/network_video_thumbnail_widget.dart';
 
 class VideoGridPage extends StatefulWidget {
   const VideoGridPage({super.key});

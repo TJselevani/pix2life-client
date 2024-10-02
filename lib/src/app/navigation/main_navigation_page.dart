@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/app/navigation/media_tab_navigation.dart';
-import 'package:pix2life/src/app/pages/main/audios/audio_player_page.dart';
-import 'package:pix2life/src/app/pages/main/landing_page.dart.dart';
+import 'package:pix2life/src/features/gallery/presentation/views/daisy.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
 import 'package:pix2life/src/app/menu/menu_options.dart';
 import 'package:pix2life/src/app/pages/upload-screen/test.dart';
+import 'package:pix2life/src/features/image/presentation/views/match_image/match_images.dart';
 
 class MainPageNavigation extends StatefulWidget {
   const MainPageNavigation({super.key});
@@ -56,7 +56,7 @@ class _MainPageNavigationState extends State<MainPageNavigation>
     const Daisy(), // FirstPage
     const MediaTabNavigation(), // SecondPage
     const UploadScreen(), // ThirdPage
-    const AudioPlayerPage(), // FourthPage
+    const ImageMatchScreen(), // FourthPage
     const ProfileScreen(), // FifthPage
   ];
 

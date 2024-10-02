@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pix2life/src/shared/widgets/video_player/basic_overlay_widget.dart';
+import 'package:pix2life/src/shared/widgets/video-player/basic_overlay_widget.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {

@@ -68,6 +68,7 @@ class GalleryRemoteDataSourceImpl implements GalleryRemoteDataSource {
           await _galleryService.fetchGalleries();
       final List<GalleryModel> galleries = response.galleries;
       final message = response.message;
+      logger.i('retrieved ${galleries.length} galleries');
       logger.i(message);
       return galleries;
     } on ServerException {

@@ -14,6 +14,7 @@ class AppTheme {
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: AppPalette.red,
+    indicatorColor: AppPalette.red,
     scaffoldBackgroundColor: AppPalette.lightBackground,
     fontFamily: 'Poppins',
     appBarTheme: const AppBarTheme(

@@ -70,6 +70,11 @@ class _WelcomePageState extends State<WelcomePage> {
   BoxDecoration _buildBackgroundDecoration() {
     return BoxDecoration(
       color: Colors.white,
+      image: const DecorationImage(
+          image: AssetImage(
+            AppImage.welcomeImage3,
+          ),
+          fit: BoxFit.cover),
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(37.r),
         topRight: Radius.circular(37.r),
@@ -93,7 +98,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _buildPageView(BuildContext context) {
     return SizedBox(
       height: 307.h, // You can adjust this to make it more flexible
-      width: 285.w,
+      width: 300.w,
       child: PageView.builder(
         controller: _pageController,
         onPageChanged: (int page) {

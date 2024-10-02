@@ -1,23 +1,23 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/src/app/pages/upload-screen/media_picker_service.dart';
+import 'package:pix2life/src/app/pages/upload-screen/media_preview.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/features/gallery/domain/entities/gallery.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
-import 'package:pix2life/src/shared/widgets/video_player/file_video_thumbnail_widget.dart';
+import 'package:pix2life/src/shared/widgets/camera-icon/camera_icon.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -28,8 +28,8 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   final TextEditingController _nameController = TextEditingController();
+  final MediaPickerService mediaPickerService = MediaPickerService();
   final log = createLogger(UploadScreen);
-  final ImagePicker _picker = ImagePicker();
   List<XFile>? _images = [];
   List<XFile>? _videos = [];
   List<XFile>? _audios = [];
@@ -57,11 +57,6 @@ class _UploadScreenState extends State<UploadScreen> {
 
   // Media pick methods
   Future<void> _pickImages() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-
     setState(() {
       if (_selectedMediaType != 'images') {
         _selectedMedia = [];
@@ -71,18 +66,51 @@ class _UploadScreenState extends State<UploadScreen> {
       _selectedMediaType = 'images'; // Set media type
     });
 
-    final List<XFile>? selectedImages = (await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: true,
-    ))
-        ?.files
-        .map((file) => XFile(file.path!))
-        .toList();
+    final List<XFile>? selectedImages = await mediaPickerService.pickImages();
 
     if (selectedImages != null && selectedImages.isNotEmpty) {
       setState(() {
         _images!.addAll(selectedImages); // Append to existing images
         _selectedMedia!.addAll(selectedImages); // Append to selected media
+      });
+    }
+  }
+
+  Future<void> _pickVideo() async {
+    setState(() {
+      if (_selectedMediaType != 'videos') {
+        _selectedMedia = [];
+        _images = [];
+        _audios = [];
+      }
+      _selectedMediaType = 'videos'; // Set media type
+    });
+
+    final XFile? videoPicker = await mediaPickerService.pickVideo();
+    if (videoPicker != null) {
+      setState(() {
+        _videos!.add(videoPicker); // Append to existing videos
+        _selectedMedia!.add(videoPicker); // Append to selected media
+      });
+    }
+  }
+
+  Future<void> _pickAudios() async {
+    setState(() {
+      if (_selectedMediaType != 'audios') {
+        _selectedMedia = [];
+        _images = [];
+        _videos = [];
+      }
+      _selectedMediaType = 'audios'; // Set media type
+    });
+
+    final List<XFile>? audioFiles = await mediaPickerService.pickAudios();
+
+    if (audioFiles != null && audioFiles.isNotEmpty) {
+      setState(() {
+        _audios!.addAll(audioFiles); // Append to existing audios
+        _selectedMedia!.addAll(audioFiles); // Append to selected media
       });
     }
   }
@@ -93,66 +121,10 @@ class _UploadScreenState extends State<UploadScreen> {
         .add(ImageUploadEvent(formData: formData, galleryName: 'galleryName'));
   }
 
-  Future<void> _pickVideo() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-
-    setState(() {
-      if (_selectedMediaType != 'videos') {
-        _selectedMedia = [];
-        _images = [];
-        _audios = [];
-      }
-      _selectedMediaType = 'videos'; // Set media type
-    });
-
-    final XFile? videoPicker =
-        await _picker.pickVideo(source: ImageSource.gallery);
-    if (videoPicker != null) {
-      setState(() {
-        _videos!.add(videoPicker); // Append to existing videos
-        _selectedMedia!.add(videoPicker); // Append to selected media
-      });
-    }
-  }
-
   Future<void> _uploadVideos(FormData formData, String galleryName) async {
     context
         .read<VideoBloc>()
         .add(VideoUploadEvent(formData: formData, galleryName: 'galleryName'));
-  }
-
-  Future<void> _pickAudios() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-
-    setState(() {
-      if (_selectedMediaType != 'audios') {
-        _selectedMedia = [];
-        _images = [];
-        _videos = [];
-      }
-      _selectedMediaType = 'audios'; // Set media type
-    });
-
-    final List<XFile>? audioFiles = (await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-      allowMultiple: true,
-    ))
-        ?.files
-        .map((file) => XFile(file.path!))
-        .toList();
-
-    if (audioFiles != null && audioFiles.isNotEmpty) {
-      setState(() {
-        _audios!.addAll(audioFiles); // Append to existing audios
-        _selectedMedia!.addAll(audioFiles); // Append to selected media
-      });
-    }
   }
 
   Future<void> _uploadAudios(FormData formData, String galleryName) async {
@@ -165,16 +137,15 @@ class _UploadScreenState extends State<UploadScreen> {
     List<XFile>? mediaList,
     Future Function(FormData formData, String galleryName) uploadFunction,
   ) async {
-    if (!mounted) return;
-    setState(() {
-      _isLoading = true;
-      _copyMedia.addAll(mediaList!);
-    });
-
     if (mediaList == null || mediaList.isEmpty) {
       ErrorSnackBar.show(context: context, message: 'No media to upload');
       return;
     }
+
+    setState(() {
+      _isLoading = true;
+      _copyMedia.addAll(mediaList);
+    });
 
     await Future.forEach(mediaList, (XFile media) async {
       FormData formData = FormData.fromMap({
@@ -209,6 +180,11 @@ class _UploadScreenState extends State<UploadScreen> {
         });
       }
     });
+    // Check if all media have been uploaded successfully
+    if (_uploadDone.length == _copyMedia.length) {
+      log.i('All media files uploaded successfully. Resetting...');
+      _reset(); // Reset state
+    }
 
     if (!mounted) return;
   }
@@ -262,118 +238,38 @@ class _UploadScreenState extends State<UploadScreen> {
     );
   }
 
-  String? getCurrentUploadingFile() {
-    if (_uploadingMedia.isNotEmpty) {
-      return _uploadingMedia.last; // Get the last file in the uploading list
-    }
-    return null; // Return null if no file is being uploaded
-  }
-
-  Widget _buildUploadingStatus() {
-    String? currentFile = getCurrentUploadingFile();
-    return currentFile != null
-        ? Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(), // Progress indicator
-                const SizedBox(width: 10),
-                Text(
-                  'Uploading: $currentFile',
-                  style: const TextStyle(fontSize: 16, color: Colors.black87),
-                ),
-              ],
-            ),
-          )
-        : const SizedBox
-            .shrink(); // Return an empty container if no file is uploading
-  }
-
   // Unified media preview
   Widget _buildMediaPreview() {
     if (_selectedMediaType == 'images' && _images!.isNotEmpty) {
-      return _buildGridPreview(_images!);
+      return buildImagesGridPreview(
+          context: context,
+          imageFiles: _images!,
+          onRemove: (int index) {
+            setState(() {
+              _images!.removeAt(index); // Handle image removal
+            });
+          });
     } else if (_selectedMediaType == 'videos' && _videos!.isNotEmpty) {
-      return _buildGridPreview2(_videos!);
+      return buildVideosGridPreview(
+          context: context,
+          videoFiles: _videos!,
+          onRemove: (int index) {
+            setState(() {
+              _videos!.removeAt(index); // Handle image removal
+            });
+          });
     } else if (_selectedMediaType == 'audios' && _audios!.isNotEmpty) {
-      return _buildListPreview(_audios!);
+      return buildAudiosListPreview(
+          context: context,
+          audioFiles: _audios!,
+          onRemove: (int index) {
+            setState(() {
+              _audios!.removeAt(index); // Handle image removal
+            });
+          });
     } else {
       return const Center(child: Text('No media selected.'));
     }
-  }
-
-  // Grid preview for images and videos
-  Widget _buildGridPreview(List<XFile> mediaFiles) {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-      ),
-      itemCount: mediaFiles.length,
-      shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return ImageSelectionContainer(
-          mediaPath: mediaFiles[index].path,
-          onRemove: () {
-            setState(() {
-              mediaFiles.removeAt(index);
-            });
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildGridPreview2(List<XFile> mediaFiles) {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-      ),
-      itemCount: mediaFiles.length,
-      shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return VideoSelectionContainer(
-          mediaPath: mediaFiles[index].path,
-          onRemove: () {
-            setState(() {
-              mediaFiles.removeAt(index);
-            });
-          },
-        );
-      },
-    );
-  }
-
-  // List preview for audios
-  Widget _buildListPreview(List<XFile> audioFiles) {
-    return ListView.builder(
-      itemCount: audioFiles.length,
-      shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(audioFiles[index].name),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              setState(() {
-                audioFiles.removeAt(index);
-              });
-            },
-          ),
-        );
-      },
-    );
   }
 
   Widget _buildGalleryOptions() {
@@ -407,14 +303,17 @@ class _UploadScreenState extends State<UploadScreen> {
 
       final nextState = context.read<GalleryBloc>().state;
       if (nextState is GalleriesLoaded) {
-        final data =
-            (BlocProvider.of<GalleryBloc>(context).state as GalleriesLoaded)
-                .galleries;
-        log.i('successfully fetch galleries');
+        // final data =
+        //     (BlocProvider.of<GalleryBloc>(context).state as GalleriesLoaded)
+        //         .galleries;
+
         setState(() {
-          fetchedGalleries = data;
+          fetchedGalleries =
+              (BlocProvider.of<GalleryBloc>(context).state as GalleriesLoaded)
+                  .galleries;
           galleryNames =
               fetchedGalleries.map((gallery) => gallery.name).toList();
+          log.i('successfully fetch galleries $galleryNames');
         });
       }
     }
@@ -464,18 +363,20 @@ class _UploadScreenState extends State<UploadScreen> {
           : Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.menu, size: 30, color: Colors.grey),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        'https://random.imagecdn.app/150/150', // Replace with actual profile image URL
+                    const Icon(Icons.menu, size: 30, color: Colors.grey),
+                    Container(
+                      width: 100, // Set the width of the avatar
+                      height: 100, // Set the height of the avatar
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Make it circular
                       ),
+                      child: const RedCircleAvatar(imagePath: AppImage.camera),
                     ),
-                    Icon(Icons.more_vert, size: 30, color: Colors.grey),
+                    const Icon(Icons.more_vert, size: 30, color: Colors.grey),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -539,21 +440,6 @@ class _UploadScreenState extends State<UploadScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildGalleryOptions(),
-          // Wrap(
-          //   children: [
-          //     Text(
-          //       'Select Gallery',
-          //       style: TextStyle(
-          //         fontSize: 18,
-          //         fontWeight: FontWeight.bold,
-          //         color: Colors.black87,
-          //       ),
-          //     ),
-          //     SizedBox(width: 10),
-          //     Icon(Icons.perm_media, color: Colors.grey),
-          //   ],
-          // ),
-          // Text('12 May 2024')
         ],
       ),
     );
@@ -605,10 +491,9 @@ class _UploadScreenState extends State<UploadScreen> {
               'Upload Videos from your Gallery',
               _selectedMediaType == 'videos' && _videos!.isNotEmpty
                   ? GestureDetector(
-                      onTap: () async {
+                      onTap: () {
                         if (_videos!.isNotEmpty) {
-                          await _uploadMedia(_videos, _uploadVideos);
-                          
+                          _uploadMedia(_videos, _uploadVideos);
                         }
                       },
                       child: const Icon(CupertinoIcons.cloud_upload_fill))
@@ -633,10 +518,9 @@ class _UploadScreenState extends State<UploadScreen> {
               'Upload Audios from your Gallery',
               _selectedMediaType == 'audios' && _audios!.isNotEmpty
                   ? GestureDetector(
-                      onTap: () async {
+                      onTap: () {
                         if (_audios!.isNotEmpty) {
-                          await _uploadMedia(_audios, _uploadAudios);
-                         
+                          _uploadMedia(_audios, _uploadAudios);
                         }
                       },
                       child: const Icon(CupertinoIcons.cloud_upload_fill))
@@ -709,6 +593,7 @@ class _UploadScreenState extends State<UploadScreen> {
                         color: Colors.grey,
                       ),
                     ),
+                    const SizedBox(height: 10),
                     if (state is ImageLoading ||
                         state is AudioLoading ||
                         state is VideoLoading)
@@ -721,95 +606,6 @@ class _UploadScreenState extends State<UploadScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Helper widget to display media previews (e.g., images, videos)
-class ImageSelectionContainer extends StatelessWidget {
-  final String mediaPath;
-  final VoidCallback? onRemove;
-
-  const ImageSelectionContainer({
-    super.key,
-    required this.mediaPath,
-    this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.file(
-          File(mediaPath),
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-        Positioned(
-          top: 8.0,
-          right: 8.0,
-          child: InkWell(
-            onTap: onRemove,
-            child: Container(
-              padding: const EdgeInsets.all(4.0),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              child: const Icon(
-                Icons.close,
-                color: Colors.black,
-                size: 18.0,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Helper widget to display media previews (e.g., images, videos)
-class VideoSelectionContainer extends StatelessWidget {
-  final String mediaPath;
-  final VoidCallback? onRemove;
-
-  const VideoSelectionContainer({
-    super.key,
-    required this.mediaPath,
-    this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: FileVideoThumbnailWidget(filePath: mediaPath),
-        ),
-        Positioned(
-          top: 8.0,
-          right: 8.0,
-          child: InkWell(
-            onTap: onRemove,
-            child: Container(
-              padding: const EdgeInsets.all(4.0),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              child: const Icon(
-                Icons.close,
-                color: Colors.black,
-                size: 18.0,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

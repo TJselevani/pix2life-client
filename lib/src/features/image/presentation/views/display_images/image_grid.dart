@@ -7,6 +7,7 @@ import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/features/image/presentation/widgets/image_popup_dialog.dart';
 
 class ImageGridPage extends StatefulWidget {
   const ImageGridPage({super.key});
@@ -15,52 +16,49 @@ class ImageGridPage extends StatefulWidget {
   State<ImageGridPage> createState() => _ImageGridPageState();
 }
 
-class _ImageGridPageState extends State<ImageGridPage> {
+class _ImageGridPageState extends State<ImageGridPage>
+    with SingleTickerProviderStateMixin {
   String _selectedImageName = 'Image Gallery';
   String? _selectedImageUrl;
+  late AnimationController _controller;
+  bool isTapped = false;
+  double targetValue = 0.8;
+  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    final currentState = context.read<ImageBloc>().state;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.forward) {
+          setState(() => isTapped = true);
+        } else if (status == AnimationStatus.dismissed) {
+          setState(() => isTapped = false);
+        }
+      });
 
-    // Only trigger the fetch event if the data has not been loaded yet
+    final currentState = context.read<ImageBloc>().state;
     if (currentState is! ImagesLoaded) {
       context.read<ImageBloc>().add(ImagesFetchEvent());
     }
   }
 
-  void _showImageInfo(Photo image) {
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _showImageDialog(Photo image) {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(image.filename),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('File Name: ${image.filename}'),
-              Text('Description: ${image.description}'),
-              Text('Gallery: ${image.galleryName}'),
-              Text('Created: ${image.createdAt}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: AppPalette.red,
-                foregroundColor: AppPalette.primaryWhite,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text('Close'),
-            ),
-          ],
+        return ImageDialog(
+          image: image,
+          targetValue: targetValue,
+          controller: _controller,
         );
       },
     );
@@ -111,55 +109,66 @@ class _ImageGridPageState extends State<ImageGridPage> {
 
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Three images per row
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 1.0, // Square images
-                ),
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  final image = images[index];
+              child: Stack(
+                children: [
+                  GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // Three images per row
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                      childAspectRatio: 1.0, // Square images
+                    ),
+                    itemCount: images.length,
+                    itemBuilder: (context, index) {
+                      final image = images[index];
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedImageName = image.filename;
-                        _selectedImageUrl = image.url;
-                      });
-                    },
-                    onLongPress: () {
-                      _showImageInfo(image);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.w),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(2.w, 2.h),
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedImageName = image.filename;
+                            _selectedImageUrl = image.url;
+                          });
+                        },
+                        onLongPress: () {
+                          setState(() {
+                            currentIndex = index;
+                            targetValue = 1;
+                          });
+                          _controller.forward();
+                          _showImageDialog(image);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.w),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 4,
+                                offset: Offset(2.w, 2.h),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: image.url,
-                        fadeInCurve: Curves.easeIn,
-                        placeholder: (context, url) => Center(
-                          child: LoadingAnimationWidget.twoRotatingArc(
-                            color: AppPalette.red,
-                            size: 30.sp,
+                          child: CachedNetworkImage(
+                            imageUrl: image.url,
+                            fadeInCurve: Curves.easeIn,
+                            placeholder: (context, url) => Center(
+                              child: LoadingAnimationWidget.twoRotatingArc(
+                                color: AppPalette.red,
+                                size: 30.sp,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error, size: 24.sp),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error, size: 24.sp),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
+                      );
+                    },
+                  ),
+                ],
               ),
             );
           } else {

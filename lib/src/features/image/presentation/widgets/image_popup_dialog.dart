@@ -1,0 +1,135 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/src/features/image/domain/entities/image.dart';
+
+class ImageDialog extends StatelessWidget {
+  final Photo image;
+  final double targetValue;
+  final AnimationController controller;
+
+  const ImageDialog({
+    super.key,
+    required this.image,
+    required this.targetValue,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.all(10),
+      backgroundColor: Colors.transparent,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.transparent, // Semi-transparent background
+              ),
+            ),
+          ),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.8, end: targetValue),
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOutBack,
+            builder: (context, scale, child) {
+              return Transform.scale(
+                scale: scale,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          // Image should extend to the top, left, and right edges
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: image.url,
+                              height: 250.h,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: LoadingAnimationWidget.twoRotatingArc(
+                                  color: AppPalette.red,
+                                  size: 30.sp,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error, size: 24.sp),
+                            ),
+                          ),
+                          // Bottom text fields for image details
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'File Name: ${image.filename}',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Created At: ${image.createdAt}',
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Gallery: ${image.galleryName}',
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Description: ${image.description}',
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Close button
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              style: TextButton.styleFrom(
+                                backgroundColor: AppPalette.red,
+                                foregroundColor: AppPalette.primaryWhite,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text('Close'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

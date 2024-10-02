@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:pix2life/src/shared/widgets/video_player/video_player_widget.dart';
+import 'package:pix2life/src/shared/widgets/video-player/video_player_widget.dart';
 import 'package:video_player/video_player.dart';
 
 class FilePlayerWidget extends StatefulWidget {

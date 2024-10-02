@@ -19,7 +19,7 @@ class CreateAccountSuccessPage extends StatefulWidget {
 
 class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
   late final ConfettiController _controller;
-  late String userEmail;
+  String? userEmail;
 
   @override
   void initState() {
