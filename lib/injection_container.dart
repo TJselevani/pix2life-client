@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_remote_data_source.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_service.dart';
 import 'package:pix2life/src/features/audio/data/repositories/audio_repository_impl.dart';
@@ -55,10 +56,15 @@ import 'package:pix2life/src/features/video/domain/usecases/fetch_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/update_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/upload_video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
+  // Register SharedPreferences as a singleton
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+
   //#######################################################################
   // ############# presentation layer { Application Logic } ###############
   //#######################################################################
@@ -166,7 +172,7 @@ Future<void> initDependencies() async {
   //Authentication Bloc
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(sl(), sl()));
+      () => AuthRemoteDataSourceImpl(sl(), sl(), sl()));
 
   // Audio Bloc
   sl.registerLazySingleton<AudioRepository>(() => AudioRepositoryImpl(sl()));
@@ -217,13 +223,12 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<Dio>(() => Dio());
   sl.registerLazySingleton<FlutterSecureStorage>(
       () => const FlutterSecureStorage());
-  // sl.registerLazySingletonAsync<SharedPreferences>(
-  //     () => SharedPreferences.getInstance());
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
-  // try {
-  //   await sl.allReady(); // Wait for all async initializations to complete
-  // } catch (e) {
-  //   // Handle initialization failure, maybe log or retry
-  //   print("Error during initialization: $e");
-  // }
+  try {
+    await sl.allReady(); // Wait for all async initializations to complete
+  } catch (e) {
+    // Handle initialization failure, maybe log or retry
+    print("Error during initialization: $e");
+  }
 }

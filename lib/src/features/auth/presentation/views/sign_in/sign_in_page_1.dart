@@ -26,13 +26,7 @@ class UserSignInPage extends StatefulWidget {
   }
 
   static void routeToForgotPasswordPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            const Placeholder(), //const UserForgotPasswordPage(),
-      ),
-    );
+    Navigator.pushReplacementNamed(context, '/Reset');
   }
 
   @override

@@ -17,6 +17,9 @@ class AppTheme {
     indicatorColor: AppPalette.red,
     scaffoldBackgroundColor: AppPalette.lightBackground,
     fontFamily: 'Poppins',
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppPalette.red,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppPalette.lightBackground,
       titleTextStyle: TextStyle(

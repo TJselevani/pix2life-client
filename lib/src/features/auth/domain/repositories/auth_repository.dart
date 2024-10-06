@@ -30,6 +30,22 @@ abstract interface class AuthRepository {
     required String token,
   });
 
+  ResultFuture<String> forgotPassword({
+    required String email,
+  });
+
+  ResultFuture<String> verifyResetCode({
+    required String email,
+    required String resetCode,
+  });
+
+  ResultFuture<String> resetPassword({
+    required String email,
+    required String resetCode,
+    required String password,
+    required String confirmPassword,
+  });
+
   ResultFuture<User> checkAuthStatus({
     required String token,
   });

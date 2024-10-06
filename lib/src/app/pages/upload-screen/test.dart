@@ -173,11 +173,7 @@ class _UploadScreenState extends State<UploadScreen> {
         });
       } catch (e) {
         if (!mounted) return;
-
-        setState(() {
-          ErrorSnackBar.show(context: context, message: '$e');
-          log.e('Upload failed for ${media.runtimeType} ${media.name}: $e');
-        });
+        log.e('Upload failed for ${media.runtimeType} ${media.name}: $e');
       }
     });
     // Check if all media have been uploaded successfully
@@ -319,21 +315,111 @@ class _UploadScreenState extends State<UploadScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppPalette.lightBackground,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              _buildProfileSection(),
-              _buildOverviewSection(),
-              _buildActionCards(context),
-            ],
+        backgroundColor: AppPalette.lightBackground,
+        body: MultiBlocListener(
+          listeners: [
+            // Listener to show loading while uploading image
+            BlocListener<ImageBloc, ImageState>(
+              listener: (context, state) {
+                if (state is ImageLoading) {
+                  setState(() {
+                    // _isLoading = true;
+                  });
+                } else if (state is ImageSuccess) {
+                  setState(() {
+                    // _isLoading = false;
+                    // _matchedImage = state.image.url;
+                    // _galleryName = state.image.galleryName;
+                  });
+                  SuccessSnackBar.show(
+                      context: context, message: state.message);
+                } else if (state is ImageFailure) {
+                  setState(() {
+                    // _isLoading = false;
+                  });
+                  ErrorSnackBar.show(context: context, message: state.message);
+                }
+              },
+            ),
+
+            // Listener to show loading while uploading audio
+            BlocListener<AudioBloc, AudioState>(
+              listener: (context, state) {
+                if (state is ImageLoading) {
+                  setState(() {
+                    // _isLoading = true;
+                  });
+                } else if (state is AudioSuccess) {
+                  setState(() {
+                    // _isLoading = false;
+                    // _matchedImage = state.image.url;
+                    // _galleryName = state.image.galleryName;
+                  });
+                  SuccessSnackBar.show(
+                      context: context, message: state.message);
+                } else if (state is AudioFailure) {
+                  setState(() {
+                    // _isLoading = false;
+                  });
+                  ErrorSnackBar.show(context: context, message: state.message);
+                }
+              },
+            ),
+
+            // Listener to show loading while uploading video
+            BlocListener<VideoBloc, VideoState>(
+              listener: (context, state) {
+                if (state is ImageLoading) {
+                  setState(() {
+                    // _isLoading = true;
+                  });
+                } else if (state is VideoSuccess) {
+                  setState(() {
+                    // _isLoading = false;
+                    // _matchedImage = state.image.url;
+                    // _galleryName = state.image.galleryName;
+                  });
+                  SuccessSnackBar.show(
+                      context: context, message: state.message);
+                } else if (state is VideoFailure) {
+                  setState(() {
+                    // _isLoading = false;
+                  });
+                  ErrorSnackBar.show(context: context, message: state.message);
+                }
+              },
+            ),
+
+            // Listener to handle fetching of gallery images
+            BlocListener<GalleryBloc, GalleryState>(
+              listener: (context, state) {
+                if (state is GalleriesLoaded) {
+                  setState(() {
+                    fetchedGalleries = state.galleries;
+                  });
+                }
+
+                if (state is GalleryFailure) {
+                  ErrorSnackBar.show(
+                      context: context, message: 'Failed to fetch galleries');
+                }
+              },
+            ),
+          ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  _buildProfileSection(),
+                  _buildOverviewSection(),
+                  _buildActionCards(context),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildProfileSection() {
@@ -341,12 +427,12 @@ class _UploadScreenState extends State<UploadScreen> {
       height: 300.h,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(15.r),
         boxShadow: [
           BoxShadow(
             color: AppPalette.secondaryBlack.withOpacity(0.1),
             blurRadius: 10.r,
-            spreadRadius: 5,
+            spreadRadius: 5.r,
             offset: const Offset(0, 5),
           ),
         ],
@@ -369,8 +455,8 @@ class _UploadScreenState extends State<UploadScreen> {
                   children: [
                     const Icon(Icons.menu, size: 30, color: Colors.grey),
                     Container(
-                      width: 100, // Set the width of the avatar
-                      height: 100, // Set the height of the avatar
+                      width: 100.w, // Set the width of the avatar
+                      height: 100.h, // Set the height of the avatar
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle, // Make it circular
                       ),
@@ -379,24 +465,24 @@ class _UploadScreenState extends State<UploadScreen> {
                     const Icon(Icons.more_vert, size: 30, color: Colors.grey),
                   ],
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                SizedBox(height: 20.h),
+                Text(
                   'tjselevani',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 5),
-                const Text(
+                SizedBox(height: 5.h),
+                Text(
                   'UX/UI Designer',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: Colors.grey,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -415,17 +501,17 @@ class _UploadScreenState extends State<UploadScreen> {
       children: [
         Text(
           amount,
-          style: const TextStyle(
-            fontSize: 20,
+          style: TextStyle(
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5.h),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: 16.sp,
             color: Colors.grey,
           ),
         ),
@@ -435,7 +521,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   Widget _buildOverviewSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -553,8 +639,8 @@ class _UploadScreenState extends State<UploadScreen> {
             boxShadow: [
               BoxShadow(
                 color: AppPalette.secondaryBlack.withOpacity(0.1),
-                blurRadius: 10,
-                spreadRadius: 5,
+                blurRadius: 10.r,
+                spreadRadius: 5.r,
                 offset: const Offset(0, 5),
               ),
             ],
@@ -572,28 +658,28 @@ class _UploadScreenState extends State<UploadScreen> {
                   child: Icon(icon, size: 30, color: AppPalette.primaryWhite),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: TextStyle(
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5.h),
                     Text(
                       subtitle,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: TextStyle(
+                        fontSize: 14.sp,
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10.h),
                     if (state is ImageLoading ||
                         state is AudioLoading ||
                         state is VideoLoading)

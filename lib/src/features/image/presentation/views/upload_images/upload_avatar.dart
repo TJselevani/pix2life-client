@@ -20,10 +20,7 @@ class UploadProfilePicPage extends StatefulWidget {
   }
 
   static routeToGuide(context) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Placeholder()),
-    );
+    Navigator.pushReplacementNamed(context, '/Guide');
   }
 
   const UploadProfilePicPage({super.key});
@@ -33,7 +30,6 @@ class UploadProfilePicPage extends StatefulWidget {
 }
 
 class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
-  // final MediaService mediaService = MediaService();
   final ImagePicker _picker = ImagePicker();
   final log = createLogger(UploadProfilePicPage);
   final bool _isLoading = false;
@@ -302,6 +298,6 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
 
   _uploadImage() {
     BlocProvider.of<ImageBloc>(context)
-        .add(ImageUploadEvent(formData: FormData.fromMap({}), galleryName: ''));
+        .add(ImageUploadAvatarEvent(formData: FormData.fromMap({})));
   }
 }

@@ -97,4 +97,45 @@ class AuthRepositoryImpl implements AuthRepository {
       return left(ApiFailure.fromServerException(e));
     }
   }
+
+  @override
+  ResultFuture<String> forgotPassword({required String email}) async {
+    try {
+      final message = await _remoteDataSource.forgotPassword(email: email);
+      return right(message);
+    } on ServerException catch (e) {
+      return left(ApiFailure.fromServerException(e));
+    }
+  }
+
+  @override
+  ResultFuture<String> resetPassword(
+      {required String email,
+      required String resetCode,
+      required String password,
+      required String confirmPassword}) async {
+    try {
+      final message = await _remoteDataSource.resetPassword(
+        email: email,
+        resetCode: resetCode,
+        password: password,
+        confirmPassword: confirmPassword,
+      );
+      return right(message);
+    } on ServerException catch (e) {
+      return left(ApiFailure.fromServerException(e));
+    }
+  }
+
+  @override
+  ResultFuture<String> verifyResetCode(
+      {required String email, required String resetCode}) async {
+    try {
+      final message = await _remoteDataSource.verifyResetCode(
+          email: email, resetCode: email);
+      return right(message);
+    } on ServerException catch (e) {
+      return left(ApiFailure.fromServerException(e));
+    }
+  }
 }

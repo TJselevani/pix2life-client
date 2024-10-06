@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/app/navigation/media_tab_navigation.dart';
+import 'package:pix2life/src/app/navigation/tab_navigation/media_tab_navigation.dart';
 import 'package:pix2life/src/features/gallery/presentation/views/daisy.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
-import 'package:pix2life/src/app/menu/menu_options.dart';
+import 'package:pix2life/src/app/navigation/drawer_navigation/menu_options.dart';
 import 'package:pix2life/src/app/pages/upload-screen/test.dart';
 import 'package:pix2life/src/features/image/presentation/views/match_image/match_images.dart';
 

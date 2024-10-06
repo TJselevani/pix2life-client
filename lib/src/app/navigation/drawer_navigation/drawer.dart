@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/app/menu/menu_options.dart';
+import 'package:pix2life/src/app/navigation/drawer_navigation/menu_options.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
 
 class TestScreen extends StatefulWidget {

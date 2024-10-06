@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -9,14 +8,12 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
-import 'package:pix2life/src/features/image/domain/entities/image.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/widgets/gallery_popup_dialog.dart';
 import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';

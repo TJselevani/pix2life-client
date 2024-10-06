@@ -5,10 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
-import 'package:pix2life/src/app/menu/drawer.dart';
-import 'package:pix2life/src/app/navigation/main_navigation_page.dart';
+import 'package:pix2life/src/app/navigation/drawer_navigation/drawer.dart';
+import 'package:pix2life/src/app/navigation/tab_navigation/main_navigation_page.dart';
 import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
+import 'package:pix2life/src/app/pages/qrcode/qr_code_scanner_screen.dart';
+import 'package:pix2life/src/app/pages/qrcode/qr_code_screen.dart';
 import 'package:pix2life/src/app/pages/upload-screen/select_media_upload.dart';
+import 'package:pix2life/src/features/auth/presentation/views/reset_password/forgot_password_page.dart';
 import 'package:pix2life/src/features/gallery/presentation/views/daisy.dart';
 import 'package:pix2life/src/features/audio/presentation/pages/play_audios/audio_player_page.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
@@ -20,6 +23,7 @@ import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_pas
 import 'package:pix2life/injection_container.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/features/image/presentation/views/upload_images/upload_avatar.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
 import 'package:pix2life/test/test_app.dart';
 
@@ -29,6 +33,8 @@ Future<void> main() async {
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 804),
+      minTextAdapt: true,
+      splitScreenMode: true,
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [
@@ -77,9 +83,13 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => const WelcomePage(),
         '/SignIn': (context) => const UserSignInPage(),
         '/SignUp': (context) => const UserEmailSignUpPage(),
+        '/Reset': (context) => const UserForgotPasswordPage(),
         '/Home': (context) => const MainPageNavigation(),
         '/Password': (context) => const UserCreatePasswordPage(),
-        '/Avatar': (context) => const MyWidget(),
+        '/Widget': (context) => const MyWidget(),
+        '/Avatar': (context) => const UploadProfilePicPage(),
+        '/QR': (context) => const QRCodeScreen(),
+        '/QR2': (context) => const QRCodeScannerScreen(),
       },
     );
   }
