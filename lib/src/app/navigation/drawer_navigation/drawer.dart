@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/app/navigation/drawer_navigation/menu_options.dart';
-import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
+import 'package:pix2life/src/app/navigation/drawer_navigation/menu.dart';
+import 'package:pix2life/src/app/pages/profile-screen/profile_screen.dart';
 
-class TestScreen extends StatefulWidget {
-  const TestScreen({super.key});
+class DrawerPanel extends StatefulWidget {
+  const DrawerPanel({super.key});
 
   @override
-  State<TestScreen> createState() => _TestScreenState();
+  State<DrawerPanel> createState() => _DrawerPanelState();
 }
 
-class _TestScreenState extends State<TestScreen>
+class _DrawerPanelState extends State<DrawerPanel>
     with SingleTickerProviderStateMixin {
   final ZoomDrawerController _drawerController = ZoomDrawerController();
 
@@ -37,7 +37,6 @@ class _TestScreenState extends State<TestScreen>
   }
 
   // Trigger the animations when drawer state changes
-  // ignore: unused_element
   void _onDrawerToggle(bool isOpen) {
     if (isOpen) {
       _animationController.forward();
@@ -56,13 +55,13 @@ class _TestScreenState extends State<TestScreen>
   Widget build(BuildContext context) {
     return ZoomDrawer(
       controller: _drawerController,
-      menuScreen: const MenuScreen(),
+      menuScreen: const MenuPanel(),
       mainScreen: AnimatedBuilder(
         animation: scaleAnimation,
         builder: (context, child) {
           return Transform.scale(
             scale: scaleAnimation.value,
-            child: const ProfileScreen(),
+            child: const MyProfileScreen(),
           );
         },
       ),
@@ -74,7 +73,7 @@ class _TestScreenState extends State<TestScreen>
       closeCurve: Curves.easeInBack,
       duration:
           const Duration(milliseconds: 300), // Adjust drawer animation duration
-      menuBackgroundColor: AppPalette.navyBlue,
+      menuBackgroundColor: AppPalette.darkBackground,
       // onOpened: () => _onDrawerToggle(true), // When drawer opens
       // onClosed: () => _onDrawerToggle(false), // When drawer closes
     );

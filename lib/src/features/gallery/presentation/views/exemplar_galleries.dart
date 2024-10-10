@@ -21,16 +21,13 @@ Column showcaseGalleries() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 20.0),
-        child: Text(
-          'Exemplar Galleries',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
-            color: AppPalette.red,
-          ),
+      Text(
+        'Exemplar Galleries',
+        style: TextStyle(
+          fontSize: 24.sp,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Poppins',
+          color: AppPalette.red,
         ),
       ),
       SizedBox(height: 16.h),

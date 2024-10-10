@@ -32,6 +32,7 @@ class _UserResetCodePageState extends State<UserResetCodePage> {
       });
 
       final resetCode = _resetCodeController.text.trim();
+      // ignore: unused_local_variable
       final userData = {'email': widget.userEmail, 'resetCode': resetCode};
 
       try {

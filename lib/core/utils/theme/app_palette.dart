@@ -15,8 +15,8 @@ class AppPalette {
   static const Color green = Color(0xFF4f772d);
 
   // Background Colors
-  static const Color lightBackground = Color(0xFFF5F7FB);
-  static const Color darkBackground = Color(0xFF000000);
+  static const Color lightBackground = Color(0xFFfff7fe);
+  static const Color darkBackground = Color(0xFF141318);
   static const Color inputBackground = Color(0xFFF8F7FB);
 
   // Red Colors

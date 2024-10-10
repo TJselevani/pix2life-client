@@ -16,7 +16,7 @@ import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_butto
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/widgets/gallery_popup_dialog.dart';
-import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';
+import 'package:pix2life/src/shared/widgets/text-animation/disappearing_text.dart';
 
 class ImageMatchScreen extends StatefulWidget {
   const ImageMatchScreen({super.key});
@@ -35,6 +35,7 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   File? _imageFile;
   String? _matchedImage;
   String? _galleryName;
+  // ignore: unused_field
   String? _imageUrl;
 
   @override
@@ -289,7 +290,6 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.lightBackground,
       body: MultiBlocListener(
         listeners: [
           // Listener to show loading while uploading image

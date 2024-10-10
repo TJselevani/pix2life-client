@@ -6,7 +6,7 @@ import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/video/domain/entities/video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
-import 'package:pix2life/src/shared/widgets/video-player/network_video_thumbnail_widget.dart';
+import 'package:pix2life/src/shared/widgets/video-player/thumbnail/network_video_thumbnail_widget.dart';
 
 class VideoGridPage extends StatefulWidget {
   const VideoGridPage({super.key});
@@ -17,13 +17,14 @@ class VideoGridPage extends StatefulWidget {
 
 class _VideoGridPageState extends State<VideoGridPage> {
   String _selectedVideoName = 'video Gallery';
+  // ignore: unused_field
   String? _selectedVideoUrl;
 
   @override
   void initState() {
     super.initState();
     // final currentState = context.read<VideoBloc>().state;
-      context.read<VideoBloc>().add(VideosFetchEvent());
+    context.read<VideoBloc>().add(VideosFetchEvent());
 
     // Trigger the event to fetch videos
     // if (currentState is! VideosLoaded) {
@@ -70,14 +71,14 @@ class _VideoGridPageState extends State<VideoGridPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primaryWhite,
+      // backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
         title: Text(
           _selectedVideoName,
           style: TextStyle(fontSize: 20.sp),
         ),
         centerTitle: true,
-        backgroundColor: AppPalette.primaryWhite,
+        // backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.refresh, size: 24.sp),
@@ -146,7 +147,6 @@ class _VideoGridPageState extends State<VideoGridPage> {
                         ],
                       ),
                       child: VideoThumbnailWidget(
-                       
                         videoUrl: video.url,
                       ),
                     ),

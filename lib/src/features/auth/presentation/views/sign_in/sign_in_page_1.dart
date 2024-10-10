@@ -256,45 +256,46 @@ class _UserSignInPageState extends State<UserSignInPage> {
   Widget _buildRememberMeAndForgotPassword() {
     return SizedBox(
       width: 315.w,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Checkbox(
-            activeColor: AppPalette.red,
-            value: _rememberMe,
-            onChanged: (bool? value) {
-              setState(() {
-                _rememberMe = value!;
-              });
-            },
-            semanticLabel: 'Remember me',
-          ),
-          Text(
-            'Keep me signed in',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-              fontSize: 13.sp,
-              color: _rememberMe
-                  ? AppPalette.primaryBlack
-                  : AppPalette.primaryGrey,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.w, 0.h, 10.w, 0.h),
+        child: Row(
+          children: [
+            Checkbox(
+              activeColor: AppPalette.red,
+              value: _rememberMe,
+              onChanged: (bool? value) {
+                setState(() {
+                  _rememberMe = value!;
+                });
+              },
+              semanticLabel: 'Remember me',
             ),
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () => UserSignInPage.routeToForgotPasswordPage(context),
-            child: Text(
-              'Forgot password',
+            Text(
+              'Keep me signed in',
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontWeight: FontWeight.w500,
-                fontSize: 13.sp,
-                color: AppPalette.red,
+                fontWeight: FontWeight.w400,
+                fontSize: 11.sp,
+                color: _rememberMe
+                    ? AppPalette.primaryBlack
+                    : AppPalette.primaryGrey,
               ),
             ),
-          ),
-          SizedBox(width: 20.w),
-        ],
+            const Spacer(),
+            GestureDetector(
+              onTap: () => UserSignInPage.routeToForgotPasswordPage(context),
+              child: Text(
+                'Forgot password',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11.sp,
+                  color: AppPalette.red,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

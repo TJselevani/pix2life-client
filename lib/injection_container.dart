@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_remote_data_source.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_service.dart';
 import 'package:pix2life/src/features/audio/data/repositories/audio_repository_impl.dart';

@@ -5,9 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';
+import 'package:pix2life/src/shared/widgets/buttons/square_button.dart';
+import 'package:pix2life/src/shared/widgets/text-animation/fade_in_text.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 
 class UploadMediaPage extends StatefulWidget {
@@ -284,7 +284,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 );
               },
             )
-          : const Center(child: FadeInText()),
+          : const Center(child: FadeInText(text: 'PIX2LIFE')),
     );
   }
 

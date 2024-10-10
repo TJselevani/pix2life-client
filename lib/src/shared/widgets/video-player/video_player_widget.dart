@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pix2life/src/shared/widgets/video-player/basic_overlay_widget.dart';
+import 'package:pix2life/src/shared/widgets/video-player/video-overlay-widgets/progress_indicator.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
@@ -19,15 +19,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             child: buildVideo(),
           )
         : const Center(
-          child: CircularProgressIndicator(),
-        );
+            child: CircularProgressIndicator(),
+          );
   }
 
   Widget buildVideo() {
     return Stack(children: [
       buildVideoPlayer(),
       Positioned.fill(
-        child: BasicOverlayWidget(controller: widget.controller),
+        child: ProgressIndicatorOverlayWidget(controller: widget.controller),
       ),
     ]);
   }

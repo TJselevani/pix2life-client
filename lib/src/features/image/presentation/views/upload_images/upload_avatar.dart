@@ -1,18 +1,22 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/constants.dart';
-import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
+import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
+import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
-import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/shared/widgets/buttons/hover_button.dart';
+import 'package:provider/provider.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart'; // Added
 
 class UploadProfilePicPage extends StatefulWidget {
   static routeToHomePage(context) {
@@ -32,11 +36,11 @@ class UploadProfilePicPage extends StatefulWidget {
 class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   final ImagePicker _picker = ImagePicker();
   final log = createLogger(UploadProfilePicPage);
-  final bool _isLoading = false;
   bool _isSet = false;
   bool _isPending = false;
   bool _isUploaded = false;
   XFile? _image;
+  User? authUser;
 
   Future<void> _pickImage() async {
     final XFile? selectedImage =
@@ -51,75 +55,112 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     }
   }
 
-  // Future<void> _uploadImage() async {
-  //   if (!mounted) return;
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
+  Future<void> _uploadImage() async {
+    if (!mounted) return;
 
-  //   XFile image = _image!;
-  //   FormData formData = FormData.fromMap({
-  //     "file": await MultipartFile.fromFile(image.path, filename: image.name),
-  //   });
+    XFile image = _image!;
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        image.path,
+        filename: image.name,
+      ),
+    });
 
-  //   try {
-  //     final response = await mediaService.uploadAvatar(formData);
-
-  //     if (!mounted) return;
-
-  //     setState(() {
-  //       context.read<AuthBloc>().add(UserUpdatedEvent());
-  //       SuccessSnackBar.show(context: context, message: response.message);
-  //       log.i('Successfully uploaded Avatar Image: ${image.name}');
-  //       _isPending = false;
-  //       _isUploaded = true;
-  //     });
-  //   } catch (e) {
-  //     if (!mounted) return;
-  //     setState(() {
-  //       ErrorSnackBar.show(context: context, message: 'Avatar Upload Failed');
-  //       log.e('Upload failed for Avatar ${image.name}: $e');
-  //     });
-  //   }
-  //
-  //   if (!mounted) return;
-  //   setState(() {
-  //     _isLoading = false;
-  //     _isPending = false;
-  //     _isSet = false;
-  //     _image = null;
-  //   });
-  // }
+    BlocProvider.of<ImageBloc>(context).add(
+      ImageUploadAvatarEvent(
+        formData: formData,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final User authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthenticatedUser).user;
+    final userProvider = Provider.of<MyUserProvider>(context);
+    final themeProvider = Provider.of<MyThemeProvider>(context); // Added
+    final theme = Theme.of(context);
+    authUser = userProvider.user;
 
-    return Scaffold(
-      backgroundColor: AppPalette.primaryBlack,
-      appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
-        elevation: 0,
-        toolbarHeight: 64.h,
-      ),
-      body: Container(
-        decoration: _buildBackgroundDecoration(),
-        padding: EdgeInsets.all(18.w),
-        child: SingleChildScrollView(
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ImageBloc, ImageState>(
+            listener: (context, state) => {
+                  if (state is ImageFailure)
+                    {
+                      ErrorSnackBar.show(
+                          context: context, message: state.message)
+                    },
+                  if (state is ImageSuccess)
+                    {
+                      setState(() {
+                        _isPending = false;
+                        _isUploaded = true;
+                      }),
+                      SuccessSnackBar.show(
+                          context: context, message: state.message)
+                    }
+                }),
+      ],
+      child: Scaffold(
+        backgroundColor: AppPalette.primaryBlack,
+        appBar: AppBar(
+          backgroundColor: theme.colorScheme.surface,
+          elevation: 0,
+          toolbarHeight: 64.h,
+          actions: [
+            IconButton(
+              icon: Icon(themeProvider.themeMode == ThemeMode.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode), // Dynamic icon
+              onPressed: themeProvider.toggleTheme,
+            ),
+            IconButton(
+              icon: Icon(themeProvider.useMaterialYou
+                  ? Icons.palette
+                  : Icons.palette_outlined), // Dynamic icon for Material You
+              onPressed: () {
+                themeProvider.useMaterialYou
+                    ? themeProvider.setTheme(ThemeMode.light)
+                    : themeProvider.setMaterialYouTheme();
+              },
+            ),
+          ],
+        ),
+        body: Container(
+          decoration: _buildBackgroundDecoration(theme), // Updated for theming
+          padding: EdgeInsets.all(18.w),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _buildHeader(authUser),
-              _buildProfileImage(authUser),
-              SizedBox(height: 40.h),
-              _buildChooseImageButton(),
-              if (_isPending) _buildUploadIcon(),
-              SizedBox(height: 20.h),
-              _buildInstructions(),
-              SizedBox(height: 20.h),
-              _buildProceedButton(),
-              SizedBox(height: 60.h),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Consumer<MyUserProvider>(
+                        builder: (context, userProvider, child) {
+                          if (userProvider.user != null) {
+                            return Column(
+                              children: [
+                                _buildHeader(
+                                    userProvider.user!, theme), // Updated
+                                _buildProfileImage(userProvider.user!),
+                              ],
+                            );
+                          } else {
+                            return const Center(
+                                child: Text('User not logged in.'));
+                          }
+                        },
+                      ),
+                      SizedBox(height: 40.h),
+                      if (_isPending) _buildUploadIcon(theme), // Updated
+                      SizedBox(height: 20.h),
+                      if (!_isPending) _buildInstructions(theme), // Updated
+                      _buildProceedButton(theme), // Updated
+                      SizedBox(height: 60.h),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -127,28 +168,26 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     );
   }
 
-  BoxDecoration _buildBackgroundDecoration() {
+  BoxDecoration _buildBackgroundDecoration(ThemeData theme) {
     return BoxDecoration(
-      color: AppPalette.primaryWhite,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(37.r),
-        topRight: Radius.circular(37.r),
-        bottomLeft: Radius.circular(37.r),
-        bottomRight: Radius.circular(37.r),
-      ),
-      gradient: const LinearGradient(
-        colors: [AppPalette.primaryWhite, AppPalette.primaryWhite],
+      color: theme.colorScheme.surface,
+      borderRadius: BorderRadius.circular(37.r),
+      gradient: LinearGradient(
+        colors: [
+          theme.colorScheme.surface,
+          theme.colorScheme.surfaceContainerHighest,
+        ],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),
     );
   }
 
-  Widget _buildHeader(User authUser) {
+  Widget _buildHeader(User authUser, ThemeData theme) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(37.w),
       ),
       child: SingleChildScrollView(
@@ -158,22 +197,25 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
             Container(
               width: 50.w,
               height: 5.h,
-              color: AppPalette.primaryBlack,
+              color: theme.colorScheme.onSurface,
             ),
             SizedBox(height: 20.h),
             SizedBox(
-              // width: 247.w,
-              child: RichText(
-                text: TextSpan(
-                  text: authUser.email,
-                  style: TextStyle(
-                    color: AppPalette.fontBlack,
-                    fontFamily: 'Poppins',
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                textAlign: TextAlign.center,
+              child: Consumer(
+                builder: (BuildContext context, value, Widget? child) {
+                  return RichText(
+                    text: TextSpan(
+                      text: authUser.email,
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
+                        fontFamily: 'Poppins',
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    textAlign: TextAlign.center,
+                  );
+                },
               ),
             ),
             SizedBox(height: 20.h),
@@ -184,68 +226,86 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   }
 
   Widget _buildProfileImage(User authUser) {
-    return Hero(
-      tag: AppImage.welcomeImage,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.h),
-        height: 200.h,
-        width: 200.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.w),
-          color: AppPalette.primaryWhite,
-        ),
-        child: CircleAvatar(
-          backgroundImage: _isSet
-              ? FileImage(File(_image!.path))
-              : NetworkImage(
-                  authUser.avatarUrl.isNotEmpty
-                      ? authUser.avatarUrl
-                      : AppImage.avatarUrl,
-                ),
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: AppPalette.primaryWhite,
+      ),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          SizedBox(
+            height: 278.h,
+            width: 283.w,
+            child: CircleAvatar(
+              backgroundImage: _isSet && _image != null
+                  ? FileImage(File(_image!.path))
+                  : NetworkImage(
+                      authUser.avatarUrl.isNotEmpty
+                          ? authUser.avatarUrl
+                          : AppImage.avatarUrl,
+                    ),
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 40,
+            child: _buildChooseImageButton(),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildChooseImageButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: Center(
-        child: HoverButton(
-          name: 'Choose Image',
-          onPressed: _pickImage,
-        ),
+    return HoverButton(
+      isWidget: true,
+      widget: const Icon(
+        Icons.add_a_photo,
+        color: AppPalette.primaryWhite,
+        size: 60,
       ),
+      onPressed: _pickImage,
     );
   }
 
-  Widget _buildUploadIcon() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 45.h),
-      child: Center(
-        child: _isLoading
-            ? Center(
-                child: LoadingAnimationWidget.prograssiveDots(
-                color: AppPalette.primaryBlack,
+  Widget _buildUploadIcon(ThemeData theme) {
+    return BlocBuilder<ImageBloc, ImageState>(
+      builder: (context, state) {
+        if (state is ImageLoading) {
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 15.h),
+            child: Center(
+              child: LoadingAnimationWidget.prograssiveDots(
+                color: theme.colorScheme.primary,
                 size: 50.sp,
-              ))
-            : _isUploaded
-                ? Icon(Icons.check, size: 24.sp)
-                : GestureDetector(
-                    onTap: _uploadImage,
-                    child: Icon(Icons.upload_rounded, size: 24.sp),
-                  ),
-      ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 15.h),
+            child: Center(
+              child: _isUploaded
+                  ? Icon(Icons.check, size: 24.sp)
+                  : GestureDetector(
+                      onTap: _uploadImage,
+                      child: Icon(Icons.upload_rounded, size: 24.sp),
+                    ),
+            ),
+          );
+        }
+      },
     );
   }
 
-  Widget _buildInstructions() {
+  Widget _buildInstructions(ThemeData theme) {
     return Column(
       children: [
         Text(
           'Upload your profile picture',
-          style: TextStyle(
-            fontFamily: 'Poppins',
+          style: theme.textTheme.headlineSmall?.copyWith(
             fontSize: 24.sp,
             fontWeight: FontWeight.w600,
           ),
@@ -257,9 +317,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
             text: TextSpan(
               text:
                   'Choose an Image from your gallery to use as your profile picture',
-              style: TextStyle(
-                color: AppPalette.primaryGrey,
-                fontFamily: 'Poppins',
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
               ),
@@ -267,21 +325,23 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
             textAlign: TextAlign.center,
           ),
         ),
+        SizedBox(height: 20.h),
       ],
     );
   }
 
-  Widget _buildProceedButton() {
+  Widget _buildProceedButton(ThemeData theme) {
     return BlocConsumer<ImageBloc, ImageState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (state is AuthLoading) {
+        if (state is ImageLoading) {
           return LoadingAnimationWidget.bouncingBall(
-            color: AppPalette.primaryBlack,
+            color: theme.colorScheme.primary,
             size: 50.sp,
           );
         } else {
           return RoundedButton(
+            useColor: true,
             name: "Let's proceed",
             onPressed: () async {
               if (_isSet) {
@@ -294,10 +354,5 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
         }
       },
     );
-  }
-
-  _uploadImage() {
-    BlocProvider.of<ImageBloc>(context)
-        .add(ImageUploadAvatarEvent(formData: FormData.fromMap({})));
   }
 }

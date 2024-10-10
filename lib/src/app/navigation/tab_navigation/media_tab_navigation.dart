@@ -35,7 +35,6 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
         designSize: const Size(375, 812), minTextAdapt: true);
 
     return Scaffold(
-      backgroundColor: AppPalette.lightBackground,
       appBar: _buildAppBar(),
       body: Stack(
         children: [
@@ -48,7 +47,6 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: AppPalette.lightBackground,
       elevation: 0,
       toolbarHeight: ScreenUtil().setHeight(10),
     );
@@ -80,9 +78,6 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
         child: TabBarView(
           controller: _tabController,
           children: const [
-            // ImageGalleryPage(), //Images
-            // AudioGalleryPage(), //Audios
-            // VideoGalleryPage(), //Videos
             ImageGridPage(),
             AudioGridPage(),
             VideoGridPage(),

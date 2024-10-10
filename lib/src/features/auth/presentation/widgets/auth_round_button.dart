@@ -16,7 +16,7 @@ class RoundedButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: useColor
-              ? [AppPalette.green, AppPalette.green]
+              ? [AppPalette.primaryBlack, AppPalette.primaryBlack]
               : [AppPalette.red, AppPalette.red],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,

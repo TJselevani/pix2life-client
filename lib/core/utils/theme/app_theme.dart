@@ -70,31 +70,33 @@ class AppTheme {
     ),
   );
 
-  // Material You Theme
+  // Material You Light Theme
   static final materialYouTheme = ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(seedColor: AppPalette.blueAccent),
-    scaffoldBackgroundColor: AppPalette.inputBackground,
+    brightness: Brightness.light, // Ensure it's treated as a light theme
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.indigo,
+      brightness: Brightness.light, // Set light mode explicitly
+    ),
+    scaffoldBackgroundColor: AppPalette.lightBackground,
     fontFamily: 'Poppins',
     appBarTheme: AppBarTheme(
-      backgroundColor: AppPalette.blueAccent.withOpacity(0.9),
+      backgroundColor: Colors.indigo.withOpacity(0.9),
       titleTextStyle: const TextStyle(
-          color: AppPalette.fontWhite,
-          fontSize: 20,
-          fontWeight: FontWeight.bold),
-      iconTheme: const IconThemeData(color: AppPalette.fontWhite),
+          color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      iconTheme: const IconThemeData(color: Colors.white),
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppPalette.primaryBlack, fontSize: 14),
-      bodyMedium: TextStyle(color: AppPalette.primaryBlack, fontSize: 16),
+      bodyLarge: TextStyle(color: Colors.black, fontSize: 14),
+      bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppPalette.inputBackground,
+      fillColor: Colors.grey[200],
       border: InputBorder.none,
       enabledBorder: _borderLayout(),
-      focusedBorder: _borderLayout(AppPalette.primaryGrey, BorderStyle.solid),
-      errorBorder: _borderLayout(AppPalette.errorRed, BorderStyle.solid),
+      focusedBorder: _borderLayout(Colors.grey, BorderStyle.solid),
+      errorBorder: _borderLayout(Colors.redAccent, BorderStyle.solid),
     ),
   );
 }

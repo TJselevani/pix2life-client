@@ -29,7 +29,7 @@ void main() {
   group('fromJson', () {
     test('should return a [UserModel] with the right data', () {
       //act
-      final result = UserModel.fromJSON(tJson);
+      final result = UserModel.fromJsonString(tJson);
       expect(result, equals(tModel));
     });
   });

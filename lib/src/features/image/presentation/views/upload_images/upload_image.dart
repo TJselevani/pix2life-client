@@ -9,9 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
-import 'package:pix2life/src/shared/widgets/buttons/button_widgets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
-import 'package:pix2life/src/shared/widgets/text-animation/text_animation_widgets.dart';
+import 'package:pix2life/src/shared/widgets/buttons/square_button.dart';
+import 'package:pix2life/src/shared/widgets/text-animation/fade_in_text.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 
 class UploadMediaPage extends StatefulWidget {
@@ -312,7 +312,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 );
               },
             )
-          : const Center(child: FadeInText()),
+          : const Center(child: FadeInText(text: 'PIX2LIFE')),
     );
   }
 

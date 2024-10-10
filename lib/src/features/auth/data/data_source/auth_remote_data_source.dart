@@ -73,6 +73,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       this._userService, this._authManager, this._authService);
   final logger = createLogger(AuthRemoteDataSourceImpl);
 
+  static const String userKey = "user_data";
+
   @override
   Future<UserModel> userSignIn({
     required String email,
@@ -85,7 +87,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final message = response.message;
       final token = response.token;
       await _authManager.storeToken(token);
-      await _authService.storeUser(user, token);
+      await _authService.storeUser(user, userKey);
       logger.i(message);
       return user;
     } on ServerException {
@@ -118,7 +120,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final String message = response.message;
       final String token = response.token;
       await _authManager.storeToken(token);
-      await _authService.storeUser(user, token);
+      await _authService.storeUser(user, userKey);
       logger.i(message);
       return user;
     } on ServerException {
@@ -185,7 +187,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final UserFromTokenResponse response =
           await _userService.getUserFromToken();
       final UserModel user = response.user;
-      await _authService.storeUser(user, token);
+      await _authService.storeUser(user, userKey);
       return user;
     } on ServerException {
       rethrow;
@@ -198,8 +200,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> retrieveAuthUser() async {
     try {
-      final String? token = await _authManager.getToken();
-      final UserModel user = await _authService.retrieveUser(token!);
+      final UserModel user = await _authService.retrieveUser(userKey);
       return user;
     } catch (e) {
       logger.e(e);

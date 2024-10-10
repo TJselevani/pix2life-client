@@ -59,6 +59,7 @@ class _UserUpdatePasswordPageState extends State<UserUpdatePasswordPage> {
       try {
         final password = _passwordController.text.trim();
         final confirmPassword = _confirmPasswordController.text.trim();
+        // ignore: unused_local_variable
         final userData = {
           'email': widget.userEmail,
           'resetCode': widget.resetCode,

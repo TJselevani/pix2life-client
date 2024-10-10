@@ -29,6 +29,7 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
         _isLoading = true;
       });
 
+      // ignore: unused_local_variable
       final userEmail = _emailController.text.trim();
 
       try {

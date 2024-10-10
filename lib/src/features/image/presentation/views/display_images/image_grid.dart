@@ -19,6 +19,7 @@ class ImageGridPage extends StatefulWidget {
 class _ImageGridPageState extends State<ImageGridPage>
     with SingleTickerProviderStateMixin {
   String _selectedImageName = 'Image Gallery';
+  // ignore: unused_field
   String? _selectedImageUrl;
   late AnimationController _controller;
   bool isTapped = false;
@@ -67,14 +68,14 @@ class _ImageGridPageState extends State<ImageGridPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primaryWhite,
+      // backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
         title: Text(
           _selectedImageName,
           style: TextStyle(fontSize: 20.sp),
         ),
         centerTitle: true,
-        backgroundColor: AppPalette.primaryWhite,
+        // backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.refresh, size: 24.sp),

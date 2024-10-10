@@ -92,14 +92,14 @@ class _AudioGridPageState extends State<AudioGridPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppPalette.primaryWhite,
+        // backgroundColor: AppPalette.primaryWhite,
         appBar: AppBar(
           title: Text(
             _selectedAudioName,
             style: TextStyle(fontSize: 20.sp),
           ),
           centerTitle: true,
-          backgroundColor: Colors.transparent,
+          // backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.refresh, size: 24.sp),

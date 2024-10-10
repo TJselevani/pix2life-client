@@ -1,19 +1,18 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
-import 'package:pix2life/src/app/navigation/drawer_navigation/drawer.dart';
-import 'package:pix2life/src/app/navigation/tab_navigation/main_navigation_page.dart';
-import 'package:pix2life/src/app/pages/profile%20screen/profile_screen.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
+import 'package:pix2life/src/app/navigation/drawer_navigation/drawer_provider.dart';
+import 'package:pix2life/src/app/navigation/tab_navigation/bottom_tab_navigation.dart';
+import 'package:pix2life/src/app/pages/guide/onboard_screen.dart';
 import 'package:pix2life/src/app/pages/qrcode/qr_code_scanner_screen.dart';
 import 'package:pix2life/src/app/pages/qrcode/qr_code_screen.dart';
-import 'package:pix2life/src/app/pages/upload-screen/select_media_upload.dart';
+import 'package:pix2life/src/features/audio/data/data%20sources/audio_provider.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/views/reset_password/forgot_password_page.dart';
-import 'package:pix2life/src/features/gallery/presentation/views/daisy.dart';
-import 'package:pix2life/src/features/audio/presentation/pages/play_audios/audio_player_page.dart';
+import 'package:pix2life/src/features/gallery/data/data_source/gallery_provider.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/app/pages/intro/welcome_page.dart';
@@ -22,10 +21,12 @@ import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_acc
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_password/create_password_page_1.dart';
 import 'package:pix2life/injection_container.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:pix2life/src/features/image/data/data%20sources/image_provider.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/views/upload_images/upload_avatar.dart';
+import 'package:pix2life/src/features/video/data/data%20sources/video_provider.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
-import 'package:pix2life/test/test_app.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,24 @@ Future<void> main() async {
             BlocProvider(create: (context) => sl<VideoBloc>()),
             BlocProvider(create: (context) => sl<GalleryBloc>()),
           ],
-          child: const MyApp(),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (context) => MyThemeProvider()),
+              ChangeNotifierProvider(
+                  create: (context) => MyZoomDrawerProvider()),
+              ChangeNotifierProvider(
+                  create: (context) => MyUserProvider(context)),
+              ChangeNotifierProvider(
+                  create: (context) => MyImageProvider(context)),
+              ChangeNotifierProvider(
+                  create: (context) => MyAudioProvider(context)),
+              ChangeNotifierProvider(
+                  create: (context) => MyVideoProvider(context)),
+              ChangeNotifierProvider(
+                  create: (context) => MyGalleryProvider(context)),
+            ],
+            child: const MyApp(),
+          ),
         );
       },
     ),
@@ -59,37 +77,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final ThemeMode _themeMode = ThemeMode.system; // Start with system theme
-
-  // void _switchTheme(ThemeMode themeMode) {
-  //   setState(() {
-  //     _themeMode = themeMode;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final log = createLogger(MyApp);
     log.i('Client :: Running');
-    return MaterialApp(
-      title: 'pix2life',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      // darkTheme: AppTheme.darkTheme,
-      // themeMode: _themeMode,
-
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const WelcomePage(),
-        '/SignIn': (context) => const UserSignInPage(),
-        '/SignUp': (context) => const UserEmailSignUpPage(),
-        '/Reset': (context) => const UserForgotPasswordPage(),
-        '/Home': (context) => const MainPageNavigation(),
-        '/Password': (context) => const UserCreatePasswordPage(),
-        '/Widget': (context) => const MyWidget(),
-        '/Avatar': (context) => const UploadProfilePicPage(),
-        '/QR': (context) => const QRCodeScreen(),
-        '/QR2': (context) => const QRCodeScannerScreen(),
+    return Consumer<MyThemeProvider>(
+      builder: (
+        BuildContext context,
+        MyThemeProvider themeProvider,
+        Widget? child,
+      ) {
+        return MaterialApp(
+          title: 'pix2life',
+          debugShowCheckedModeBanner: false,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeProvider.useMaterialYou
+              ? ThemeMode.light
+              : themeProvider.themeMode,
+          theme: themeProvider.useMaterialYou
+              ? AppTheme.materialYouTheme
+              : AppTheme.lightTheme,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const WelcomePage(),
+            '/Onboard': (context) => const OnboardScreen(),
+            '/SignIn': (context) => const UserSignInPage(),
+            '/SignUp': (context) => const UserEmailSignUpPage(),
+            '/Reset': (context) => const UserForgotPasswordPage(),
+            '/Home': (context) => const BottomTabNavigation(),
+            '/Password': (context) => const UserCreatePasswordPage(),
+            '/Widget': (context) => const MyWidget(),
+            '/Avatar': (context) => const UploadProfilePicPage(),
+            '/QR': (context) => const QRCodeScreen(),
+            '/QR2': (context) => const QRCodeScannerScreen(),
+          },
+        );
       },
     );
   }
@@ -105,7 +127,7 @@ class MyWidget extends StatelessWidget {
         body: Column(
           children: [
             Center(
-              child: Text('MAinPage'),
+              child: Text('MainPage'),
             )
           ],
         ),
@@ -113,47 +135,3 @@ class MyWidget extends StatelessWidget {
     );
   }
 }
-
-
-// lib/
-// ├── core/
-// │   ├── error/
-// │   ├── usecases/
-// │   ├── utils/
-// │   └── constants.dart
-// ├── features/
-// │   ├── feature_name/
-// │   │   ├── data/
-// │   │   │   ├── models/
-// │   │   │   ├── repositories/
-// │   │   │   └── data_sources/
-// │   │   ├── domain/
-// │   │   │   ├── entities/
-// │   │   │   ├── repositories/
-// │   │   │   └── usecases/
-// │   │   └── presentation/
-// │   │       ├── pages/
-// │   │       ├── widgets/
-// │   │       └── bloc/
-// ├── injection_container.dart
-// └── main.dart
-
-// lib/
-// ├── core/
-// │   ├── errors/
-// │   ├── utils/
-// │   └── usecases/
-// ├── features/
-// │   ├── authentication/
-// │   ├── images/
-// │   ├── video/
-// │   ├── audio/
-// ├── shared/
-// │   ├── widgets/
-// │   ├── styles/
-// ├── app/
-// │   ├── pages/
-// │   ├── menu/
-// │   ├── multimedia/
-// │   ├── home/
-// │   └── app_bloc.dart

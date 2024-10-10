@@ -6,6 +6,8 @@ class AuthInputField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool isObscureText;
+  final bool isEmail;
+  final bool isPhoneNumber;
   final TextEditingController controller;
   const AuthInputField({
     super.key,
@@ -13,6 +15,8 @@ class AuthInputField extends StatelessWidget {
     required this.labelText,
     required this.controller,
     this.isObscureText = false,
+    this.isEmail = false,
+    this.isPhoneNumber = false,
     required this.prefixIcon,
     required this.suffixIcon,
   });
@@ -31,6 +35,12 @@ class AuthInputField extends StatelessWidget {
         if (value!.isEmpty) {
           return "$labelText is required";
         }
+        if (isEmail) {
+          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+            return 'Please enter a valid email';
+          }
+        }
+
         return null;
       },
       obscureText: isObscureText,

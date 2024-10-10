@@ -41,6 +41,7 @@ class _WelcomePageState extends State<WelcomePage> {
       appBar: AppBar(
         backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
+        toolbarHeight: 20.h,
       ),
       body: Container(
         width: double.infinity,
@@ -48,7 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 30.h),
+            SizedBox(height: 1.h),
             _buildTopBarIndicator(),
             SizedBox(height: 40.h),
             _buildPageView(context),
@@ -97,7 +98,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _buildPageView(BuildContext context) {
     return SizedBox(
-      height: 307.h, // You can adjust this to make it more flexible
+      height: 300.h,
       width: 300.w,
       child: PageView.builder(
         controller: _pageController,
