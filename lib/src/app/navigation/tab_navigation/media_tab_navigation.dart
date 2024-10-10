@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/audio/presentation/pages/display_audios/audio_grid.dart';
 import 'package:pix2life/src/features/image/presentation/views/display_images/image_grid.dart';
 import 'package:pix2life/src/features/video/presentation/views/display_videos/video_grid.dart';
+import 'package:provider/provider.dart';
 
 class MediaTabNavigation extends StatefulWidget {
   const MediaTabNavigation({super.key});
@@ -15,6 +17,7 @@ class MediaTabNavigation extends StatefulWidget {
 class _MediaTabNavigationState extends State<MediaTabNavigation>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -30,9 +33,8 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
 
   @override
   Widget build(BuildContext context) {
-    // Initialize ScreenUtil to adapt sizes based on screen size
-    ScreenUtil.init(context,
-        designSize: const Size(375, 812), minTextAdapt: true);
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: _buildAppBar(),
@@ -61,7 +63,8 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
         ScreenUtil().setHeight(20),
       ),
       decoration: BoxDecoration(
-        color: AppPalette.primaryWhite,
+        color:
+            isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
         borderRadius: BorderRadius.circular(ScreenUtil().setWidth(25)),
         boxShadow: [
           BoxShadow(

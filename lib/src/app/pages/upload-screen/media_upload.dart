@@ -10,6 +10,7 @@ import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/core/utils/pick-media/media_picker_service.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
@@ -45,10 +46,11 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
   List<Gallery>? fetchedGalleries;
   bool _galleriesLoading = true;
   User? authUser;
-  List<String>? galleryNames;
+  List<String> galleryNames = [];
   String _selectedMediaType = ''; // Stores the selected media type
   bool _isLoading = true;
   String? _selectedGallery;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -290,30 +292,69 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       List<String> names =
           fetchedGalleries!.map((gallery) => gallery.name).toList();
       setState(() {
-        galleryNames?.clear();
-        galleryNames?.addAll(names);
+        galleryNames.clear();
+        galleryNames.addAll(names);
       });
     }
 
     return _galleriesLoading
         ? const Center(child: CircularProgressIndicator())
         : Padding(
-            padding: const EdgeInsets.all(5),
-            child: DropdownButton<String>(
-              value: _selectedGallery,
-              hint: const Text('Select gallery'),
-              items: galleryNames?.map((String name) {
-                return DropdownMenuItem<String>(
-                  value: name,
-                  child: Text(name),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedGallery = newValue;
-                  _nameController.text = newValue ?? '';
-                });
-              },
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: isDarkMode
+                        ? AppPalette.primaryBlack.withAlpha(50)
+                        : AppPalette.lightBackground
+                            .withAlpha(20) // Border color based on theme
+                    ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: DropdownButton<String>(
+                value: _selectedGallery,
+                hint: Text(
+                  'Select gallery',
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.color, // Responsive to theme
+                  ),
+                ),
+                isExpanded: true, // Ensures the dropdown expands to full width
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary, // Arrow color based on theme
+                ),
+                dropdownColor: Theme.of(context)
+                    .colorScheme
+                    .surface, // Matches Material You colors
+                items: galleryNames.map((String name) {
+                  return DropdownMenuItem<String>(
+                    value: name,
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color, // Text color based on theme
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedGallery = newValue;
+                    _nameController.text = newValue ?? '';
+                  });
+                },
+                underline: const SizedBox.shrink(), // Removes default underline
+              ),
             ),
           );
   }
@@ -325,6 +366,9 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     authUser = userProvider.user;
     fetchedGalleries = galleryProvider.galleries;
     _galleriesLoading = galleryProvider.isLoading;
+
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
         body: MultiBlocListener(
@@ -434,7 +478,9 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     return Container(
       height: 300.h,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDarkMode
+            ? AppPalette.primaryBlack.withAlpha(50)
+            : AppPalette.lightBackground.withAlpha(220),
         borderRadius: BorderRadius.circular(15.r),
         boxShadow: [
           BoxShadow(
@@ -487,7 +533,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                   style: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: isDarkMode ? null : Colors.black87,
                   ),
                 ),
                 SizedBox(height: 5.h),
@@ -502,9 +548,9 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    _buildStatColumn(
+                        'Galleries', '${fetchedGalleries!.length} Galleries'),
                     _buildStatColumn('Income', '\$8900'),
-                    _buildStatColumn('Expenses', '\$5500'),
-                    _buildStatColumn('Loan', '\$890'),
                   ],
                 ),
               ],
@@ -512,20 +558,20 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     );
   }
 
-  Widget _buildStatColumn(String label, String amount) {
+  Widget _buildStatColumn(String label, String value) {
     return Column(
       children: [
         Text(
-          amount,
+          label,
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: isDarkMode ? null : Colors.black87,
           ),
         ),
         SizedBox(height: 5.h),
         Text(
-          label,
+          value,
           style: TextStyle(
             fontSize: 16.sp,
             color: Colors.grey,
@@ -541,7 +587,11 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildGalleryOptions(),
+          SizedBox(
+            width: 170.w,
+            // height: 200.h,
+            child: _buildGalleryOptions(),
+          ),
         ],
       ),
     );
@@ -646,66 +696,83 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
       child: GestureDetector(
-        onTap: null,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: AppPalette.secondaryBlack.withOpacity(0.1),
-                blurRadius: 10.r,
-                spreadRadius: 5.r,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: onPress,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppPalette.red,
-                    borderRadius: BorderRadius.circular(10),
+        onTap: onPress,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              padding: EdgeInsets.all(
+                  constraints.maxWidth * 0.05), // Adaptive padding
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? AppPalette.primaryBlack.withAlpha(50)
+                    : AppPalette.lightBackground.withAlpha(220),
+                borderRadius: BorderRadius.circular(15.r), // Responsive radius
+                boxShadow: [
+                  BoxShadow(
+                    color: AppPalette.secondaryBlack.withOpacity(0.1),
+                    blurRadius: 10.r,
+                    spreadRadius: 5.r,
+                    offset: const Offset(0, 5),
                   ),
-                  child: Icon(icon, size: 30, color: AppPalette.primaryWhite),
-                ),
+                ],
               ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: onPress,
+                    child: Container(
+                      padding: EdgeInsets.all(
+                          constraints.maxWidth * 0.03), // Adaptive padding
+                      decoration: BoxDecoration(
+                        color: AppPalette.red,
+                        borderRadius: BorderRadius.circular(
+                            10.r), // Responsive border radius
                       ),
+                      child: Icon(icon,
+                          size: 30.sp, color: AppPalette.primaryWhite),
                     ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 16.sp, // Adaptive font size
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode ? null : Colors.black87,
+                          ),
+                          maxLines: 1, // Ensure text doesn't overflow
+                          overflow:
+                              TextOverflow.ellipsis, // Ellipsis for long text
+                        ),
+                        SizedBox(height: 5.h),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 14.sp, // Adaptive font size
+                            color: Colors.grey,
+                          ),
+                          maxLines: 2, // Limit subtitle to two lines
+                          overflow: TextOverflow
+                              .ellipsis, // Ellipsis for long subtitle
+                        ),
+                        SizedBox(height: 10.h),
+                        if (state is ImageLoading ||
+                            state is AudioLoading ||
+                            state is VideoLoading)
+                          const LinearProgressIndicator(),
+                      ],
                     ),
-                    SizedBox(height: 10.h),
-                    if (state is ImageLoading ||
-                        state is AudioLoading ||
-                        state is VideoLoading)
-                      const LinearProgressIndicator(),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: 10.w),
+                  uploadIcon,
+                ],
               ),
-              uploadIcon,
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

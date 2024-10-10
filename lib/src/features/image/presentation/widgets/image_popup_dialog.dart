@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pix2life/core/utils/date-format/format_timestamp.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
+import 'package:provider/provider.dart';
 
 class ImageDialog extends StatelessWidget {
   final Photo image;
@@ -20,6 +23,11 @@ class ImageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = false;
+
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Dialog(
       insetPadding: const EdgeInsets.all(10),
       backgroundColor: Colors.transparent,
@@ -49,7 +57,9 @@ class ImageDialog extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDarkMode
+                            ? AppPalette.darkBackground
+                            : AppPalette.lightBackground,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -89,7 +99,7 @@ class ImageDialog extends StatelessWidget {
                                 ),
                                 SizedBox(height: 8.h),
                                 Text(
-                                  'Created At: ${image.createdAt}',
+                                  "Created At: ${Utility.formatTimestamp('${image.createdAt}')}  (${Utility.getRelativeTime('${image.createdAt}')}  Ago) ",
                                   style: TextStyle(fontSize: 14.sp),
                                 ),
                                 SizedBox(height: 8.h),

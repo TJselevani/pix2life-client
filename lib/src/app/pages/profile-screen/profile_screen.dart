@@ -142,7 +142,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         image: DecorationImage(
           image: authUser != null && authUser!.avatarUrl.isNotEmpty
               ? NetworkImage(authUser!.avatarUrl)
-              : const AssetImage('assets/images/emma.jpg'),
+              : const AssetImage(AppImage.welcomeImage),
           fit: BoxFit.cover,
         ),
       ),

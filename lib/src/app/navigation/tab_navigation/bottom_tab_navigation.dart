@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/app/navigation/drawer_navigation/drawer_provider.dart';
 import 'package:pix2life/src/app/navigation/drawer_navigation/menu.dart';
 import 'package:pix2life/src/app/navigation/tab_navigation/media_tab_navigation.dart';
@@ -26,6 +27,7 @@ class BottomTabNavigation extends StatefulWidget {
 class _BottomTabNavigationState extends State<BottomTabNavigation>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
+  bool isDarkMode = false;
 
   // Animation Controller for drawer open/close
   late AnimationController _animationController;
@@ -69,6 +71,8 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
   Widget build(BuildContext context) {
     // Use ZoomDrawerProvider here
     final zoomDrawerProvider = Provider.of<MyZoomDrawerProvider>(context);
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return ZoomDrawer(
       controller: zoomDrawerProvider.drawerController,
@@ -112,7 +116,8 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
       openCurve: Curves.fastOutSlowIn,
       closeCurve: Curves.easeInBack,
       duration: const Duration(milliseconds: 300),
-      menuBackgroundColor: AppPalette.navyBlue,
+      menuBackgroundColor:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
     );
   }
 
@@ -121,9 +126,11 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
       elevation: 0,
       items: [
         _buildBottomNavigationBarItem(CupertinoIcons.home, 'Home'),
-        _buildBottomNavigationBarItem(CupertinoIcons.app, 'Media'),
-        _buildBottomNavigationBarItem(CupertinoIcons.add_circled, 'Upload'),
-        _buildBottomNavigationBarItem(CupertinoIcons.app, 'Match'),
+        _buildBottomNavigationBarItem(CupertinoIcons.memories, 'Media'),
+        _buildBottomNavigationBarItem(
+            CupertinoIcons.add_circled, 'Upload Media'),
+        _buildBottomNavigationBarItem(
+            CupertinoIcons.photo_on_rectangle, 'Match Images'),
         _buildBottomNavigationBarItem(CupertinoIcons.person, 'Profile'),
       ],
       currentIndex: _selectedIndex,
@@ -149,6 +156,34 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           icon,
+          color: Colors.white,
+        ),
+      ),
+      label: label,
+    );
+  }
+
+  BottomNavigationBarItem _buildAnimatedBottomNavigationBarItem(
+    AnimatedIconData icon,
+    String label,
+  ) {
+    return BottomNavigationBarItem(
+      icon: AnimatedIcon(
+        icon: icon,
+        progress: _animationController,
+        size: 28.0,
+        color: AppPalette.red,
+      ),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: AppPalette.red,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: AnimatedIcon(
+          progress: _animationController,
+          icon: icon,
+          size: 28.0,
           color: Colors.white,
         ),
       ),
