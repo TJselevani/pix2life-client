@@ -13,14 +13,14 @@ class OnboardPage3 extends StatelessWidget {
         children: [
           SvgPicture.asset('assets/svg/delivery.svg', height: 100),
           const SizedBox(height: 20),
-          Text('Fast Delivery',
+          Text('Journey Through Your Travels',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           const Text(
-            "It's simple to find the food you like. Enter your address and let us do the rest.",
+            "Relive your travel experiences and inspire others with your stories. From breathtaking landscapes to cultural encounters, every journey has a story worth sharing.",
             style: TextStyle(color: Colors.grey),
             textAlign: TextAlign.center,
           )

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
-import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class SignInSuccessPage extends StatefulWidget {
   const SignInSuccessPage({super.key});
@@ -21,6 +22,8 @@ class SignInSuccessPage extends StatefulWidget {
 
 class _SignInSuccessPageState extends State<SignInSuccessPage> {
   late final ConfettiController _controller;
+  User? authUser;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -37,21 +40,23 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authUser =
-        (BlocProvider.of<AuthBloc>(context).state as AuthenticatedUser).user;
+    final userProvider = Provider.of<MyUserProvider>(context);
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    authUser = userProvider.user;
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64,
       ),
-      body: _buildBody(context, authUser),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody(BuildContext context, User authUser) {
+  Widget _buildBody(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8.w),
       width: double.infinity,
@@ -64,7 +69,7 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
             _buildConfetti(),
             _buildTopBarIndicator(),
             SizedBox(height: 30.h),
-            _buildUserEmail(authUser),
+            _buildUserEmail(),
             SizedBox(height: 20.h),
             _buildWelcomeImage(),
             SizedBox(height: 20.h),
@@ -82,7 +87,8 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
 
   BoxDecoration _buildBackgroundDecoration() {
     return BoxDecoration(
-      color: Colors.white,
+      color:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(37.r),
         topRight: Radius.circular(37.r),
@@ -119,14 +125,15 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
     );
   }
 
-  Widget _buildUserEmail(User authUser) {
+  Widget _buildUserEmail() {
     return SizedBox(
       width: 357.w,
       child: RichText(
         text: TextSpan(
-          text: authUser.email,
+          text: authUser != null && authUser!.email.isNotEmpty
+              ? authUser!.email
+              : '',
           style: TextStyle(
-            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,

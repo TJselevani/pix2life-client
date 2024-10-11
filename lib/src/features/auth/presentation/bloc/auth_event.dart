@@ -60,7 +60,7 @@ final class AuthCreatePasswordEvent extends AuthEvent {
   List<Object> get props => [password, confirmPassword];
 }
 
-final class AuthCheckAuthStatusEvent extends AuthEvent {}
+final class AuthGetUserDataEvent extends AuthEvent {}
 
 final class AuthLogoutEvent extends AuthEvent {}
 

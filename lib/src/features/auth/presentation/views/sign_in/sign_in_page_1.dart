@@ -6,10 +6,12 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_in/sign_in_page_2.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class UserSignInPage extends StatefulWidget {
   const UserSignInPage({super.key});
@@ -40,6 +42,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
   final logger = createLogger(UserSignInPage);
   bool _obscureText = true;
   bool _rememberMe = false;
+  bool isDarkMode = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -56,6 +59,9 @@ class _UserSignInPageState extends State<UserSignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
@@ -75,29 +81,26 @@ class _UserSignInPageState extends State<UserSignInPage> {
       height: double.infinity,
       decoration: _buildBackgroundDecoration(),
       child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 30.h),
-              _buildTopBarIndicator(),
-              SizedBox(height: 20.h),
-              _buildTitleText(),
-              SizedBox(height: 10.h),
-              _buildSubtitleText(),
-              SizedBox(height: 20.h),
-              _buildLogoImage(),
-              SizedBox(height: 30.h),
-              _buildInputFields(),
-              SizedBox(height: 30.h),
-              _buildSignInButton(),
-              SizedBox(height: 30.h),
-              _buildTermsAndConditionsText(),
-              SizedBox(height: 40.h),
-              _buildSignUpText(),
-              SizedBox(height: 20.h),
-            ],
-          ),
+        child: Column(
+          children: [
+            SizedBox(height: 30.h),
+            _buildTopBarIndicator(),
+            SizedBox(height: 20.h),
+            _buildTitleText(),
+            SizedBox(height: 10.h),
+            _buildSubtitleText(),
+            SizedBox(height: 20.h),
+            _buildLogoImage(),
+            SizedBox(height: 30.h),
+            _buildInputFields(),
+            SizedBox(height: 30.h),
+            _buildSignInButton(),
+            SizedBox(height: 30.h),
+            _buildTermsAndConditionsText(),
+            SizedBox(height: 40.h),
+            _buildSignUpText(),
+            SizedBox(height: 20.h),
+          ],
         ),
       ),
     );
@@ -105,7 +108,8 @@ class _UserSignInPageState extends State<UserSignInPage> {
 
   BoxDecoration _buildBackgroundDecoration() {
     return BoxDecoration(
-      color: Colors.white,
+      color:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(37.r),
         topRight: Radius.circular(37.r),
@@ -128,7 +132,6 @@ class _UserSignInPageState extends State<UserSignInPage> {
         text: TextSpan(
           text: 'Welcome back',
           style: TextStyle(
-            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -168,15 +171,18 @@ class _UserSignInPageState extends State<UserSignInPage> {
   }
 
   Widget _buildInputFields() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildEmailField(),
-        SizedBox(height: 20.h),
-        _buildPasswordField(),
-        SizedBox(height: 10.h),
-        _buildRememberMeAndForgotPassword(),
-      ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildEmailField(),
+          SizedBox(height: 20.h),
+          _buildPasswordField(),
+          SizedBox(height: 10.h),
+          _buildRememberMeAndForgotPassword(),
+        ],
+      ),
     );
   }
 
@@ -200,6 +206,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             controller: _emailController,
             labelText: 'Email',
             hintText: 'Enter your Email',
+            isEmail: true,
             prefixIcon: const Icon(
               Icons.email_outlined,
               size: 20,
@@ -289,7 +296,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
-                  fontSize: 11.sp,
+                  fontSize: 12.sp,
                   color: AppPalette.red,
                 ),
               ),
@@ -320,7 +327,12 @@ class _UserSignInPageState extends State<UserSignInPage> {
         } else {
           return RoundedButton(
             name: 'Sign In',
-            onPressed: () => _onSignInPressed(context),
+            onPressed: () => {
+              if (_formKey.currentState!.validate())
+                {
+                  _onSignInPressed(context),
+                }
+            },
           );
         }
       },
@@ -343,7 +355,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w400,
         fontSize: 13.sp,
-        color: AppPalette.primaryGrey,
+        color: isDarkMode ? null : AppPalette.primaryGrey,
       ),
     );
   }
@@ -358,7 +370,6 @@ class _UserSignInPageState extends State<UserSignInPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
-            color: AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),

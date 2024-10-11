@@ -31,9 +31,9 @@ class _DaisyState extends State<Daisy> {
   User? authUser;
 
   final List<String> _imageUrls = [
-    'https://via.placeholder.com/300.png/09f/fff',
-    'https://via.placeholder.com/300.png/ff0/000',
-    'https://via.placeholder.com/300.png/0ff/000',
+    // 'https://via.placeholder.com/300.png/09f/fff',
+    // 'https://via.placeholder.com/300.png/ff0/000',
+    // 'https://via.placeholder.com/300.png/0ff/000',
   ];
 
   final List<Map<String, String>> exemplarGalleries = [
@@ -58,9 +58,11 @@ class _DaisyState extends State<Daisy> {
 
   void _startImageShuffle() {
     _imageShuffleTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      setState(() {
-        _currentImageIndex = (_currentImageIndex + 1) % _imageUrls.length;
-      });
+      if (_imageUrls.isNotEmpty) {
+        setState(() {
+          _currentImageIndex = (_currentImageIndex + 1) % _imageUrls.length;
+        });
+      }
     });
   }
 
@@ -415,7 +417,9 @@ class _DaisyState extends State<Daisy> {
                     color: AppPalette.red.withOpacity(.7),
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                      image: NetworkImage(_imageUrls[_currentImageIndex]),
+                      image: _imageUrls.isNotEmpty
+                          ? NetworkImage(_imageUrls[_currentImageIndex])
+                          : const AssetImage(AppImage.welcomeImage),
                       fit: BoxFit.cover,
                     ),
                   ),

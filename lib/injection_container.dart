@@ -17,7 +17,7 @@ import 'package:pix2life/src/features/auth/data/data_source/auth_service.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_user_service.dart';
 import 'package:pix2life/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:pix2life/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:pix2life/src/features/auth/domain/usecases/check_auth_status.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/get_user_data.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_user_account.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/create_user_password.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.dart';
@@ -76,7 +76,7 @@ Future<void> initDependencies() async {
       checkUserAccount: sl(),
       logOutUSer: sl(),
       createUserPassword: sl(),
-      checkAuthStatus: sl(),
+      getUserData: sl(),
       retrieveAuthUser: sl(),
       authManager: sl(),
     ),
@@ -131,7 +131,7 @@ Future<void> initDependencies() async {
   //Authentication usecases
   sl.registerLazySingleton(() => UserSignUp(sl()));
   sl.registerLazySingleton(() => UserSignIn(sl()));
-  sl.registerLazySingleton(() => CheckAuthStatus(sl()));
+  sl.registerLazySingleton(() => GetUserData(sl()));
   sl.registerLazySingleton(() => LogOutUser(sl()));
   sl.registerLazySingleton(() => CreateUserPassword(sl()));
   sl.registerLazySingleton(() => CheckUserAccount(sl()));

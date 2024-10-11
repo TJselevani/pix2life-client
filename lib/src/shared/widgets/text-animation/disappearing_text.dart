@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 
 class DisappearingText extends StatefulWidget {
@@ -69,8 +70,8 @@ class _DisappearingTextState extends State<DisappearingText> {
     return _isVisible
         ? Text(
             widget.text,
-            style: const TextStyle(
-              fontSize: 10,
+            style: TextStyle(
+              fontSize: 20.sp,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
               color: AppPalette.red,

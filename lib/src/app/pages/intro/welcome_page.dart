@@ -37,11 +37,9 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
-        backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
-        toolbarHeight: 20.h,
+        toolbarHeight: 50.h,
       ),
       body: Container(
         width: double.infinity,
@@ -246,8 +244,7 @@ class _WelcomePageState extends State<WelcomePage> {
             child: RoundedButton(
               name: 'Get Started',
               onPressed: () {
-                BlocProvider.of<AuthBloc>(context)
-                    .add(AuthCheckAuthStatusEvent());
+                BlocProvider.of<AuthBloc>(context).add(AuthGetUserDataEvent());
               },
             ),
           );

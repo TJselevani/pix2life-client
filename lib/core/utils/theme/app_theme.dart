@@ -62,11 +62,14 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppPalette.inputBackground,
+      fillColor: AppPalette.lightBackground.withOpacity(.1),
       border: InputBorder.none,
+      hintStyle:
+          const TextStyle(color: Colors.black54), // Darker hint text color
       enabledBorder: _borderLayout(),
       focusedBorder: _borderLayout(AppPalette.primaryGrey, BorderStyle.solid),
       errorBorder: _borderLayout(AppPalette.errorRed, BorderStyle.solid),
+      labelStyle: const TextStyle(color: Colors.black), // Input text color
     ),
   );
 

@@ -15,14 +15,14 @@ class MyUserProvider with ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   MyUserProvider(this.context) {
-    // Start listening to AuthBloc state changes
     _initialize();
   }
 
+  // Initialize and listen for AuthBloc state changes
   void _initialize() {
     final authBloc = BlocProvider.of<AuthBloc>(context);
 
-    // Listen for changes in the AudioBloc state
+    // Listen for AuthBloc state changes
     authBloc.stream.listen((state) {
       if (state is AuthLoading) {
         _loading = true;
@@ -39,63 +39,46 @@ class MyUserProvider with ChangeNotifier {
       }
     });
 
+    // Initial fetch of authenticated user
     authBloc.add(AuthRetrieveAuthenticatedUserEvent());
   }
+
+  // Method to update user data
+  Future<void> updateUser(User updatedUser) async {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+
+    try {
+      _loading = true;
+      notifyListeners();
+
+      // Dispatch an event to update the user
+      // authBloc.add(AuthUpdateUserEvent(updatedUser));
+
+      // Optionally listen for the update success
+      authBloc.stream.listen((state) {
+        if (state is AuthenticatedUser) {
+          _user = state.user;
+          notifyListeners();
+        } else if (state is AuthFailure) {
+          _errorMessage = state.message;
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      _loading = false;
+      _errorMessage = 'Failed to update user';
+      notifyListeners();
+    }
+  }
+
+  // Refetch user data
+  Future<void> refetchUser() async {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+    authBloc.add(AuthGetUserDataEvent());
+  }
+
+  Future<void> logOutUser() async {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+    authBloc.add(AuthLogoutEvent());
+  }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:pix2life/core/utils/logger/logger.dart';
-// import 'package:pix2life/src/features/auth/data/data_source/auth_manager.dart';
-// import 'package:pix2life/src/features/auth/data/data_source/auth_service.dart';
-// import 'package:pix2life/src/features/auth/data/models/user.model.dart';
-
-// class MyUserProvider extends ChangeNotifier {
-//   final log = createLogger(MyUserProvider);
-//   final AuthService _authService;
-//   final AuthManager _authManager;
-//   UserModel? _user;
-
-//   static const String userKey = "user_data"; // Key to store/retrieve user
-
-//   MyUserProvider(this._authService, this._authManager);
-
-//   // Getter for user
-//   UserModel? get user => _user;
-
-//   Future<void> loadUser() async {
-//     log.d('Loading User From Provider');
-//     try {
-//       final String? token = await _authManager.getToken();
-//       if (token != null) {
-//         log.d('Token found: $token');
-
-//         // Using the predefined key to retrieve the user
-//         _user = await _authService.retrieveUser(userKey);
-//         if (_user == const UserModel.empty()) {
-//           _user = null;
-//         }
-//         if (_user != null && _user!.email.isNotEmpty) {
-//           log.i('User loaded: ${_user!.email}');
-//         }
-//       } else {
-//         log.e('Token not found');
-//         _user = null;
-//       }
-//       notifyListeners();
-//     } catch (e) {
-//       log.e('Error on UserProvider');
-//       _user = null;
-//       notifyListeners();
-//       log.e(e.toString());
-//     }
-//   }
-
-//   Future<void> logout() async {
-//     await _authManager.deleteToken();
-//     _user = null;
-//     notifyListeners();
-//   }
-
-//   // Check if user is logged in
-//   bool get isLoggedIn => _user != null;
-// }

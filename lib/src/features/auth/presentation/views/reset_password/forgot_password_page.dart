@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class UserForgotPasswordPage extends StatefulWidget {
   static void routeToSignIn(BuildContext context) {
@@ -21,48 +26,7 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final log = createLogger(UserForgotPasswordPage);
-  bool _isLoading = false;
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // ignore: unused_local_variable
-      final userEmail = _emailController.text.trim();
-
-      try {
-        // final response = await userService.forgotPassword({'email': userEmail});
-        if (!mounted) return;
-
-        // _showSuccess(response.message, userEmail);
-      } catch (e) {
-        _handleError(e);
-      }
-    }
-  }
-
-  // void _showSuccess(String message, String userEmail) {
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-
-  //   SuccessSnackBar.show(message: message, context: context);
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => UserResetCodePage(userEmail: userEmail),
-  //     ),
-  //   );
-  // }
-
-  void _handleError(dynamic error) {
-    setState(() {
-      _isLoading = false;
-    });
-  }
+  bool isDarkMode = false;
 
   @override
   void dispose() {
@@ -72,10 +36,13 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64.h,
       ),
@@ -90,38 +57,36 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
       height: double.infinity,
       decoration: _buildBackgroundDecoration(),
       child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 30.h),
-              _buildTopBarIndicator(),
-              SizedBox(height: 20.h),
-              _buildTitleText(),
-              SizedBox(height: 10.h),
-              _buildSubtitleText(),
-              SizedBox(height: 20.h),
-              _buildLogo(),
-              SizedBox(height: 10.h),
-              _buildWelcomeImage(context),
-              SizedBox(height: 40.h),
-              _buildEmailInputField(),
-              SizedBox(height: 50.h),
-              _buildActionButton(),
-              SizedBox(height: 40.h),
-              _buildGoBackText(),
-              SizedBox(height: 20.h),
-            ],
-          ),
+        child: Column(
+          children: [
+            SizedBox(height: 30.h),
+            _buildTopBarIndicator(),
+            SizedBox(height: 20.h),
+            _buildTitleText(),
+            SizedBox(height: 10.h),
+            _buildSubtitleText(),
+            SizedBox(height: 20.h),
+            _buildLogo(),
+            SizedBox(height: 10.h),
+            _buildWelcomeImage(context),
+            SizedBox(height: 40.h),
+            _buildEmailInputField(),
+            SizedBox(height: 50.h),
+            _buildActionButton(),
+            SizedBox(height: 40.h),
+            _buildGoBackText(),
+            SizedBox(height: 20.h),
+          ],
         ),
       ),
     );
   }
 
   BoxDecoration _buildBackgroundDecoration() {
-    return const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
+    return BoxDecoration(
+      color:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(37),
         topRight: Radius.circular(37),
       ),
@@ -143,7 +108,6 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
         text: TextSpan(
           text: 'Retrieve your account',
           style: TextStyle(
-            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -204,44 +168,64 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
   }
 
   Widget _buildEmailInputField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Email',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 20.h),
-        SizedBox(
-          width: 315.w,
-          child: AuthInputField(
-            controller: _emailController,
-            labelText: 'Email',
-            hintText: 'Enter your Email',
-            prefixIcon: const Icon(
-              Icons.email_outlined,
-              size: 20,
-              color: AppPalette.red,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Email',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
             ),
-            suffixIcon: null,
+            textAlign: TextAlign.center,
           ),
-        ),
-      ],
+          SizedBox(height: 20.h),
+          SizedBox(
+            width: 315.w,
+            child: AuthInputField(
+              controller: _emailController,
+              labelText: 'Email',
+              hintText: 'Enter your Email',
+              prefixIcon: const Icon(
+                Icons.email_outlined,
+                size: 20,
+                color: AppPalette.red,
+              ),
+              suffixIcon: null,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildActionButton() {
-    return _isLoading
-        ? const CircularProgressIndicator()
-        : RoundedButton(
-            name: 'Continue',
-            onPressed: _submitForm,
-          );
+    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+      if (state is AuthSuccess) {
+        SuccessSnackBar.show(context: context, message: state.message);
+        UserForgotPasswordPage.routeToSignIn(context);
+      }
+
+      if (state is AuthFailure) {
+        SuccessSnackBar.show(context: context, message: state.message);
+      }
+    }, builder: (context, state) {
+      if (state is AuthLoading) {
+        return const CircularProgressIndicator();
+      } else {
+        return RoundedButton(
+          name: 'Continue',
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              // BlocProvider.of<AuthBloc>(context).add();
+            }
+          },
+        );
+      }
+    });
   }
 
   Widget _buildGoBackText() {

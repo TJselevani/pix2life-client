@@ -29,15 +29,17 @@ class AuthInputField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         hintText: hintText,
-        // contentPadding: EdgeInsets.all(25),
       ),
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value == null || value.isEmpty) {
           return "$labelText is required";
-        }
-        if (isEmail) {
+        } else if (isEmail) {
           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
             return 'Please enter a valid email';
+          }
+        } else if (isPhoneNumber) {
+          if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
+            return 'Please enter a valid phone number';
           }
         }
 

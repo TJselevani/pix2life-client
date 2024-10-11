@@ -18,24 +18,16 @@ import 'package:pix2life/src/shared/widgets/buttons/hover_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pix2life/core/utils/theme/app_theme_provider.dart'; // Added
 
-class UploadProfilePicPage extends StatefulWidget {
-  static routeToHomePage(context) {
-    Navigator.pushReplacementNamed(context, '/Home');
-  }
-
-  static routeToGuide(context) {
-    Navigator.pushReplacementNamed(context, '/Guide');
-  }
-
-  const UploadProfilePicPage({super.key});
+class UpdateProfilePicPage extends StatefulWidget {
+  const UpdateProfilePicPage({super.key});
 
   @override
-  State<UploadProfilePicPage> createState() => _UploadProfilePicPageState();
+  State<UpdateProfilePicPage> createState() => _UpdateProfilePicPageState();
 }
 
-class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
+class _UpdateProfilePicPageState extends State<UpdateProfilePicPage> {
   final ImagePicker _picker = ImagePicker();
-  final log = createLogger(UploadProfilePicPage);
+  final log = createLogger(UpdateProfilePicPage);
   bool _isSet = false;
   bool _isPending = false;
   bool _isUploaded = false;
@@ -292,7 +284,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     return Column(
       children: [
         Text(
-          'Upload your profile picture',
+          'Update your profile picture',
           style: theme.textTheme.headlineSmall?.copyWith(
             fontSize: 24.sp,
             fontWeight: FontWeight.w600,
@@ -330,13 +322,12 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
         } else {
           return RoundedButton(
             useColor: true,
-            name: "Let's proceed",
+            name: "Done",
             onPressed: () async {
               if (_isSet && _isPending) {
                 await _uploadImage();
               }
-              // ignore: use_build_context_synchronously
-              UploadProfilePicPage.routeToHomePage(context);
+              Navigator.of(context).pop();
             },
           );
         }

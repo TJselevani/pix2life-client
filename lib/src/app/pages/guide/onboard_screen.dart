@@ -32,7 +32,11 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 _index = value;
               });
             },
-            children: const [OnboardPage1(), OnboardPage2(), OnboardPage3()],
+            children: const [
+              OnboardPage1(),
+              OnboardPage2(),
+              OnboardPage3(),
+            ],
           ),
           Positioned(
             bottom: 200,
@@ -56,7 +60,28 @@ class _OnboardScreenState extends State<OnboardScreen> {
                         : normalDot()
               ],
             ),
-          )
+          ),
+          Positioned(
+            bottom: 50,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_index < 2) {
+                    _controller?.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    );
+                  } else {
+                    // Navigate to the next page or home screen
+                    Navigator.pushReplacementNamed(context, '/SetAvatar');
+                  }
+                },
+                child: Text(_index < 2 ? 'Next' : 'Get Started'),
+              ),
+            ),
+          ),
         ],
       ),
     );

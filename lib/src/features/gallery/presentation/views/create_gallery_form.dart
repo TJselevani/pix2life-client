@@ -8,8 +8,10 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
+import 'package:provider/provider.dart';
 
 class GalleryForm extends StatefulWidget {
   const GalleryForm({super.key});
@@ -25,6 +27,7 @@ class _GalleryFormState extends State<GalleryForm> {
   final log = createLogger(GalleryForm);
   XFile? _image;
   final ImagePicker _picker = ImagePicker();
+  bool isDarkMode = false;
 
   // Method to pick an image
   Future<void> _pickImage() async {
@@ -39,6 +42,9 @@ class _GalleryFormState extends State<GalleryForm> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return BlocListener<GalleryBloc, GalleryState>(
       listener: (context, state) {
         if (state is GalleryFailure) {
@@ -64,7 +70,9 @@ class _GalleryFormState extends State<GalleryForm> {
             ),
             const SizedBox(height: 16),
             Card(
-              color: AppPalette.primaryWhite,
+              color: isDarkMode
+                  ? AppPalette.darkBackground
+                  : AppPalette.lightBackground,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -81,7 +89,9 @@ class _GalleryFormState extends State<GalleryForm> {
                           width: 283,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            color: AppPalette.primaryWhite,
+                            color: isDarkMode
+                                ? AppPalette.darkBackground
+                                : AppPalette.lightBackground,
                           ),
                           child: Stack(
                             children: [

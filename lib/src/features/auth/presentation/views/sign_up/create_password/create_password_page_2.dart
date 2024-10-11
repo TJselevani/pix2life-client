@@ -3,11 +3,13 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccountSuccessPage extends StatefulWidget {
-  static routeToProfilePicPage(context) {
-    Navigator.pushReplacementNamed(context, '/Avatar');
+  static routeToOnboardingPage(context) {
+    Navigator.pushReplacementNamed(context, '/Onboard');
   }
 
   const CreateAccountSuccessPage({super.key});
@@ -20,6 +22,7 @@ class CreateAccountSuccessPage extends StatefulWidget {
 class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
   late final ConfettiController _controller;
   String? userEmail;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -36,10 +39,13 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64.h,
       ),
@@ -49,7 +55,9 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkMode
+              ? AppPalette.darkBackground
+              : AppPalette.lightBackground,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(37.w),
             topRight: Radius.circular(37.w),
@@ -124,7 +132,6 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
           text: TextSpan(
             text: 'Yey! Account setup Successful',
             style: TextStyle(
-              color: AppPalette.fontBlack,
               fontFamily: 'Poppins',
               fontSize: 24.sp,
               fontWeight: FontWeight.w600,
@@ -181,7 +188,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
         name: "Let's Explore",
         onPressed: () {
           _controller.play();
-          CreateAccountSuccessPage.routeToProfilePicPage(context);
+          CreateAccountSuccessPage.routeToOnboardingPage(context);
         },
       ),
     );

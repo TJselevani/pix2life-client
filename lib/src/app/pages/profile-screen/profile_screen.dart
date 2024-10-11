@@ -232,13 +232,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                buildUpdateRow(),
+                SizedBox(height: 20.h),
                 buildBiography(),
                 SizedBox(height: 20.h),
                 if (authUser != null) buildUserDetailsCard(user: authUser!),
-                SizedBox(height: 20.h),
-
-                // SizedBox(height: 20.h),
-                // buildDetailRow(title: "Nationality", detail: "British"),
                 SizedBox(height: 20.h),
                 buildGallerySection(),
                 SizedBox(height: 120.h),
@@ -257,6 +255,46 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           width: double.infinity,
           child: QuoteDisplay(),
         ));
+  }
+
+  Widget buildUpdateRow() {
+    return FadeAnimation(
+      1.6,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Update Profile Picture Button
+          IconButton(
+            icon: const Icon(
+                LineAwesomeIcons.user_circle), // Profile picture icon
+            onPressed: () {
+              Navigator.pushNamed(context, '/Avatar');
+            },
+            tooltip: 'Update Profile Picture',
+          ),
+          SizedBox(width: 20.w),
+          // Update Personal Info Button
+          IconButton(
+            icon: const Icon(LineAwesomeIcons.edit), // Edit personal info icon
+            onPressed: () async {},
+            tooltip: 'Update Personal Info',
+          ),
+
+          SizedBox(width: 20.w),
+          // Logout Button
+          IconButton(
+            icon:
+                const Icon(LineAwesomeIcons.sign_out_alt_solid), // Logout icon
+            onPressed: () async {
+              final userProvider = Provider.of<MyUserProvider>(context);
+              userProvider.logOutUser();
+              Navigator.pushReplacementNamed(context, '/SignIn');
+            },
+            tooltip: 'Log Out',
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildDetailRow({required String title, required String detail}) {

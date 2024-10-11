@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
@@ -512,24 +513,17 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                       size: 30,
                       color: Colors.grey,
                     ),
-                    Container(
-                      width: 100.w, // Set the width of the avatar
-                      height: 100.h, // Set the height of the avatar
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle, // Make it circular
-                      ),
-                      child: const Icon(
-                        CupertinoIcons.photo_on_rectangle,
-                        color: AppPalette.red,
-                        size: 60,
-                      ),
+                    SvgPicture.asset(
+                      'assets/svg/camera-square-svgrepo-com.svg',
+                      height: 100,
+                      color: AppPalette.red,
                     ),
                     const Icon(Icons.more_vert, size: 30, color: Colors.grey),
                   ],
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  'tjselevani',
+                  'Media Upload',
                   style: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
@@ -538,7 +532,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                 ),
                 SizedBox(height: 5.h),
                 Text(
-                  'UX/UI Designer',
+                  'Select a Gallery and upload media',
                   style: TextStyle(
                     fontSize: 16.sp,
                     color: Colors.grey,
@@ -550,7 +544,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                   children: [
                     _buildStatColumn(
                         'Galleries', '${fetchedGalleries!.length} Galleries'),
-                    _buildStatColumn('Income', '\$8900'),
+                    _buildStatColumn('Account', authUser!.subscriptionPlan),
                   ],
                 ),
               ],

@@ -6,10 +6,12 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_account/create_account_page_2.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class UserEmailSignUpPage extends StatefulWidget {
   const UserEmailSignUpPage({super.key});
@@ -36,44 +38,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final logger = createLogger(UserEmailSignUpPage);
-
-  // Future<void> _submitForm() async {
-  //   if (_formKey.currentState?.validate() ?? false) {
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     final userEmail = _emailController.text.trim();
-  //     final userData = {'email': userEmail};
-
-  //     try {
-  //       final response = await userService.checkUser(userData);
-  //       if (!mounted) return;
-
-  //       logger.i(response);
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => UserDetailsSignUpPage(userEmail: userEmail),
-  //         ),
-  //       );
-  //     } catch (e) {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       logger.e('Error: $e');
-  //       if ('$e' == "type 'String' is not a subtype of type 'int' of 'index'") {
-  //         ErrorSnackBar.show(message: "Service Unavailable", context: context);
-  //       } else {
-  //         ErrorSnackBar.show(message: "$e", context: context);
-  //       }
-  //     }
-  //   }
-  // }
+  bool isDarkMode = false;
 
   @override
   void dispose() {
@@ -83,10 +48,13 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64,
       ),
@@ -101,38 +69,36 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
       width: double.infinity,
       decoration: _buildBackgroundDecoration(),
       child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 30.h),
-              _buildTopBarIndicator(),
-              SizedBox(height: 20.h),
-              _buildTitle(),
-              SizedBox(height: 1.h),
-              _buildSubtitle(),
-              SizedBox(height: 20.h),
-              _buildLogo(),
-              SizedBox(height: 10.h),
-              _buildWelcomeImage(),
-              SizedBox(height: 10.h),
-              _buildEmailField(),
-              SizedBox(height: 30.h),
-              _buildContinueButton(),
-              SizedBox(height: 40.h),
-              _buildSignInLink(context),
-              SizedBox(height: 60.h),
-            ],
-          ),
+        child: Column(
+          children: [
+            SizedBox(height: 30.h),
+            _buildTopBarIndicator(),
+            SizedBox(height: 20.h),
+            _buildTitle(),
+            SizedBox(height: 1.h),
+            _buildSubtitle(),
+            SizedBox(height: 20.h),
+            _buildLogo(),
+            SizedBox(height: 10.h),
+            _buildWelcomeImage(),
+            SizedBox(height: 10.h),
+            _buildEmailField(),
+            SizedBox(height: 30.h),
+            _buildContinueButton(),
+            SizedBox(height: 40.h),
+            _buildSignInLink(context),
+            SizedBox(height: 60.h),
+          ],
         ),
       ),
     );
   }
 
   BoxDecoration _buildBackgroundDecoration() {
-    return const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
+    return BoxDecoration(
+      color:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(37),
         topRight: Radius.circular(37),
       ),
@@ -143,7 +109,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.primaryBlack,
+      color: isDarkMode ? AppPalette.lightBackground : AppPalette.primaryBlack,
     );
   }
 
@@ -154,7 +120,6 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
         text: TextSpan(
           text: 'Create your account',
           style: TextStyle(
-            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -202,7 +167,6 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
         width: 283.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
-          color: Colors.grey,
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
@@ -216,34 +180,38 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   }
 
   Widget _buildEmailField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Email',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.left,
-        ),
-        SizedBox(height: 10.h),
-        SizedBox(
-          width: 315.w,
-          child: AuthInputField(
-            controller: _emailController,
-            labelText: 'Email',
-            hintText: 'Enter your Email',
-            prefixIcon: const Icon(
-              Icons.email_outlined,
-              size: 20,
-              color: AppPalette.red,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Email',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
             ),
-            suffixIcon: null,
+            textAlign: TextAlign.left,
           ),
-        ),
-      ],
+          SizedBox(height: 10.h),
+          SizedBox(
+            width: 315.w,
+            child: AuthInputField(
+              controller: _emailController,
+              labelText: 'Email',
+              hintText: 'Enter your Email',
+              isEmail: true,
+              prefixIcon: const Icon(
+                Icons.email_outlined,
+                size: 20,
+                color: AppPalette.red,
+              ),
+              suffixIcon: null,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -291,7 +259,6 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
-            color: AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),

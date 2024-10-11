@@ -319,10 +319,10 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           BlocListener<GalleryBloc, GalleryState>(
             listener: (context, state) {
               if (state is GalleryImagesLoaded) {
-                SuccessSnackBar.show(
-                    context: context,
-                    message:
-                        'Successfully fetched ${state.images.length} gallery images');
+                // SuccessSnackBar.show(
+                //     context: context,
+                //     message:
+                //         'Successfully fetched ${state.images.length} gallery images');
               }
 
               if (state is GalleryFailure) {
@@ -334,99 +334,120 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           ),
         ],
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
+            SizedBox(height: ScreenUtil().setHeight(20)),
+
+            Hero(
+              tag: 'image-hero', // Hero tag for matched image animation
               child: Container(
+                margin: EdgeInsets.only(top: 30.h, left: 20.w, right: 20.w),
                 padding: EdgeInsets.all(ScreenUtil().setWidth(18)),
                 width: double.infinity,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: ScreenUtil().setHeight(20)),
-                      Text(
-                        'Image Matching',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: ScreenUtil().setSp(24),
-                          color: AppPalette.red,
-                          fontWeight: FontWeight.w600,
-                        ),
+                height: ScreenUtil().setHeight(300), // Adjust height as needed
+                child: !_isLoading && _matchedImage == null
+                    ? _buildFileImageContainer(
+                        label: 'Your Image',
+                        imageFile: _imageFile,
+                      )
+                    : BlocBuilder<ImageBloc, ImageState>(
+                        builder: (context, state) {
+                          return _buildNetworkImageContainer(
+                            label: 'Matched Image',
+                            imageUrl: _matchedImage,
+                          );
+                        },
                       ),
-                      SizedBox(height: ScreenUtil().setHeight(20)),
-                      if (_isSet)
-                        DisappearingText(
-                          text: 'Tap on the Matched Image',
-                          isVisible: _isSet,
-                        ),
-                      SizedBox(height: ScreenUtil().setHeight(20)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          // Left container with your image
-                          _buildFileImageContainer(
-                            label: 'Your Image',
-                            imageFile: _imageFile,
-                          ),
-                          // SizedBox(width: ScreenUtil().setWidth(20)),
-                          // Right container with matched image and loading state
-                          BlocBuilder<ImageBloc, ImageState>(
-                            builder: (context, state) {
-                              return _buildNetworkImageContainer(
-                                label: 'Matched Image',
-                                imageUrl: _matchedImage,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: ScreenUtil().setHeight(20)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildActionButton(
-                              Icons.camera, 'Take Photo', _takePhoto),
-                          _buildActionButton(Icons.browse_gallery,
-                              'Search Gallery', _pickImageFromGallery),
-                        ],
-                      ),
-                      SizedBox(height: ScreenUtil().setHeight(50)),
-                      SizedBox(
-                        width: ScreenUtil().setWidth(319),
-                        child: RichText(
-                          text: TextSpan(
-                            text:
-                                'Take a photo using your camera or pick an image from the gallery to match the image using our service.',
-                            style: TextStyle(
-                              color: AppPalette.primaryGrey,
-                              fontFamily: 'Poppins',
-                              fontSize: ScreenUtil().setSp(14),
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
-            SizedBox(height: ScreenUtil().setHeight(30)),
-            if (_isReady)
-              _isLoading
-                  ? LoadingAnimationWidget.bouncingBall(
-                      color: AppPalette.red,
-                      size: ScreenUtil().setWidth(30),
-                    )
-                  : RoundedButton(
-                      name: "Match Image",
-                      onPressed: () {
-                        if (_imageFile != null) {
-                          _uploadMatchImage(_imageFile, _uploadImage);
-                        }
-                      },
-                    ),
+
             SizedBox(height: ScreenUtil().setHeight(20)),
+
+            SizedBox(height: ScreenUtil().setHeight(20)),
+            if (_matchedImage != null && _matchedImage!.isNotEmpty)
+              DisappearingText(
+                text: 'Tap on the Matched Image',
+                isVisible: _isSet,
+              ),
+
+            // Match button that triggers the hero animation
+            if (_isReady)
+              Padding(
+                padding: EdgeInsets.all(20.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Hero widget for image container animation
+                    if (_isLoading)
+                      Hero(
+                        tag: 'file-image-hero', // Tag for animation
+                        child: _imageFile != null
+                            ? SizedBox(
+                                width: ScreenUtil().setWidth(100),
+                                height: ScreenUtil().setHeight(100),
+                                child: _buildFileImageContainer(
+                                  label: 'Your Image',
+                                  imageFile: _imageFile,
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    SizedBox(width: ScreenUtil().setWidth(20)),
+
+                    // Match Image Button
+                    _isLoading
+                        ? LoadingAnimationWidget.bouncingBall(
+                            color: AppPalette.red,
+                            size: ScreenUtil().setWidth(30),
+                          )
+                        : Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: RoundedButton(
+                                name: "Match Image",
+                                onPressed: () {
+                                  if (_imageFile != null) {
+                                    _uploadMatchImage(_imageFile, _uploadImage);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+
+            // const Spacer(), // Pushes the following content to the bottom
+
+            // Row for action buttons (Take Photo and Search Gallery)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildActionButton(Icons.camera, 'Take Photo', _takePhoto),
+                _buildActionButton(Icons.browse_gallery, 'Search Gallery',
+                    _pickImageFromGallery),
+              ],
+            ),
+
+            SizedBox(height: ScreenUtil().setHeight(20)),
+
+            // Description text at the bottom
+            SizedBox(
+              width: ScreenUtil().setWidth(319),
+              child: RichText(
+                text: TextSpan(
+                  text:
+                      'Take a photo using your camera or pick an image from the gallery to match the image using our service.',
+                  style: TextStyle(
+                    color: AppPalette.primaryGrey,
+                    fontFamily: 'Poppins',
+                    fontSize: ScreenUtil().setSp(14),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ],
         ),
       ),

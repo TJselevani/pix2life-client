@@ -23,6 +23,7 @@ import 'package:pix2life/injection_container.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/image/data/data%20sources/image_provider.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
+import 'package:pix2life/src/features/image/presentation/views/upload_images/update_avater.dart';
 import 'package:pix2life/src/features/image/presentation/views/upload_images/upload_avatar.dart';
 import 'package:pix2life/src/features/video/data/data%20sources/video_provider.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
@@ -107,7 +108,8 @@ class _MyAppState extends State<MyApp> {
             '/Home': (context) => const BottomTabNavigation(),
             '/Password': (context) => const UserCreatePasswordPage(),
             '/Widget': (context) => const MyWidget(),
-            '/Avatar': (context) => const UploadProfilePicPage(),
+            '/SetAvatar': (context) => const UploadProfilePicPage(),
+            '/Avatar': (context) => const UpdateProfilePicPage(),
             '/QR': (context) => const QRCodeScreen(),
             '/QR2': (context) => const QRCodeScannerScreen(),
           },

@@ -26,9 +26,7 @@ abstract interface class AuthRepository {
     required String password,
   });
 
-  ResultFuture<String> logOutUser({
-    required String token,
-  });
+  ResultFuture<String> logOutUser();
 
   ResultFuture<String> forgotPassword({
     required String email,
@@ -46,9 +44,7 @@ abstract interface class AuthRepository {
     required String confirmPassword,
   });
 
-  ResultFuture<User> checkAuthStatus({
-    required String token,
-  });
+  ResultFuture<User> getUserData();
 
   ResultFuture<User> retrieveAuthUser();
 }

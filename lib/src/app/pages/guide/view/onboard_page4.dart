@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class OnboardPage1 extends StatelessWidget {
-  const OnboardPage1({super.key});
+class OnboardPage4 extends StatelessWidget {
+  const OnboardPage4({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,16 +11,16 @@ class OnboardPage1 extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset('assets/svg/places.svg', height: 100),
+          // SvgPicture.asset('assets/svg/summer-vacation.svg', height: 150),
           const SizedBox(height: 20),
-          Text('Capture the Essence of Every City',
+          Text('Memories in Motion',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           const Text(
-            "Explore and share the vibrant life of cities around the world. From iconic landmarks to hidden gems, your memories will inspire others to discover new places.",
+            "Store and share your videos and photos from every adventure. Create a visual diary that captures the essence of your travels and the moments that matter most.",
             style: TextStyle(color: Colors.grey),
             textAlign: TextAlign.center,
           )

@@ -38,9 +38,7 @@ abstract interface class AuthRemoteDataSource {
     required String password,
   });
 
-  Future<UserModel> checkAuthStatus({
-    required String token,
-  });
+  Future<UserModel> getUserData();
 
   Future<String> forgotPassword({
     required String email,
@@ -60,9 +58,7 @@ abstract interface class AuthRemoteDataSource {
 
   Future<UserModel> retrieveAuthUser();
 
-  Future<String> logOutUser({
-    required String token,
-  });
+  Future<String> logOutUser();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -168,10 +164,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<String> logOutUser({required String token}) async {
+  Future<String> logOutUser() async {
     try {
-      await _userService.logOut();
-      const message = '';
+      // await _userService.logOut();
+      await _authManager.deleteToken();
+      await _authService.removeUser(userKey);
+      const message = 'Log Out Successful';
       return message;
     } on ServerException {
       rethrow;
@@ -182,7 +180,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> checkAuthStatus({required String token}) async {
+  Future<UserModel> getUserData() async {
     try {
       final UserFromTokenResponse response =
           await _userService.getUserFromToken();

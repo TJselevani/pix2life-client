@@ -6,9 +6,11 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class UserDetailsSignUpPage extends StatefulWidget {
   final String userEmail;
@@ -30,6 +32,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
   final _postCodeController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final logger = createLogger(UserDetailsSignUpPage);
+  bool isDarkMode = false;
 
   @override
   void dispose() {
@@ -42,10 +45,13 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64,
       ),
@@ -54,7 +60,9 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
         margin: EdgeInsets.symmetric(horizontal: 1.w), // Responsive margin
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkMode
+              ? AppPalette.darkBackground
+              : AppPalette.lightBackground,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(37.w),
             topRight: Radius.circular(37.w),
@@ -90,7 +98,8 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
       child: Container(
         width: 50.w,
         height: 5.h,
-        color: AppPalette.primaryBlack,
+        color:
+            isDarkMode ? AppPalette.lightBackground : AppPalette.primaryBlack,
       ),
     );
   }
@@ -104,7 +113,6 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
             text: TextSpan(
               text: 'Create your account',
               style: TextStyle(
-                color: AppPalette.fontBlack,
                 fontFamily: 'Poppins',
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w600,

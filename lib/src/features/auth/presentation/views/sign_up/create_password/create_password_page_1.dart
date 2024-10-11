@@ -6,10 +6,12 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/views/sign_up/create_password/create_password_page_2.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_input_field.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
+import 'package:provider/provider.dart';
 
 class UserCreatePasswordPage extends StatefulWidget {
   const UserCreatePasswordPage({super.key});
@@ -34,6 +36,8 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   bool _obscureText = true;
   bool _obscureText2 = true;
 
+  bool isDarkMode = false;
+
   void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
@@ -48,10 +52,13 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,
       appBar: AppBar(
-        backgroundColor: AppPalette.transparent,
+        backgroundColor: AppPalette.primaryBlack,
         elevation: 0,
         toolbarHeight: 64.h,
       ),
@@ -61,7 +68,9 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkMode
+              ? AppPalette.darkBackground
+              : AppPalette.lightBackground,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(37.w),
             topRight: Radius.circular(37.w),
@@ -72,7 +81,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
             key: _formKey,
             child: Column(
               children: [
-                SizedBox(height: 30.h),
+                SizedBox(height: 10.h),
                 _buildTopBar(),
                 SizedBox(height: 20.h),
                 _buildTitle(),
@@ -95,11 +104,12 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
 
   Widget _buildTopBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30.h),
+      padding: EdgeInsets.symmetric(vertical: 15.h),
       child: Container(
         width: 50.w,
         height: 5.h,
-        color: AppPalette.primaryBlack,
+        color:
+            isDarkMode ? AppPalette.lightBackground : AppPalette.primaryBlack,
       ),
     );
   }
@@ -111,7 +121,6 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
         text: TextSpan(
           text: 'Create password',
           style: TextStyle(
-            color: AppPalette.fontBlack,
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,

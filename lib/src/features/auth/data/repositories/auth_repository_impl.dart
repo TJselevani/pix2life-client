@@ -68,9 +68,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  ResultFuture<String> logOutUser({required String token}) async {
+  ResultFuture<String> logOutUser() async {
     try {
-      final message = await _remoteDataSource.logOutUser(token: token);
+      final message = await _remoteDataSource.logOutUser();
       return right(message);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));
@@ -78,10 +78,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<ApiFailure, UserModel>> checkAuthStatus(
-      {required String token}) async {
+  Future<Either<ApiFailure, UserModel>> getUserData(
+     ) async {
     try {
-      final user = await _remoteDataSource.checkAuthStatus(token: token);
+      final user = await _remoteDataSource.getUserData();
       return right(user);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));
