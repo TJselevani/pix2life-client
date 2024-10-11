@@ -161,32 +161,4 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
       label: label,
     );
   }
-
-  BottomNavigationBarItem _buildAnimatedBottomNavigationBarItem(
-    AnimatedIconData icon,
-    String label,
-  ) {
-    return BottomNavigationBarItem(
-      icon: AnimatedIcon(
-        icon: icon,
-        progress: _animationController,
-        size: 28.0,
-        color: AppPalette.red,
-      ),
-      activeIcon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: AppPalette.red,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: AnimatedIcon(
-          progress: _animationController,
-          icon: icon,
-          size: 28.0,
-          color: Colors.white,
-        ),
-      ),
-      label: label,
-    );
-  }
 }

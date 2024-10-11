@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pix2life/src/shared/widgets/media-selection-container/video_selectionContainer.dart';
+import 'package:pix2life/src/shared/widgets/media-selection-container/video_selection_container.dart';
 
 
 // Video preview grid

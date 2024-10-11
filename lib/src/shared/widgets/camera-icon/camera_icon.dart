@@ -36,7 +36,7 @@ class RedCircleAvatar extends StatefulWidget {
   const RedCircleAvatar({required this.imagePath, super.key});
 
   @override
-  _RedCircleAvatarState createState() => _RedCircleAvatarState();
+  State<RedCircleAvatar> createState() => _RedCircleAvatarState();
 }
 
 class _RedCircleAvatarState extends State<RedCircleAvatar> {

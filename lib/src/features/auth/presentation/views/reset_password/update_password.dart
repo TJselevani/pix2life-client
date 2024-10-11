@@ -82,19 +82,6 @@ class _UserUpdatePasswordPageState extends State<UserUpdatePasswordPage> {
     }
   }
 
-  void _showSuccess(String message) {
-    setState(() {
-      _isLoading = false;
-    });
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) =>
-    //         CreateAccountSuccessPage(userEmail: widget.userEmail),
-    //   ),
-    // );
-  }
-
   void _handleError(dynamic error) {
     setState(() {
       _isLoading = false;

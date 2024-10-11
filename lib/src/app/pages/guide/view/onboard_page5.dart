@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class OnboardPage5 extends StatelessWidget {
   const OnboardPage5({super.key});

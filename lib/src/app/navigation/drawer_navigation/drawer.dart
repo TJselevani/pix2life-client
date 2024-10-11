@@ -37,13 +37,13 @@ class _DrawerPanelState extends State<DrawerPanel>
   }
 
   // Trigger the animations when drawer state changes
-  void _onDrawerToggle(bool isOpen) {
-    if (isOpen) {
-      _animationController.forward();
-    } else {
-      _animationController.reverse();
-    }
-  }
+  // void _onDrawerToggle(bool isOpen) {
+  //   if (isOpen) {
+  //     _animationController.forward();
+  //   } else {
+  //     _animationController.reverse();
+  //   }
+  // }
 
   @override
   void dispose() {

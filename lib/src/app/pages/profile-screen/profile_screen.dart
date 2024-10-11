@@ -286,7 +286,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             icon:
                 const Icon(LineAwesomeIcons.sign_out_alt_solid), // Logout icon
             onPressed: () async {
-              final userProvider = Provider.of<MyUserProvider>(context);
+              final userProvider =
+                  Provider.of<MyUserProvider>(context, listen: false);
               userProvider.logOutUser();
               Navigator.pushReplacementNamed(context, '/SignIn');
             },

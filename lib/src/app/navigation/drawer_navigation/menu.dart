@@ -3,18 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
-import 'package:provider/provider.dart';
 
 class MenuPanel extends StatelessWidget {
   const MenuPanel({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = false;
-    final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
-
     return Scaffold(
       body: SizedBox(
         width: 288,

@@ -228,6 +228,5 @@ Future<void> initDependencies() async {
     await sl.allReady(); // Wait for all async initializations to complete
   } catch (e) {
     // Handle initialization failure, maybe log or retry
-    print("Error during initialization: $e");
   }
 }

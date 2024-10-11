@@ -17,7 +17,6 @@ import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_provider.dart';
 import 'package:pix2life/src/features/gallery/domain/entities/gallery.dart';
-import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
 import 'package:pix2life/src/shared/widgets/media-preview-container/audios_preview.dart';
@@ -49,7 +48,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
   User? authUser;
   List<String> galleryNames = [];
   String _selectedMediaType = ''; // Stores the selected media type
-  bool _isLoading = true;
+  bool _isLoading = false;
   String? _selectedGallery;
   bool isDarkMode = false;
 
@@ -144,49 +143,135 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       ErrorSnackBar.show(context: context, message: 'No media to upload');
       return;
     }
+    final galleryName = _nameController.text.trim();
+    if (galleryName.isEmpty ||
+        galleryName == '' ||
+        galleryName == 'galleryName') {
+      ErrorSnackBar.show(context: context, message: 'No Gallery Selected');
+      return;
+    }
 
     setState(() {
       _isLoading = true;
       _copyMedia!.addAll(mediaList);
     });
 
-    await Future.forEach(mediaList, (XFile media) async {
+    // Iterate over the mediaList for uploads
+    for (XFile media in mediaList) {
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(media.path, filename: media.name),
       });
 
-      log.i('Uploading file: ${media.name}, path: ${media.path}');
-      log.i('FormData being sent: ${formData.fields}');
-
       setState(() {
-        _uploadingMedia.add(media.name);
+        _uploadingMedia.add(media.name); // Mark as uploading
       });
 
       try {
-        final galleryName = _nameController.text.trim();
-        log.i('Gallery name: $galleryName');
-
         await uploadFunction(formData, galleryName);
 
         if (!mounted) return;
+
         setState(() {
-          _uploadDone.add(media.name);
+          _uploadDone.add(media.name); // Mark as uploaded
+          _uploadingMedia.remove(media.name); // Remove from uploading
         });
       } catch (e) {
         if (!mounted) return;
+
         setState(() {
           _uploadFailed.add(media.name); // Track failed uploads
+          _uploadingMedia.remove(media.name); // Remove from uploading
         });
       }
-    });
-    // Check if all media have been uploaded successfully
-    if (_uploadDone.length == _copyMedia!.length) {
-      log.i('All media files uploaded successfully. Resetting...');
-      // _reset(); // Reset state only after all media is uploaded
     }
 
-    if (!mounted) return;
+    if (_uploadDone.length == _copyMedia!.length) {
+      log.i('All media files uploaded successfully. Resetting...');
+      _reset(); // Reset state only after all media is uploaded
+    }
+
+    setState(() {
+      _isLoading = false; // Stop loading after upload completes
+    });
   }
+
+// Retry logic for failed uploads
+  // void _retryUpload(XFile media) async {
+  //   if (_uploadFailed.contains(media.name)) {
+  //     setState(() {
+  //       _uploadFailed.remove(media.name); // Remove from failed list
+  //     });
+
+  //     FormData formData = FormData.fromMap({
+  //       "file": await MultipartFile.fromFile(media.path, filename: media.name),
+  //     });
+
+  //     try {
+  //       final galleryName = _nameController.text.trim();
+  //       await _uploadMedia([media], _uploadImages); // Retry the upload
+
+  //       setState(() {
+  //         _uploadDone.add(media.name); // Add to done after retry success
+  //       });
+  //     } catch (e) {
+  //       setState(() {
+  //         _uploadFailed.add(media.name); // If retry fails, add back to failed
+  //       });
+  //     }
+  //   }
+  // }
+
+  // Future<void> _uploadMedia<T>(
+  //   List<XFile>? mediaList,
+  //   Future Function(FormData formData, String galleryName) uploadFunction,
+  // ) async {
+  //   if (mediaList == null || mediaList.isEmpty) {
+  //     ErrorSnackBar.show(context: context, message: 'No media to upload');
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     _isLoading = true;
+  //     _copyMedia!.addAll(mediaList);
+  //   });
+
+  //   await Future.forEach(mediaList, (XFile media) async {
+  //     FormData formData = FormData.fromMap({
+  //       "file": await MultipartFile.fromFile(media.path, filename: media.name),
+  //     });
+
+  //     log.i('Uploading file: ${media.name}, path: ${media.path}');
+  //     log.i('FormData being sent: ${formData.fields}');
+
+  //     setState(() {
+  //       _uploadingMedia.add(media.name);
+  //     });
+
+  //     try {
+  //       final galleryName = _nameController.text.trim();
+  //       log.i('Gallery name: $galleryName');
+
+  //       await uploadFunction(formData, galleryName);
+
+  //       if (!mounted) return;
+  //       setState(() {
+  //         _uploadDone.add(media.name);
+  //       });
+  //     } catch (e) {
+  //       if (!mounted) return;
+  //       setState(() {
+  //         _uploadFailed.add(media.name); // Track failed uploads
+  //       });
+  //     }
+  //   });
+  //   // Check if all media have been uploaded successfully
+  //   if (_uploadDone.length == _copyMedia!.length) {
+  //     log.i('All media files uploaded successfully. Resetting...');
+  //     // _reset(); // Reset state only after all media is uploaded
+  //   }
+
+  //   if (!mounted) return;
+  // }
 
   _reset() {
     setState(() {
@@ -207,13 +292,14 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
         _uploadingMedia.length > _uploadDone.length;
   }
 
-  Future<void> _cancelUpload() async {
-    // Logic to cancel the upload and clean up the media list
-    setState(() {
-      _uploadingMedia.clear();
-      _uploadDone.clear();
-    });
-  }
+  // Future<void> _cancelUpload() async {
+  //   // Logic to cancel the upload and clean up the media list
+  //   setState(() {
+  //     _copyMedia!.clear();
+  //     _uploadingMedia.clear();
+  //     _uploadDone.clear();
+  //   });
+  // }
 
   Widget _buildUploadingMediaList() {
     return SingleChildScrollView(
@@ -221,6 +307,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
         children: _copyMedia!.map((media) {
           final isUploading = _uploadingMedia.contains(media.name);
           final isUploaded = _uploadDone.contains(media.name);
+          final isFailed = _uploadFailed.contains(media.name);
 
           return Center(
             child: Padding(
@@ -229,8 +316,10 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                 width: double.infinity,
                 child: ListTile(
                   leading: isUploading
-                      ? const Icon(Icons.cloud)
-                      : const Icon(Icons.cloud_circle),
+                      ? const Icon(Icons.cloud_upload)
+                      : isUploaded
+                          ? const Icon(Icons.cloud_done, color: Colors.green)
+                          : const Icon(Icons.cloud_off, color: Colors.red),
                   title: Text(
                     media.name,
                     overflow: TextOverflow.ellipsis,
@@ -239,12 +328,12 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                   ),
                   trailing: isUploaded
                       ? const Icon(Icons.check, color: Colors.green)
-                      : _uploadFailed.contains(media.name)
+                      : isFailed
                           ? IconButton(
                               icon: const Icon(Icons.refresh),
-                              onPressed: () => {}, //_retryUpload(media),
-                            )
-                          : null,
+                              onPressed: () => {} //_retryUpload(media),
+                              )
+                          : const CircularProgressIndicator(),
                 ),
               ),
             ),
@@ -253,6 +342,45 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       ),
     );
   }
+
+  // Widget _buildUploadingMediaList() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       children: _copyMedia!.map((media) {
+  //         final isUploading = _uploadingMedia.contains(media.name);
+  //         final isUploaded = _uploadDone.contains(media.name);
+
+  //         return Center(
+  //           child: Padding(
+  //             padding: EdgeInsets.symmetric(vertical: 5.h),
+  //             child: SizedBox(
+  //               width: double.infinity,
+  //               child: ListTile(
+  //                 leading: isUploading
+  //                     ? const Icon(Icons.cloud)
+  //                     : const Icon(Icons.cloud_circle),
+  //                 title: Text(
+  //                   media.name,
+  //                   overflow: TextOverflow.ellipsis,
+  //                   maxLines: 1,
+  //                   style: TextStyle(fontSize: 16.sp),
+  //                 ),
+  //                 trailing: isUploaded
+  //                     ? const Icon(Icons.check, color: Colors.green)
+  //                     : _uploadFailed.contains(media.name)
+  //                         ? IconButton(
+  //                             icon: const Icon(Icons.refresh),
+  //                             onPressed: () => {}, //_retryUpload(media),
+  //                           )
+  //                         : null,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       }).toList(),
+  //     ),
+  //   );
+  // }
 
   // Unified media preview
   Widget _buildMediaPreview() {
@@ -372,104 +500,16 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
-        body: MultiBlocListener(
-      listeners: [
-        // Listener to show loading while uploading image
-        BlocListener<ImageBloc, ImageState>(
-          listener: (context, state) {
-            if (state is ImageLoading) {
-              setState(() {
-                // _isLoading = true;
-              });
-            } else if (state is ImageSuccess) {
-              setState(() {
-                // _isLoading = false;
-                // _matchedImage = state.image.url;
-                // _galleryName = state.image.galleryName;
-              });
-              SuccessSnackBar.show(context: context, message: state.message);
-            } else if (state is ImageFailure) {
-              setState(() {
-                // _isLoading = false;
-              });
-              ErrorSnackBar.show(context: context, message: state.message);
-            }
-          },
-        ),
-
-        // Listener to show loading while uploading audio
-        BlocListener<AudioBloc, AudioState>(
-          listener: (context, state) {
-            if (state is ImageLoading) {
-              setState(() {
-                // _isLoading = true;
-              });
-            } else if (state is AudioSuccess) {
-              setState(() {
-                // _isLoading = false;
-                // _matchedImage = state.image.url;
-                // _galleryName = state.image.galleryName;
-              });
-              SuccessSnackBar.show(context: context, message: state.message);
-            } else if (state is AudioFailure) {
-              setState(() {
-                // _isLoading = false;
-              });
-              ErrorSnackBar.show(context: context, message: state.message);
-            }
-          },
-        ),
-
-        // Listener to show loading while uploading video
-        BlocListener<VideoBloc, VideoState>(
-          listener: (context, state) {
-            if (state is ImageLoading) {
-              setState(() {
-                // _isLoading = true;
-              });
-            } else if (state is VideoSuccess) {
-              setState(() {
-                // _isLoading = false;
-                // _matchedImage = state.image.url;
-                // _galleryName = state.image.galleryName;
-              });
-              SuccessSnackBar.show(context: context, message: state.message);
-            } else if (state is VideoFailure) {
-              setState(() {
-                // _isLoading = false;
-              });
-              ErrorSnackBar.show(context: context, message: state.message);
-            }
-          },
-        ),
-
-        // Listener to handle fetching of gallery images
-        BlocListener<GalleryBloc, GalleryState>(
-          listener: (context, state) {
-            if (state is GalleriesLoaded) {
-              setState(() {
-                fetchedGalleries = state.galleries;
-              });
-            }
-
-            if (state is GalleryFailure) {
-              ErrorSnackBar.show(
-                  context: context, message: 'Failed to fetch galleries');
-            }
-          },
-        ),
-      ],
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            children: [
-              SizedBox(height: 20.h),
-              _buildProfileSection(),
-              _buildOverviewSection(),
-              _buildActionCards(context),
-            ],
-          ),
+        body: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          children: [
+            SizedBox(height: 20.h),
+            _buildProfileSection(),
+            _buildOverviewSection(),
+            _buildActionCards(context),
+          ],
         ),
       ),
     ));
@@ -497,7 +537,9 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
           ? SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: _copyMedia!.isNotEmpty && _isLoading
+              child: _uploadingMedia.isNotEmpty ||
+                      _isUploadingInProgress() ||
+                      _isLoading //_copyMedia!.isNotEmpty &&  _copyMedia!.length != _uploadDone.length
                   ? _buildUploadingMediaList()
                   : _buildMediaPreview(),
             )
@@ -516,6 +558,7 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
                     SvgPicture.asset(
                       'assets/svg/camera-square-svgrepo-com.svg',
                       height: 100,
+                      // ignore: deprecated_member_use
                       color: AppPalette.red,
                     ),
                     const Icon(Icons.more_vert, size: 30, color: Colors.grey),
