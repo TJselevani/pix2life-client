@@ -3,20 +3,25 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/error/api_failure.dart';
+import 'package:pix2life/core/network/connection_checker.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_remote_data_source.dart';
 import 'package:pix2life/src/features/auth/data/models/user.model.dart';
 import 'package:pix2life/src/features/auth/data/repositories/auth_repository_impl.dart';
 
 class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
+class MockConnectionChecker extends Mock implements ConnectionChecker {}
+
 void main() {
   late AuthRemoteDataSource remoteDataSource;
+  late ConnectionChecker connectionChecker;
   late AuthRepositoryImpl repositoryImpl;
   const UserModel user = UserModel.empty();
 
   setUp(() {
     remoteDataSource = MockAuthRemoteDataSource();
-    repositoryImpl = AuthRepositoryImpl(remoteDataSource);
+    connectionChecker = MockConnectionChecker();
+    repositoryImpl = AuthRepositoryImpl(remoteDataSource, connectionChecker);
   });
 
   group('userSignIn', () {

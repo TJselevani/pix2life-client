@@ -1,65 +1,4 @@
-// constraints.dart
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-const kSpacingUnit = 10;
-
-const kDarkPrimaryColor = Color(0xFF212121);
-const kDarkSecondaryColor = Color(0xFF373737);
-const kLightPrimaryColor = Color(0xFFFFFFFF);
-const kLightSecondaryColor = Color(0xFFF3F7FB);
-const kAccentColor = Color(0xFFFFC107);
-
-final kTitleTextStyle = TextStyle(
-  fontSize: ScreenUtil().setSp(kSpacingUnit.w * 1.7),
-  fontWeight: FontWeight.w600,
-);
-
-final kCaptionTextStyle = TextStyle(
-  fontSize: ScreenUtil().setSp(kSpacingUnit.w * 1.3),
-  fontWeight: FontWeight.w100,
-);
-
-final kButtonTextStyle = TextStyle(
-  fontSize: ScreenUtil().setSp(kSpacingUnit.w * 1.5),
-  fontWeight: FontWeight.w400,
-  color: kDarkPrimaryColor,
-);
-
-final kDarkTheme = ThemeData(
-  brightness: Brightness.dark,
-  fontFamily: 'SFProText',
-  primaryColor: kDarkPrimaryColor,
-  canvasColor: kDarkPrimaryColor,
-  scaffoldBackgroundColor: kDarkSecondaryColor,
-  hintColor: kAccentColor,
-  iconTheme: ThemeData.dark().iconTheme.copyWith(
-        color: kLightSecondaryColor,
-      ),
-  textTheme: ThemeData.dark().textTheme.apply(
-        fontFamily: 'SFProText',
-        bodyColor: kLightSecondaryColor,
-        displayColor: kLightSecondaryColor,
-      ),
-);
-
-final kLightTheme = ThemeData(
-  brightness: Brightness.light,
-  fontFamily: 'SFProText',
-  primaryColor: kLightPrimaryColor,
-  canvasColor: kLightPrimaryColor,
-  iconTheme: ThemeData.light().iconTheme.copyWith(
-        color: kDarkSecondaryColor,
-      ),
-  textTheme: ThemeData.light().textTheme.apply(
-        fontFamily: 'SFProText',
-        bodyColor: kDarkSecondaryColor,
-        displayColor: kDarkSecondaryColor,
-      ),
-  colorScheme: ColorScheme.fromSwatch().copyWith(secondary: kAccentColor),
-  // colorScheme: const ColorScheme(surface: kLightSecondaryColor),
-);
 
 class AppConstraints {
   // Define common constraints used throughout the app
@@ -89,6 +28,19 @@ class AppConstraints {
 }
 
 class AppImage {
+  static const img1 = 'assets/images/pix2life/img_1.jpg';
+  static const img2 = 'assets/images/pix2life/img_2.jpg';
+  static const img3 = 'assets/images/pix2life/img_3.jpg';
+  static const img4 = 'assets/images/pix2life/img_4.jpg';
+  static const img5 = 'assets/images/pix2life/img_5.jpg';
+  static const img6 = 'assets/images/pix2life/img_6.jpg';
+  static const img7 = 'assets/images/pix2life/img_7.jpg';
+  static const img8 = 'assets/images/pix2life/img_8.jpg';
+  static const img9 = 'assets/images/pix2life/img_9.jpg';
+  static const img10 = 'assets/images/pix2life/img_10.jpg';
+  static const img11 = 'assets/images/pix2life/img_11.jpg';
+  static const img12 = 'assets/images/pix2life/img_12.jpg';
+  static const img13 = 'assets/images/pix2life/img_13.jpg';
   static const gallery1 = 'assets/images/A.jpg';
   static const gallery2 = 'assets/images/R.jpeg';
   static const camera = 'assets/images/camera.png';

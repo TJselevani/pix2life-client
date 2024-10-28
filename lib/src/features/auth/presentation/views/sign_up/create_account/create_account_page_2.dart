@@ -32,7 +32,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
   final _postCodeController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final logger = createLogger(UserDetailsSignUpPage);
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   @override
   void dispose() {
@@ -46,7 +46,9 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

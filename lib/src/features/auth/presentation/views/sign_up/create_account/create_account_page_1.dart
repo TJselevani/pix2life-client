@@ -38,7 +38,7 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final logger = createLogger(UserEmailSignUpPage);
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   @override
   void dispose() {
@@ -49,7 +49,9 @@ class _UserEmailSignUpPageState extends State<UserEmailSignUpPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

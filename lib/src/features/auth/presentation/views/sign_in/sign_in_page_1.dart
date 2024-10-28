@@ -42,12 +42,17 @@ class _UserSignInPageState extends State<UserSignInPage> {
   final logger = createLogger(UserSignInPage);
   bool _obscureText = true;
   bool _rememberMe = false;
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -60,7 +65,9 @@ class _UserSignInPageState extends State<UserSignInPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

@@ -42,7 +42,9 @@ class _QuoteDisplayState extends State<QuoteDisplay> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     final currentQuote = quotes[_currentIndex];
 

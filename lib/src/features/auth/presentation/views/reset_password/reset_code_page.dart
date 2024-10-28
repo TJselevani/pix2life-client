@@ -24,6 +24,7 @@ class _UserResetCodePageState extends State<UserResetCodePage> {
   final _resetCodeController = TextEditingController();
   final log = createLogger(UserResetCodePage);
   bool _isLoading = false;
+  late bool isDarkMode;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -78,6 +79,11 @@ class _UserResetCodePageState extends State<UserResetCodePage> {
     _resetCodeController.dispose();
     super.dispose();
   }
+
+  // isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+  //                (themeProvider.themeMode == ThemeMode.system &&
+  //                 MediaQuery.of(context).platformBrightness == Brightness.dark);
+
 
   @override
   Widget build(BuildContext context) {

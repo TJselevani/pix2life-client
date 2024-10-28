@@ -36,7 +36,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   bool _obscureText = true;
   bool _obscureText2 = true;
 
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -53,7 +53,9 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

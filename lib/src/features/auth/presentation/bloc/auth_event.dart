@@ -65,3 +65,5 @@ final class AuthGetUserDataEvent extends AuthEvent {}
 final class AuthLogoutEvent extends AuthEvent {}
 
 final class AuthRetrieveAuthenticatedUserEvent extends AuthEvent {}
+
+final class AuthIsUserLoggedInEvent extends AuthEvent {}

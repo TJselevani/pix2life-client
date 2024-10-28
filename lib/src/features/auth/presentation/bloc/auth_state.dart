@@ -22,8 +22,8 @@ final class AuthenticatedUser extends AuthState {
 }
 
 final class AuthUnauthenticated extends AuthState {
-  final String? message;
-  const AuthUnauthenticated({this.message});
+  final String message;
+  const AuthUnauthenticated({required this.message});
 
   @override
   List<Object?> get props => [message];

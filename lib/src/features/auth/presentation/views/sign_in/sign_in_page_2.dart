@@ -42,7 +42,10 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<MyUserProvider>(context);
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+
     authUser = userProvider.user;
 
     return Scaffold(

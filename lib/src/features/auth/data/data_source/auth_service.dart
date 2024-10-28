@@ -17,7 +17,7 @@ class AuthService {
     log.d('Stored User successfully to SharedPreferences');
   }
 
-  Future<UserModel> retrieveUser(String userKey) async {
+  Future<UserModel?> retrieveUser(String userKey) async {
     final String? userJson = _sharedPreferences.getString(userKey);
     log.d(
         'Raw User JSON from SharedPreferences: $userJson'); // Log before decoding
@@ -29,8 +29,7 @@ class AuthService {
         log.e('Error decoding user data: $e');
       }
     }
-    return const UserModel
-        .empty(); // or however you want to handle no user found
+    return null; // or however you want to handle no user found
   }
 
   // Remove the user data (for logout)

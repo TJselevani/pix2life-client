@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
+import 'package:isar/isar.dart';
 
+@Collection()
 class ImageModel extends Photo {
   const ImageModel({
     required super.id,

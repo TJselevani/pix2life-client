@@ -33,7 +33,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   List<Video>? videos;
   List<Audio>? audios;
   List<Gallery>? galleries;
-  bool isDarkMode = false;
+  late bool isDarkMode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize isDarkMode based on themeProvider's current theme
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider =
+          Provider.of<MyThemeProvider>(context, listen: false);
+      setState(() {
+        isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+            (themeProvider.themeMode == ThemeMode.system &&
+                MediaQuery.of(context).platformBrightness == Brightness.dark);
+      });
+    });
+  }
 
   void checkForErrors(BuildContext context) {
     final userProvider = Provider.of<MyUserProvider>(context, listen: false);
@@ -99,7 +115,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     galleries = galleryProvider.galleries;
 
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     checkForErrors(context);
 

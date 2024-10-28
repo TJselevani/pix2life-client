@@ -12,6 +12,11 @@ class ApiFailure extends ServerException {
           message: exception.message,
           statusCode: exception.statusCode,
         );
+  const ApiFailure.fromAppException(String message)
+      : this(
+          message: message,
+          statusCode: 505,
+        );
 
   DataMap serialize() => {'message': message, 'status': statusCode};
 

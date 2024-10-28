@@ -17,12 +17,23 @@ class MediaTabNavigation extends StatefulWidget {
 class _MediaTabNavigationState extends State<MediaTabNavigation>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    // Initialize isDarkMode based on themeProvider's current theme
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider =
+          Provider.of<MyThemeProvider>(context, listen: false);
+      setState(() {
+        isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+            (themeProvider.themeMode == ThemeMode.system &&
+                MediaQuery.of(context).platformBrightness == Brightness.dark);
+      });
+    });
   }
 
   @override
@@ -34,7 +45,9 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       appBar: _buildAppBar(),
@@ -71,13 +84,12 @@ class _MediaTabNavigationState extends State<MediaTabNavigation>
             color: Colors.black.withOpacity(0.2),
             spreadRadius: ScreenUtil().setWidth(5),
             blurRadius: ScreenUtil().setWidth(7),
-            offset: Offset(
-                0, ScreenUtil().setHeight(3)), // changes position of shadow
+            offset: Offset(0, ScreenUtil().setHeight(3)),
           ),
         ],
       ),
-      child: Container(
-        margin: EdgeInsets.all(ScreenUtil().setWidth(10)),
+      child: Padding(
+        padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
         child: TabBarView(
           controller: _tabController,
           children: const [

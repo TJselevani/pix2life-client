@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pix2life/src/features/auth/data/data_source/auth_manager.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/get_user_data.dart';
@@ -13,30 +12,31 @@ import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.da
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_up.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/verify_user_logged_in.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final UserSignUp _userSignUp;
-  final UserSignIn _userSignIn;
   final CheckUserAccount _checkUserAccount;
-  final LogOutUser _logOutUser;
+  final UserSignUp _userSignUp;
   final CreateUserPassword _createUserPassword;
+  final UserSignIn _userSignIn;
+  final LogOutUser _logOutUser;
   final GetUserData _getUserData;
   final RetrieveAuthUser _retrieveAuthUser;
-  final AuthManager _authManager;
+  final IsUserLoggedIn _isUserLoggedIn;
   final logger = createLogger(AuthBloc);
 
   AuthBloc({
-    required UserSignUp userSignUp,
-    required UserSignIn userSignIn,
     required CheckUserAccount checkUserAccount,
-    required LogOutUser logOutUSer,
+    required UserSignUp userSignUp,
     required CreateUserPassword createUserPassword,
+    required UserSignIn userSignIn,
+    required LogOutUser logOutUSer,
     required GetUserData getUserData,
     required RetrieveAuthUser retrieveAuthUser,
-    required AuthManager authManager,
+    required IsUserLoggedIn isUserLoggedIn,
   })  : _userSignUp = userSignUp,
         _userSignIn = userSignIn,
         _checkUserAccount = checkUserAccount,
@@ -44,16 +44,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _createUserPassword = createUserPassword,
         _getUserData = getUserData,
         _retrieveAuthUser = retrieveAuthUser,
-        _authManager = authManager,
+        _isUserLoggedIn = isUserLoggedIn,
         super(AuthInitial()) {
     on<AuthCheckAccountEvent>(_onCheckAccountEvent);
     on<AuthSignUpEvent>(_onSignUpEvent);
+    on<AuthCreatePasswordEvent>(_onCreatePasswordEvent);
     on<AuthSignInEvent>(_onLoginEvent);
     on<AuthLogoutEvent>(_onLogoutEvent);
-    on<AuthCreatePasswordEvent>(_onCreatePasswordEvent);
     on<AuthGetUserDataEvent>(_onAuthGetUserDataEvent);
     on<AuthRetrieveAuthenticatedUserEvent>(
         _onAuthRetrieveAuthenticatedUserEvent);
+    on<AuthIsUserLoggedInEvent>(_onAuthIsUserLoggedInEvent);
   }
 
   Future<void> _onCreatePasswordEvent(
@@ -122,16 +123,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onLogoutEvent(
       AuthLogoutEvent event, Emitter<AuthState> emit) async {
-    final String token = _authManager.getToken() as String;
-    if (token.isNotEmpty) {
-      final response = await _logOutUser();
-      response.fold(
-        (failure) => emit(AuthFailure(message: failure.errorMessage)),
-        (user) => emit(const AuthSuccess(message: 'Successfully logged out')),
-      );
-    } else {
-      emit(const AuthFailure(message: 'Failed to Sign Out'));
-    }
+    final response = await _logOutUser();
+    response.fold(
+      (failure) => emit(AuthFailure(message: failure.errorMessage)),
+      (user) => emit(const AuthSuccess(message: 'Successfully logged out')),
+    );
   }
 
   FutureOr<void> _onAuthRetrieveAuthenticatedUserEvent(
@@ -143,5 +139,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (user) =>
           emit(AuthenticatedUser(user: user, message: 'Retrieval Successful')),
     );
+  }
+
+  FutureOr<void> _onAuthIsUserLoggedInEvent(
+      AuthIsUserLoggedInEvent event, Emitter<AuthState> emit) async {
+    final response = await _isUserLoggedIn();
+    response.fold(
+        (failure) => emit(AuthUnauthenticated(message: failure.errorMessage)),
+        (user) =>
+            emit(AuthenticatedUser(user: user, message: 'User Logged In')));
   }
 }

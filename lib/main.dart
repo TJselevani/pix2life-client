@@ -79,6 +79,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add((AuthIsUserLoggedInEvent()));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final log = createLogger(MyApp);
     log.i('Client :: Running');
@@ -92,11 +98,9 @@ class _MyAppState extends State<MyApp> {
           title: 'pix2life',
           debugShowCheckedModeBanner: false,
           darkTheme: AppTheme.darkTheme,
-          themeMode: themeProvider.useMaterialYou
-              ? ThemeMode.light
-              : themeProvider.themeMode,
-          theme: themeProvider.useMaterialYou
-              ? AppTheme.materialYouTheme
+          themeMode: themeProvider.themeMode,
+          theme: themeProvider.isDarkMode
+              ? AppTheme.darkTheme
               : AppTheme.lightTheme,
           initialRoute: '/',
           routes: {
@@ -107,7 +111,6 @@ class _MyAppState extends State<MyApp> {
             '/Reset': (context) => const UserForgotPasswordPage(),
             '/Home': (context) => const BottomTabNavigation(),
             '/Password': (context) => const UserCreatePasswordPage(),
-            '/Widget': (context) => const MyWidget(),
             '/SetAvatar': (context) => const UploadProfilePicPage(),
             '/Avatar': (context) => const UpdateProfilePicPage(),
             '/QR': (context) => const QRCodeScreen(),
@@ -115,25 +118,6 @@ class _MyAppState extends State<MyApp> {
           },
         );
       },
-    );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Center(
-              child: Text('MainPage'),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

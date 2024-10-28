@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:pix2life/core/network/connection_checker.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_remote_data_source.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_service.dart';
 import 'package:pix2life/src/features/audio/data/repositories/audio_repository_impl.dart';
@@ -24,6 +26,7 @@ import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.da
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_up.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/verify_user_logged_in.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_remote_data_source.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_service.dart';
@@ -78,7 +81,7 @@ Future<void> initDependencies() async {
       createUserPassword: sl(),
       getUserData: sl(),
       retrieveAuthUser: sl(),
-      authManager: sl(),
+      isUserLoggedIn: sl(),
     ),
   );
 
@@ -136,6 +139,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => CreateUserPassword(sl()));
   sl.registerLazySingleton(() => CheckUserAccount(sl()));
   sl.registerLazySingleton(() => RetrieveAuthUser(sl()));
+  sl.registerLazySingleton(() => IsUserLoggedIn(sl()));
 
   //Audio usecases
   sl.registerLazySingleton(() => DeleteAudio(sl()));
@@ -169,7 +173,8 @@ Future<void> initDependencies() async {
   //#######################################################################
 
   //Authentication Bloc
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(sl(), sl(), sl()));
 
@@ -218,15 +223,21 @@ Future<void> initDependencies() async {
   //Api Service class
   sl.registerLazySingleton(() => ApiService(sl(), sl()));
 
+  //connection checker class
+  sl.registerFactory<ConnectionChecker>(() => ConnectionCheckerImpl(sl()));
+
   //Flutter Technology dependencies
   sl.registerLazySingleton<Dio>(() => Dio());
   sl.registerLazySingleton<FlutterSecureStorage>(
       () => const FlutterSecureStorage());
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+  sl.registerLazySingleton(() => InternetConnection());
 
   try {
     await sl.allReady(); // Wait for all async initializations to complete
   } catch (e) {
     // Handle initialization failure, maybe log or retry
+    // ignore: avoid_print
+    print(e.toString());
   }
 }

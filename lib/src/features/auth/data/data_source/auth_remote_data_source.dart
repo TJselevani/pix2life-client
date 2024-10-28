@@ -59,6 +59,8 @@ abstract interface class AuthRemoteDataSource {
   Future<UserModel> retrieveAuthUser();
 
   Future<String> logOutUser();
+
+  Future<UserModel?> isUserLoggedIn();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -182,11 +184,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> getUserData() async {
     try {
-      final UserFromTokenResponse response =
-          await _userService.getUserFromToken();
-      final UserModel user = response.user;
-      await _authService.storeUser(user, userKey);
-      return user;
+      final token = await _authManager.getToken();
+      if (token != null) {
+        final UserFromTokenResponse response =
+            await _userService.getUserFromToken();
+        final UserModel user = response.user;
+        await _authService.storeUser(user, userKey);
+        return user;
+      } else {
+        throw const ApplicationError(
+            message: 'User Not Logged in', statusCode: 505);
+      }
     } on ServerException {
       rethrow;
     } catch (e) {
@@ -198,8 +206,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> retrieveAuthUser() async {
     try {
-      final UserModel user = await _authService.retrieveUser(userKey);
-      return user;
+      final UserModel? user = await _authService.retrieveUser(userKey);
+      if (user != null) return user;
+      throw const ApplicationError(
+          message: 'User Not Logged in', statusCode: 505);
     } catch (e) {
       logger.e(e);
       throw ApplicationError(message: e.toString(), statusCode: 505);
@@ -214,6 +224,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           await _userService.forgotPassword(userData);
       final message = response.message;
       return message;
+    } on ServerException {
+      rethrow;
     } catch (e) {
       logger.e(e);
       throw ApplicationError(message: e.toString(), statusCode: 505);
@@ -242,6 +254,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           await _userService.resetPassword(userData);
       final message = response.message;
       return message;
+    } on ServerException {
+      rethrow;
     } catch (e) {
       logger.e(e);
       throw ApplicationError(message: e.toString(), statusCode: 505);
@@ -257,6 +271,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           await _userService.verifyResetCode(userData);
       final message = response.message;
       return message;
+    } on ServerException {
+      rethrow;
     } catch (e) {
       logger.e(e);
       throw ApplicationError(message: e.toString(), statusCode: 505);
@@ -273,5 +289,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   String hash(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
+  }
+
+  @override
+  Future<UserModel?> isUserLoggedIn() async {
+    try {
+      final UserModel? user = await _authService.retrieveUser(userKey);
+      if (user != null) {
+        return user;
+      }
+      return null;
+    } catch (e) {
+      logger.e(e);
+      throw ApplicationError(message: e.toString(), statusCode: 505);
+    }
   }
 }

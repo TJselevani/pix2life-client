@@ -22,7 +22,7 @@ class CreateAccountSuccessPage extends StatefulWidget {
 class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
   late final ConfettiController _controller;
   String? userEmail;
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   @override
   void initState() {
@@ -40,7 +40,9 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

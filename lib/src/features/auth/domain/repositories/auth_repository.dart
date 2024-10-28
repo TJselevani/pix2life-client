@@ -47,4 +47,6 @@ abstract interface class AuthRepository {
   ResultFuture<User> getUserData();
 
   ResultFuture<User> retrieveAuthUser();
+
+  ResultFuture<User> isUserLoggedIn();
 }

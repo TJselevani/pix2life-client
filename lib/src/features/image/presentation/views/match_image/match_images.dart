@@ -337,6 +337,18 @@ class _UploadImageMatchPageState extends State<ImageMatchScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(height: ScreenUtil().setHeight(20)),
+            Center(
+              child: Text(
+                'Image Matching',
+                style: TextStyle(
+                  color: AppPalette.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28.sp,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+            SizedBox(height: ScreenUtil().setHeight(20)),
 
             Hero(
               tag: 'image-hero', // Hero tag for matched image animation

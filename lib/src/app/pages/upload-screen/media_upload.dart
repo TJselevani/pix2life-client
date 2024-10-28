@@ -55,6 +55,17 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize isDarkMode based on themeProvider's current theme
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final themeProvider =
+          Provider.of<MyThemeProvider>(context, listen: false);
+      setState(() {
+        isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+            (themeProvider.themeMode == ThemeMode.system &&
+                MediaQuery.of(context).platformBrightness == Brightness.dark);
+      });
+    });
   }
 
   // Media pick methods
@@ -497,7 +508,9 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
     _galleriesLoading = galleryProvider.isLoading;
 
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
         body: SingleChildScrollView(

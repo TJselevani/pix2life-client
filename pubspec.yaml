@@ -67,6 +67,8 @@ dependencies:
   flutter_svg: ^2.0.10+1
   line_awesome_flutter: ^3.0.1
   animated_theme_switcher: ^2.0.10
+  internet_connection_checker_plus: ^2.5.2
+  isar: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,8 @@ dev_dependencies:
   mocktail: ^1.0.4
   mockito: ^5.4.4
   flutter_lints: ^4.0.0
+  isar_generator: ^3.0.0
+  build_runner: ^2.0.0
     
 flutter_native_splash:
   color: "#ffffff" # Background color for the splash screen
@@ -106,6 +110,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/images/pix2life/
     - assets/images/
     - assets/svg/
 

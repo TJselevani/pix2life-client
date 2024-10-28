@@ -26,7 +26,7 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final log = createLogger(UserForgotPasswordPage);
-  bool isDarkMode = false;
+  late bool isDarkMode;
 
   @override
   void dispose() {
@@ -37,7 +37,9 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
       backgroundColor: AppPalette.primaryBlack,

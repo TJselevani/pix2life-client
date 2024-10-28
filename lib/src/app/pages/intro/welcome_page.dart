@@ -219,8 +219,7 @@ class _WelcomePageState extends State<WelcomePage> {
           SuccessSnackBar.show(context: context, message: state.message);
           WelcomePage.routeToHomePage(context);
         } else if (state is AuthUnauthenticated) {
-          ErrorSnackBar.show(context: context, message: 'unauthenticated');
-          WelcomePage.routeToSignInPage(context);
+          ErrorSnackBar.show(context: context, message: state.message);
         } else if (state is AuthFailure) {
           ErrorSnackBar.show(context: context, message: state.message);
           WelcomePage.routeToSignInPage(context);
@@ -244,7 +243,9 @@ class _WelcomePageState extends State<WelcomePage> {
             child: RoundedButton(
               name: 'Get Started',
               onPressed: () {
-                BlocProvider.of<AuthBloc>(context).add(AuthGetUserDataEvent());
+                // BlocProvider.of<AuthBloc>(context)
+                //     .add(AuthRetrieveAuthenticatedUserEvent());
+                WelcomePage.routeToSignInPage(context);
               },
             ),
           );
