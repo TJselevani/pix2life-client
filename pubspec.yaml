@@ -69,6 +69,7 @@ dependencies:
   animated_theme_switcher: ^2.0.10
   internet_connection_checker_plus: ^2.5.2
   isar: ^3.0.0
+  staggered_grid_view_flutter: ^0.0.4
 
 dev_dependencies:
   flutter_test:
@@ -81,14 +82,15 @@ dev_dependencies:
     
 flutter_native_splash:
   color: "#ffffff" # Background color for the splash screen
-  image: assets/icons/whiteIcon.png # Path to the splash screen image
+  image: assets/icons/AppIcons/appstore.png # Path to the splash screen image
   android: true
   ios: true
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icons/whiteIcon.png" 
+  image_path_android: assets/icons/AppIcons/playstore.png 
+  image_path_ios: "assets/icons/AppIcons/appstore.png" 
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

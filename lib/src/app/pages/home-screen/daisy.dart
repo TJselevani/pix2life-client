@@ -249,8 +249,9 @@ class _DaisyState extends State<Daisy> {
                       decoration: BoxDecoration(
                         color: AppPalette.red.withOpacity(.7),
                         borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage(_imageUrls[currentIndex]),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                              AppImage.welcomeImage), //_imageUrls[currentIndex]
                           fit: BoxFit.cover,
                         ),
                       ),

@@ -66,7 +66,9 @@ class _VideoThumbnailWidgetState extends State<VideoThumbnailWidget> {
 
     return _isInitialized
         ? AspectRatio(
-            aspectRatio: 1 / 1,
+            aspectRatio: _controller.value.isInitialized
+                ? _controller.value.aspectRatio
+                : 1.0,
             child: Stack(
               children: [
                 VideoPlayer(_controller),

@@ -15,13 +15,14 @@ class AudioGridPage extends StatefulWidget {
   State<AudioGridPage> createState() => _AudioGridPageState();
 }
 
+enum ViewMode { grid, list }
+
 class _AudioGridPageState extends State<AudioGridPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-
   String _selectedAudioName = 'Audio Gallery';
   String? _selectedAudioUrl;
   bool _isPlaying = false;
-  bool _isGridView = false; // Toggle for design
+  ViewMode _viewMode = ViewMode.list; // Use enum here
 
   @override
   void initState() {
@@ -92,64 +93,65 @@ class _AudioGridPageState extends State<AudioGridPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: AppPalette.primaryWhite,
-        appBar: AppBar(
-          title: Text(
-            _selectedAudioName,
-            style: TextStyle(fontSize: 20.sp),
-          ),
-          centerTitle: true,
-          // backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.refresh, size: 24.sp),
+      appBar: AppBar(
+        title: Text(
+          _selectedAudioName,
+          style: TextStyle(fontSize: 20.sp),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.refresh, size: 24.sp),
+          onPressed: () {
+            context.read<AudioBloc>().add(AudiosFetchEvent());
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _viewMode == ViewMode.grid ? Icons.grid_view : Icons.list,
+              size: 24.sp,
+            ),
             onPressed: () {
-              context.read<AudioBloc>().add(AudiosFetchEvent());
+              setState(() {
+                _viewMode = _viewMode == ViewMode.grid
+                    ? ViewMode.list
+                    : ViewMode.grid; // Toggle view mode
+              });
             },
           ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                _isGridView ? Icons.list : Icons.grid_view,
-                size: 24.sp,
-              ),
-              onPressed: () {
-                setState(() {
-                  _isGridView = !_isGridView;
-                });
-              },
+        ],
+      ),
+      body: BlocConsumer<AudioBloc, AudioState>(listener: (context, state) {
+        if (state is AudioFailure) {
+          ErrorSnackBar.show(context: context, message: state.message);
+        }
+      }, builder: (context, state) {
+        if (state is AudioFailure) {
+          return Center(child: Text('Error: ${state.message}'));
+        }
+        if (state is AudioLoading) {
+          return Center(
+            child: LoadingAnimationWidget.waveDots(
+              color: AppPalette.red,
+              size: 50.sp,
             ),
-          ],
-        ),
-        body: BlocConsumer<AudioBloc, AudioState>(listener: (context, state) {
-          if (state is AudioFailure) {
-            ErrorSnackBar.show(context: context, message: state.message);
-          }
-        }, builder: (context, state) {
-          if (state is AudioFailure) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          if (state is AudioLoading) {
-            return Center(
-              child: LoadingAnimationWidget.waveDots(
-                color: AppPalette.red,
-                size: 50.sp,
-              ),
-            );
-          } else if (state is AudiosLoaded) {
-            final audios = state.audios;
+          );
+        } else if (state is AudiosLoaded) {
+          final audios = state.audios;
 
-            if (audios.isEmpty) {
-              return const Center(child: Text('No Audios found'));
-            }
-
-            return _isGridView
-                ? _buildGridView(audios)
-                : _buildListView(audios);
-          } else {
-            return const Center(child: Text('Something went wrong'));
+          if (audios.isEmpty) {
+            return const Center(child: Text('No Audios found'));
           }
-        }));
+
+          return _viewMode == ViewMode.grid
+              ? _buildGridView(audios)
+              : _buildListView(audios);
+        } else {
+          return const Center(child: Text('Something went wrong'));
+        }
+      }),
+    );
   }
 
   ListView _buildListView(List<Audio> audios) {

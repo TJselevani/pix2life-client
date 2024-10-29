@@ -1,12 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/video/domain/entities/video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
 import 'package:pix2life/src/shared/widgets/video-player/thumbnail/network_video_thumbnail_widget.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pix2life/src/shared/widgets/video-player/video_player_widget.dart';
+import 'package:video_player/video_player.dart';
+
+enum ViewMode { compactGrid, list, grid }
 
 class VideoGridPage extends StatefulWidget {
   const VideoGridPage({super.key});
@@ -16,20 +25,78 @@ class VideoGridPage extends StatefulWidget {
 }
 
 class _VideoGridPageState extends State<VideoGridPage> {
-  String _selectedVideoName = 'video Gallery';
-  // ignore: unused_field
+  String _selectedVideoName = 'Video Gallery';
   String? _selectedVideoUrl;
+  ViewMode _currentViewMode = ViewMode.list;
+  VideoPlayerController? _videoPlayerController;
+  bool _isFullScreen = false;
+  bool _isPlaying = false;
+  final logger = createLogger(VideoGridPage);
 
   @override
   void initState() {
     super.initState();
-    // final currentState = context.read<VideoBloc>().state;
+    _loadVideos();
+  }
+
+  Future<void> _loadVideos() async {
+    // Trigger the fetch event
     context.read<VideoBloc>().add(VideosFetchEvent());
 
-    // Trigger the event to fetch videos
-    // if (currentState is! VideosLoaded) {
-    //   context.read<VideoBloc>().add(VideosFetchEvent());
-    // }
+    // Wait for the state to be updated
+    await Future.delayed(
+        const Duration(milliseconds: 100)); // Adjust if necessary
+    final currentState = context.read<VideoBloc>().state;
+
+    if (currentState is VideosLoaded) {
+      final videos = currentState.videos;
+      if (videos.isNotEmpty) {
+        final randomVideo = videos[Random().nextInt(videos.length)];
+        _selectedVideoName = randomVideo.filename;
+        _selectedVideoUrl = randomVideo.url;
+        _initializeVideoPlayer(_selectedVideoUrl!);
+      }
+    }
+  }
+
+  void _initializeVideoPlayer(String url) {
+    _videoPlayerController?.dispose();
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url))
+      ..addListener(() => setState(() {}))
+      ..setLooping(false)
+      ..initialize().then((_) {
+        setState(() {
+          _isPlaying = true;
+          _videoPlayerController?.pause(); // Start paused
+        });
+      }).catchError((error) {
+        logger.e(error);
+        ErrorSnackBar.show(context: context, message: 'Failed to play video');
+      });
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
+  }
+
+  void _playVideo(String url) {
+    // Dispose of the current player
+    _videoPlayerController?.dispose();
+
+    // Initialize the new video player
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url))
+      ..setLooping(true)
+      ..initialize().then((_) {
+        setState(() {
+          _isPlaying = true;
+          _videoPlayerController!.play();
+        });
+      }).catchError((error) {
+        logger.e(error);
+        ErrorSnackBar.show(context: context, message: 'Unable to play video');
+      });
   }
 
   void _showVideoInfo(Video video) {
@@ -50,14 +117,12 @@ class _VideoGridPageState extends State<VideoGridPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 backgroundColor: AppPalette.red,
                 foregroundColor: AppPalette.primaryWhite,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8.0.r),
                 ),
               ),
               child: const Text('Close'),
@@ -68,96 +133,327 @@ class _VideoGridPageState extends State<VideoGridPage> {
     );
   }
 
+  void _toggleViewMode() {
+    setState(() {
+      _currentViewMode = ViewMode
+          .values[(_currentViewMode.index + 1) % ViewMode.values.length];
+    });
+  }
+
+  Widget _buildSelectedView(List<Video> videos) {
+    switch (_currentViewMode) {
+      case ViewMode.compactGrid:
+        return MasonryGridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          itemCount: videos.length,
+          itemBuilder: (context, index) => _buildVideoItem(videos[index]),
+        );
+      case ViewMode.list:
+        return ListView.builder(
+          itemCount: videos.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+            child: _buildVideoItem(videos[index]),
+          ),
+        );
+      case ViewMode.grid:
+        return GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+            childAspectRatio: 1.0,
+          ),
+          itemCount: videos.length,
+          itemBuilder: (context, index) => _buildVideoItem(videos[index]),
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Widget _buildVideoItem(Video video) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedVideoName = video.filename;
+          _selectedVideoUrl = video.url;
+          _playVideo(video.url);
+        });
+      },
+      onLongPress: () => _showVideoInfo(video),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(2, 2),
+            ),
+          ],
+        ),
+        child: VideoThumbnailWidget(videoUrl: video.url),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppPalette.primaryWhite,
       appBar: AppBar(
         title: Text(
           _selectedVideoName,
-          style: TextStyle(fontSize: 20.sp),
+          style: const TextStyle(fontSize: 20),
         ),
         centerTitle: true,
-        // backgroundColor: AppPalette.primaryWhite,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.refresh, size: 24.sp),
+          icon: const Icon(Icons.refresh, size: 24),
           onPressed: () {
-            context.read<VideoBloc>().add(VideosFetchEvent()); // Refresh videos
+            context.read<VideoBloc>().add(VideosFetchEvent());
+            setState(() {
+              _videoPlayerController?.pause();
+              _videoPlayerController = null;
+            });
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _currentViewMode == ViewMode.grid
+                  ? Icons.grid_view
+                  : _currentViewMode == ViewMode.compactGrid
+                      ? Icons.view_agenda
+                      : Icons.list,
+            ),
+            onPressed: _toggleViewMode,
+          ),
+        ],
       ),
-      body: BlocConsumer<VideoBloc, VideoState>(
-        listener: (context, state) {
-          if (state is VideoFailure) {
-            ErrorSnackBar.show(context: context, message: state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is VideoFailure) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          if (state is VideoLoading) {
-            return Center(
-              child: LoadingAnimationWidget.waveDots(
-                color: AppPalette.red,
-                size: 50.sp,
-              ),
-            );
-          } else if (state is VideosLoaded) {
-            final videos = state.videos;
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              // Video Player Container
+              Expanded(
+                flex: 3,
+                child: Container(
+                  margin: EdgeInsets.all(16.w),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(16.w),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 4,
+                        offset: Offset(2.w, 2.h),
+                      ),
+                    ],
+                  ),
+                  child: _selectedVideoUrl != null &&
+                          _videoPlayerController != null &&
+                          _videoPlayerController!.value.isInitialized
+                      ? Stack(
+                          children: [
+                            Center(
+                              child: VideoPlayerWidget(
+                                  controller: _videoPlayerController!),
+                            ),
+                            Positioned(
+                              bottom: 8.h,
+                              left: 8.w,
+                              child: IconButton(
+                                icon: Icon(
+                                  _videoPlayerController!.value.volume > 0
+                                      ? Icons.volume_up
+                                      : Icons.volume_off,
+                                  color: AppPalette.red,
+                                  size: 24.sp,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_videoPlayerController!.value.volume >
+                                        0) {
+                                      _videoPlayerController!.setVolume(0);
+                                    } else {
+                                      _videoPlayerController!.setVolume(1);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              top: 100.h,
+                              left: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: Icon(
+                                  _videoPlayerController!.value.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  color: AppPalette.transparent,
+                                  size: 100.sp,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _videoPlayerController!.value.isPlaying
+                                        ? _videoPlayerController!.pause()
+                                        : _videoPlayerController!.play();
+                                  });
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 8.h,
+                              right: 8.w,
+                              child: IconButton(
+                                icon: Icon(
+                                  _isFullScreen
+                                      ? Icons.fullscreen_exit
+                                      : Icons.fullscreen,
+                                  color: AppPalette.red,
+                                  size: 24.sp,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isFullScreen = !_isFullScreen;
 
-            if (videos.isEmpty) {
-              return const Center(child: Text('No Videos found'));
-            }
-
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Three images per row
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 1.0, // Square images
-                ),
-                itemCount: videos.length,
-                itemBuilder: (context, index) {
-                  final video = videos[index];
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedVideoName = video.filename;
-                        _selectedVideoUrl = video.url;
-                      });
-                    },
-                    onLongPress: () {
-                      _showVideoInfo(video);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.w),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(2.w, 2.h),
+                                    if (_isFullScreen) {
+                                      SystemChrome.setEnabledSystemUIMode(
+                                          SystemUiMode.edgeToEdge);
+                                      SystemChrome.setPreferredOrientations([
+                                        DeviceOrientation.portraitUp,
+                                        DeviceOrientation.portraitDown,
+                                        // SystemChrome.setEnabledSystemUIMode(
+                                        //     SystemUiMode.immersive);
+                                        // SystemChrome.setPreferredOrientations([
+                                        //   DeviceOrientation.landscapeLeft,
+                                        //   DeviceOrientation.landscapeRight,
+                                      ]);
+                                    } else {
+                                      SystemChrome.setEnabledSystemUIMode(
+                                          SystemUiMode.edgeToEdge);
+                                      SystemChrome.setPreferredOrientations([
+                                        DeviceOrientation.portraitUp,
+                                        DeviceOrientation.portraitDown,
+                                      ]);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: AppPalette.red,
+                            size: 30.sp,
                           ),
-                        ],
-                      ),
-                      child: VideoThumbnailWidget(
-                        videoUrl: video.url,
-                      ),
-                    ),
-                  );
-                },
+                        ),
+                ),
               ),
-            );
-          } else {
-            return const Center(child: Text('Something went wrong'));
-          }
-        },
+              Expanded(
+                flex: 2,
+                child: BlocConsumer<VideoBloc, VideoState>(
+                  listener: (context, state) {
+                    if (state is VideoFailure) {
+                      ErrorSnackBar.show(
+                          context: context, message: state.message);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is VideoLoading) {
+                      return Center(
+                        child: LoadingAnimationWidget.waveDots(
+                          color: AppPalette.red,
+                          size: 50,
+                        ),
+                      );
+                    } else if (state is VideosLoaded) {
+                      final videos = state.videos;
+
+                      // Categorize videos by gallery name
+                      final galleryMap = <String, List<Video>>{};
+                      for (var video in videos) {
+                        final galleryName = video.galleryName;
+                        if (!galleryMap.containsKey(galleryName)) {
+                          galleryMap[galleryName] = [];
+                        }
+                        galleryMap[galleryName]!.add(video);
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ListView(
+                          children: galleryMap.entries.map((entry) {
+                            final galleryName = entry.key;
+                            final galleryVideos = entry.value;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    galleryName,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 150.h,
+                                    child: _buildSelectedView(galleryVideos),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    } else if (state is VideoFailure) {
+                      return Center(child: Text('Error: ${state.message}'));
+                    } else {
+                      return const Center(child: Text('Something went wrong'));
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          if (_isFullScreen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isFullScreen = false;
+                    SystemChrome.setEnabledSystemUIMode(
+                        SystemUiMode.edgeToEdge);
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                      DeviceOrientation.portraitDown,
+                    ]);
+                  });
+                },
+                child: Container(
+                  color: Colors.black,
+                  child: Center(
+                    child:
+                        VideoPlayerWidget(controller: _videoPlayerController!),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
