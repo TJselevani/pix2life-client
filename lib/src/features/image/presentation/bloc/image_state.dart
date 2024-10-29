@@ -36,7 +36,17 @@ final class ImageUpdated extends ImageState {
   const ImageUpdated({required this.image, required this.message});
 
   @override
-  List<Object> get props => [image];
+  List<Object> get props => [image, message];
+}
+
+final class ImageDeleted extends ImageState {
+  final String imageId;
+   final String message;
+
+  const ImageDeleted({required this.imageId, required this.message});
+
+  @override
+  List<Object> get props => [imageId, message];
 }
 
 final class ImageSuccess extends ImageState {

@@ -6,12 +6,14 @@ import 'package:pix2life/src/features/image/domain/repositories/image_repository
 
 class UpdateImageParams extends Equatable {
   final Photo image;
+  final DataMap updateData;
 
   const UpdateImageParams({
     required this.image,
+    required this.updateData,
   });
 
-  UpdateImageParams.empty() : this(image: Photo.empty());
+  UpdateImageParams.empty() : this(image: Photo.empty(), updateData: {});
 
   @override
   List<Object?> get props => [image];
@@ -22,6 +24,6 @@ class UpdateImage implements UseCase<Photo, UpdateImageParams> {
   const UpdateImage(this._imageRepository);
   @override
   ResultFuture<Photo> call(params) async {
-    return await _imageRepository.updateImage(image: params.image);
+    return await _imageRepository.updateImage(image: params.image, updateData: params.updateData);
   }
 }

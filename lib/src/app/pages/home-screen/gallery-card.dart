@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
@@ -86,46 +85,46 @@ class GalleryCard extends StatelessWidget {
                 ],
               )
             : Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppPalette.primaryGrey.withAlpha(230),
-                      borderRadius: BorderRadius.circular(20.r),
-                      image: DecorationImage(
-                        image: NetworkImage(backgroundImage!.isNotEmpty
-                            ? backgroundImage!
-                            : AppImage.randomImage),
-                        fit: BoxFit.cover,
-                      ),
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppPalette.primaryGrey.withAlpha(230),
+                    borderRadius: BorderRadius.circular(20.r),
+                    image: DecorationImage(
+                      image: NetworkImage(backgroundImage!.isNotEmpty
+                          ? backgroundImage!
+                          : AppImage.randomImage),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Padding(
-                      padding: EdgeInsets.all(10.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildText(
-                            title,
-                            18,
-                            fontWeight: FontWeight.bold,
-                            color: AppPalette.fontWhite,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            description,
-                            style: TextStyle(
-                                color: AppPalette.fontWhite, fontSize: 14.sp),
-                          ),
-                        ],
-                      ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: EdgeInsets.all(10.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildText(
+                          title,
+                          18,
+                          fontWeight: FontWeight.bold,
+                          color: AppPalette.fontWhite,
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          description,
+                          style: TextStyle(
+                              color: AppPalette.fontWhite, fontSize: 14.sp),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ));
+                ),
+              ],
+            ));
   }
 
   Widget _buildText(String text, double fontSize,

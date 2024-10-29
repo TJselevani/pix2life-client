@@ -183,7 +183,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
               if (_selectedMediaType.isNotEmpty)
                 _isLoading
                     ? Center(
-                        child: LoadingAnimationWidget.prograssiveDots(
+                        child: LoadingAnimationWidget.progressiveDots(
                           color: AppPalette.red,
                           size: ScreenUtil().setWidth(50),
                         ),

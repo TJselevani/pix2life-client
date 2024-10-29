@@ -20,6 +20,7 @@ abstract interface class ImageRepository {
 
   ResultFuture<Photo> updateImage({
     required Photo image,
+    required DataMap updateData,
   });
 
   ResultFuture<String> deleteImage({

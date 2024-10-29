@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
 import 'package:pix2life/src/features/image/presentation/bloc/image_bloc.dart';
 
@@ -40,6 +41,19 @@ class MyImageProvider with ChangeNotifier {
         _image = state.image;
         _loading = false;
         notifyListeners();
+      } else if (state is ImageUpdated) {
+        // Update the image in the list after an update
+        // int index = _images.indexWhere((img) => img.id == state.image.id);
+        // if (index != -1) _images[index] = state.image;
+        imageBloc.add(ImagesFetchEvent());
+        // _loading = false;
+        notifyListeners();
+      } else if (state is ImageDeleted) {
+        // Remove the image from the list after deletion
+        // _images.removeWhere((img) => img.id == state.imageId);
+        imageBloc.add(ImagesFetchEvent());
+        // _loading = false;
+        notifyListeners();
       } else if (state is ImageFailure) {
         _errorMessage = state.message;
         _loading = false;
@@ -48,5 +62,27 @@ class MyImageProvider with ChangeNotifier {
     });
 
     imageBloc.add(ImagesFetchEvent());
+  }
+
+  // Method to delete an image by ID
+  void deleteImage(String imageId) {
+    final imageBloc = BlocProvider.of<ImageBloc>(context);
+    _loading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    // Dispatch a delete event to the ImageBloc
+    imageBloc.add(ImageDeleteEvent(imageId: imageId));
+  }
+
+  // Method to update an image
+  void updateImage(Photo image, DataMap updateData) {
+    final imageBloc = BlocProvider.of<ImageBloc>(context);
+    _loading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    // Dispatch an update event to the ImageBloc
+    imageBloc.add(ImageUpdateEvent(image: image, updateData: updateData));
   }
 }

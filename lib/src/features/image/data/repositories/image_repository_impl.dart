@@ -44,21 +44,23 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  ResultFuture<ImageModel> updateImage({required Photo image}) async {
+  ResultFuture<ImageModel> updateImage(
+      {required Photo image, required DataMap updateData}) async {
     try {
       final updatedImage = await _remoteDataSource.updateImage(
+          updateData: updateData,
           image: ImageModel(
-        id: image.id,
-        filename: image.filename,
-        path: image.path,
-        originalName: image.originalName,
-        galleryName: image.galleryName,
-        ownerId: image.ownerId,
-        description: image.description,
-        url: image.url,
-        createdAt: image.createdAt,
-        updatedAt: image.updatedAt,
-      ));
+            id: image.id,
+            filename: updateData['filename'] ?? image.filename,
+            path: image.path,
+            originalName: image.originalName,
+            galleryName: updateData['galleryName'] ?? image.galleryName,
+            ownerId: image.ownerId,
+            description: updateData['description'] ?? image.description,
+            url: image.url,
+            createdAt: image.createdAt,
+            updatedAt: image.updatedAt,
+          ));
       return right(updatedImage);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));

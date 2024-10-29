@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
@@ -154,6 +155,14 @@ class _ImageGridPageState extends State<ImageGridPage>
         listener: (context, state) {
           if (state is ImageFailure) {
             ErrorSnackBar.show(context: context, message: state.message);
+          }
+
+          if (state is ImageDeleted) {
+            SuccessSnackBar.show(context: context, message: state.message);
+          }
+
+          if (state is ImageUpdated) {
+            SuccessSnackBar.show(context: context, message: state.message);
           }
         },
         builder: (context, state) {

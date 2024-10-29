@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
 import 'package:pix2life/src/features/image/domain/usecases/delete_image.dart';
 import 'package:pix2life/src/features/image/domain/usecases/fetch_images.dart';
@@ -52,7 +53,8 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
         await _deleteImage(DeleteImageParams(imageId: event.imageId));
     response.fold(
       (failure) => emit(ImageFailure(message: failure.errorMessage)),
-      (message) => emit(ImageSuccess(message: message)),
+      (imageId) => emit(ImageDeleted(
+          imageId: imageId, message: 'Image Deleted Successfully')),
     );
   }
 
@@ -80,10 +82,12 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
   FutureOr<void> _onImageUpdateEvent(
       ImageUpdateEvent event, Emitter<ImageState> emit) async {
     emit(ImageLoading());
-    final response = await _updateImage(UpdateImageParams(image: event.image));
+    final response = await _updateImage(
+        UpdateImageParams(image: event.image, updateData: event.updateData));
     response.fold(
       (failure) => emit(ImageFailure(message: failure.errorMessage)),
-      (image) => emit(ImageLoaded(image: image)),
+      (image) => emit(
+          ImageUpdated(image: image, message: 'Image Updated successfully')),
     );
   }
 

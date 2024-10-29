@@ -265,7 +265,7 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
           return Container(
             margin: EdgeInsets.symmetric(vertical: 15.h),
             child: Center(
-              child: LoadingAnimationWidget.prograssiveDots(
+              child: LoadingAnimationWidget.progressiveDots(
                 color: theme.colorScheme.primary,
                 size: 50.sp,
               ),

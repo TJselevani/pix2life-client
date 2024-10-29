@@ -5,6 +5,7 @@ import 'package:pix2life/core/dtos/update_image_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_image_match_dto.dart';
 import 'package:pix2life/core/dtos/upload_image_response_dto.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/image/data/models/image.model.dart';
 
@@ -37,9 +38,10 @@ class ImageService {
     return FetchImagesResponse.fromJson(data);
   }
 
-  Future<UpdateImageResponse> updateImage(ImageModel image) async {
+  Future<UpdateImageResponse> updateImage(
+      ImageModel image, DataMap updateData) async {
     final url = '${AppSecrets.baseUrl}/image/update?imageId=${image.id}';
-    final data = await _apiService.updateData(image.toMap(), url);
+    final data = await _apiService.updateData(updateData, url);
     return UpdateImageResponse.fromJson(data);
   }
 

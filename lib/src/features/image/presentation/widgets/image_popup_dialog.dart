@@ -6,7 +6,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/utils/date-format/format_timestamp.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
+import 'package:pix2life/src/features/image/data/data%20sources/image_provider.dart';
 import 'package:pix2life/src/features/image/domain/entities/image.dart';
+import 'package:pix2life/src/features/image/presentation/views/update_image/update_image.dart';
 import 'package:provider/provider.dart';
 
 class ImageDialog extends StatelessWidget {
@@ -26,6 +28,7 @@ class ImageDialog extends StatelessWidget {
     late bool isDarkMode;
 
     final themeProvider = Provider.of<MyThemeProvider>(context);
+    final imageProvider = Provider.of<MyImageProvider>(context, listen: false);
     isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
         (themeProvider.themeMode == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
@@ -118,19 +121,34 @@ class ImageDialog extends StatelessWidget {
                             ),
                           ),
                           // Close button
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              style: TextButton.styleFrom(
-                                backgroundColor: AppPalette.red,
-                                foregroundColor: AppPalette.primaryWhite,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildButton(
+                                context,
+                                'Update',
+                                () {
+                                  // Close the current dialog
+                                  Navigator.of(context).pop();
+
+                                  // Open a new dialog with UpdateImageScreen
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                      child: UpdateImageScreen(image: image),
+                                    ),
+                                  );
+                                },
                               ),
-                              child: const Text('Close'),
-                            ),
+                              _buildButton(
+                                context,
+                                'Delete',
+                                () {
+                                  imageProvider.deleteImage(image.id);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -141,6 +159,24 @@ class ImageDialog extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Padding _buildButton(
+      BuildContext context, String label, VoidCallback onPress) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextButton(
+        onPressed: onPress,
+        style: TextButton.styleFrom(
+          backgroundColor: AppPalette.red,
+          foregroundColor: AppPalette.primaryWhite,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Text(label),
       ),
     );
   }

@@ -38,11 +38,12 @@ final class ImageDeleteEvent extends ImageEvent {
 
 final class ImageUpdateEvent extends ImageEvent {
   final Photo image;
+  final DataMap updateData;
 
-  const ImageUpdateEvent({required this.image});
+  const ImageUpdateEvent({required this.image, required this.updateData});
 
   @override
-  List<Object> get props => [image];
+  List<Object> get props => [image, updateData];
 }
 
 // final class ImageFetchEvent extends ImageEvent {}

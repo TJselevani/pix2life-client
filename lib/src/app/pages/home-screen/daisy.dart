@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/constants.dart';
+import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/src/app/pages/home-screen/gallery-card.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_provider.dart';
+import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/gallery/presentation/views/create_gallery_form.dart';
 import 'package:pix2life/src/features/gallery/presentation/views/exemplar_galleries.dart';
 import 'package:pix2life/src/features/gallery/domain/entities/gallery.dart';
+import 'package:pix2life/src/features/image/presentation/widgets/gallery_popup_dialog.dart';
 import 'package:pix2life/src/shared/widgets/logo/app_logo.dart';
 import 'package:pix2life/src/shared/widgets/text-animation/fade_in_text.dart';
 import 'package:pix2life/src/shared/widgets/user-avatar/user_avatar.dart';
@@ -117,6 +122,33 @@ class _DaisyState extends State<Daisy> {
     }));
   }
 
+  Future<void> _showGalleryImages(
+      BuildContext context, String galleryName) async {
+    // Dispatch the event to fetch gallery images
+    BlocProvider.of<GalleryBloc>(context)
+        .add(GalleryFetchImagesEvent(galleryName: galleryName));
+
+    // Listen to the Bloc state for images
+    final galleryState = BlocProvider.of<GalleryBloc>(context).state;
+
+    if (galleryState is GalleryImagesLoaded) {
+      // Images have been successfully loaded
+      GalleryDialog.showGalleryImagesDialog(
+        context: context,
+        images: galleryState.images, // Pass the loaded images
+        galleryName: galleryName, // Pass the gallery name
+      );
+    } else if (galleryState is GalleryFailure) {
+      // Handle the failure case
+      ErrorSnackBar.show(
+        context: context,
+        message: 'Failed to fetch gallery images',
+      );
+    } else if (galleryState is GalleryLoading) {
+      SuccessSnackBar.show(context: context, message: 'Fetching Gallery ...');
+    }
+  }
+
   @override
   void dispose() {
     _isDisposed = true;
@@ -217,10 +249,16 @@ class _DaisyState extends State<Daisy> {
                   controller: _pageControllers[pix2lifeGalleries[0]['name']!],
                   isAsset: true,
                 )
-              : GalleryCard(
-                  title: fetchedGalleries[index - 1].name,
-                  description: fetchedGalleries[index - 1].description,
-                  backgroundImage: fetchedGalleries[index - 1].iconUrl,
+              : GestureDetector(
+                  onDoubleTap: () {
+                    _showGalleryImages(
+                        context, fetchedGalleries[index - 1].name);
+                  },
+                  child: GalleryCard(
+                    title: fetchedGalleries[index - 1].name,
+                    description: fetchedGalleries[index - 1].description,
+                    backgroundImage: fetchedGalleries[index - 1].iconUrl,
+                  ),
                 );
         },
       ),

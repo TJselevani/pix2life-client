@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/src/app/pages/subscription/subscription_page.dart';
+import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
+import 'package:pix2life/src/features/auth/domain/entities/user.dart';
+import 'package:provider/provider.dart';
 
 class MenuPanel extends StatelessWidget {
   const MenuPanel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    User? authUser;
+    final userProvider = Provider.of<MyUserProvider>(context);
+    authUser = userProvider.user;
     return Scaffold(
       body: SizedBox(
         width: 288,
@@ -18,31 +25,27 @@ class MenuPanel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 20.h),
-              const InfoCard(
-                name: 'tjselevani',
-                title: 'Developer',
+              InfoCard(
+                name: authUser?.username ?? 'App User',
+                title: authUser?.subscriptionPlan ?? '',
               ),
               ListTile(
-                title:
-                    const Text('Home', style: TextStyle(color: Colors.white)),
+                title: const Text('Home'),
                 onTap: () {
                   // Navigate to home or close drawer
                   ZoomDrawer.of(context)!.close();
                 },
               ),
               ListTile(
-                title: const Text('Profile',
-                    style: TextStyle(color: Colors.white)),
+                title: const Text('Subscriptions'),
                 onTap: () {
-                  // Navigate to profile
-                  // ZoomDrawer.of(context)!.context;
-                },
-              ),
-              ListTile(
-                title: const Text('Settings',
-                    style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  // Navigate to settings
+                  // Navigate to subscriptions page
+                  ZoomDrawer.of(context)!.close();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SubscriptionsPage(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -56,6 +59,7 @@ class MenuPanel extends StatelessWidget {
 class InfoCard extends StatelessWidget {
   final String name;
   final String title;
+
   const InfoCard({
     super.key,
     required this.name,
@@ -75,7 +79,7 @@ class InfoCard extends StatelessWidget {
       title: Text(
         name,
         style: const TextStyle(
-          color: AppPalette.fontWhite,
+          color: AppPalette.fontGrey,
           fontWeight: FontWeight.bold,
         ),
       ),

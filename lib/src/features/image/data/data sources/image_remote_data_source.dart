@@ -6,6 +6,7 @@ import 'package:pix2life/core/dtos/upload_image_match_dto.dart';
 import 'package:pix2life/core/dtos/upload_image_response_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/image/data/data%20sources/image_service.dart';
 import 'package:pix2life/src/features/image/data/models/image.model.dart';
 
@@ -22,6 +23,7 @@ abstract interface class ImageRemoteDataSource {
 
   Future<ImageModel> updateImage({
     required ImageModel image,
+    required DataMap updateData
   });
 
   Future<String> uploadAvatar({
@@ -44,7 +46,7 @@ class ImageRemoteDataSourceImpl implements ImageRemoteDataSource {
           await _imageService.deleteImage(imageId);
       final message = response.message;
       logger.i(message);
-      return message;
+      return imageId;
     } on ServerException {
       rethrow;
     } catch (e) {
@@ -86,15 +88,14 @@ class ImageRemoteDataSourceImpl implements ImageRemoteDataSource {
   }
 
   @override
-  Future<ImageModel> updateImage(
-      {required ImageModel image}) async {
+  Future<ImageModel> updateImage({required ImageModel image, required DataMap updateData}) async {
     try {
       final UpdateImageResponse response =
-          await _imageService.updateImage(image);
-      final ImageModel images = response.updatedImage;
+          await _imageService.updateImage(image, updateData);
+      final ImageModel updatedImage = response.updatedImage;
       final String message = response.message;
       logger.i(message);
-      return images;
+      return updatedImage;
     } on ServerException {
       rethrow;
     } catch (e) {
