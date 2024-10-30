@@ -14,6 +14,7 @@ abstract interface class AudioRepository {
 
   ResultFuture<Audio> updateAudio({
     required Audio audio,
+    required DataMap updateData,
   });
 
   ResultFuture<String> deleteAudio({

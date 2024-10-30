@@ -11,7 +11,7 @@ class UpdatedVideoResponse {
   });
 
   factory UpdatedVideoResponse.fromJson(DataMap json) {
-    final DataMap videoData = json['updatedImage'];
+    final DataMap videoData = json['updatedVideo'];
     final VideoModel video = VideoModel.fromJson(videoData);
     return UpdatedVideoResponse(
       message: json['message'],

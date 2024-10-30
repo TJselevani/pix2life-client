@@ -5,6 +5,7 @@ import 'package:pix2life/core/dtos/updated_video_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_video_response_dto.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/video/data/models/video.model.dart';
 
@@ -26,9 +27,10 @@ class VideoService {
     return FetchVideoResponse.fromJson(data);
   }
 
-  Future<UpdatedVideoResponse> updateVideo(VideoModel video) async {
+  Future<UpdatedVideoResponse> updateVideo(
+      VideoModel video, DataMap updateData) async {
     final url = '${AppSecrets.baseUrl}/video/update?videoId=${video.id}';
-    final data = await _apiService.updateData(video.toMap(), url);
+    final data = await _apiService.updateData(updateData, url);
     return UpdatedVideoResponse.fromJson(data);
   }
 

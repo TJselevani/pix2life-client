@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/video/domain/entities/video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/delete_video.dart';
 import 'package:pix2life/src/features/video/domain/usecases/fetch_video.dart';
@@ -42,7 +43,8 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         await _deleteVideo(DeleteVideoParams(videoId: event.videoId));
     response.fold(
       (failure) => emit(VideoFailure(message: failure.errorMessage)),
-      (message) => emit(VideoSuccess(message: message)),
+      (videoId) => emit(VideoDeleted(
+          videoId: videoId, message: 'Video deleted Successfully')),
     );
   }
 
@@ -59,7 +61,7 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
   FutureOr<void> _onVideoUpdateEvent(
       VideoUpdateEvent event, Emitter<VideoState> emit) async {
     emit(VideoLoading());
-    final response = await _updateVideo(UpdateVideoParams(video: event.video));
+    final response = await _updateVideo(UpdateVideoParams(video: event.video, updateData: event.updateData));
     response.fold(
       (failure) => emit(VideoFailure(message: failure.errorMessage)),
       (videos) => emit(

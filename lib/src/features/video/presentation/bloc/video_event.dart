@@ -23,11 +23,12 @@ final class VideosFetchEvent extends VideoEvent {}
 
 final class VideoUpdateEvent extends VideoEvent {
   final Video video;
+  final DataMap updateData;
 
-  const VideoUpdateEvent({required this.video});
+  const VideoUpdateEvent({required this.video, required this.updateData});
 
   @override
-  List<Object> get props => [video];
+  List<Object> get props => [video, updateData];
 }
 
 final class VideoUploadEvent extends VideoEvent {

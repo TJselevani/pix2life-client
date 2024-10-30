@@ -1,6 +1,9 @@
+import 'package:pix2life/core/utils/type_def.dart';
+import 'package:pix2life/src/features/audio/data/models/audio.model.dart';
+
 class UpdateAudioResponse {
   final String message;
-  final dynamic updatedAudio;
+  final AudioModel updatedAudio;
 
   UpdateAudioResponse({
     required this.message,
@@ -8,9 +11,11 @@ class UpdateAudioResponse {
   });
 
   factory UpdateAudioResponse.fromJson(Map<String, dynamic> json) {
+    final DataMap imageData = json['updatedAudio'];
+    final AudioModel audio = AudioModel.fromJson(imageData);
     return UpdateAudioResponse(
       message: json['message'],
-      updatedAudio: json['updatedAudio'],
+      updatedAudio: audio,
     );
   }
 }

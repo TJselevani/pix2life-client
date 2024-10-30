@@ -60,6 +60,17 @@ final class AuthCreatePasswordEvent extends AuthEvent {
   List<Object> get props => [password, confirmPassword];
 }
 
+final class AuthStripePaymentEvent extends AuthEvent {
+  final DataMap paymentData;
+
+  AuthStripePaymentEvent({
+    required this.paymentData,
+  });
+
+  @override
+  List<Object> get props => [paymentData];
+}
+
 final class AuthGetUserDataEvent extends AuthEvent {}
 
 final class AuthLogoutEvent extends AuthEvent {}

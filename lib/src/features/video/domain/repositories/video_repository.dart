@@ -14,6 +14,7 @@ abstract interface class VideoRepository {
 
   ResultFuture<Video> updateVideo({
     required Video video,
+    required DataMap updateData,
   });
 
   ResultFuture<String> deleteVideo({

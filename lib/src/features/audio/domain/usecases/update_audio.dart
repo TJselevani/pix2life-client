@@ -10,12 +10,14 @@ var uAudio = tAudio.copyWith();
 
 class UpdateAudioParams extends Equatable {
   final Audio audio;
+  final DataMap updateData;
 
   const UpdateAudioParams({
     required this.audio,
+    required this.updateData,
   });
 
-  UpdateAudioParams.empty() : this(audio: Audio.empty());
+  UpdateAudioParams.empty() : this(audio: Audio.empty(), updateData: {});
 
   @override
   List<Object?> get props => [audio];
@@ -26,6 +28,6 @@ class UpdateAudio implements UseCase<Audio, UpdateAudioParams> {
   const UpdateAudio(this._audioRepository);
   @override
   ResultFuture<Audio> call(params) async {
-    return await _audioRepository.updateAudio(audio: params.audio);
+    return await _audioRepository.updateAudio(audio: params.audio, updateData: params.updateData);
   }
 }

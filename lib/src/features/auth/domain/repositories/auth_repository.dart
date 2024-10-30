@@ -44,6 +44,10 @@ abstract interface class AuthRepository {
     required String confirmPassword,
   });
 
+  ResultFuture<String> stripePayment({
+    required DataMap paymentData,
+  });
+
   ResultFuture<User> getUserData();
 
   ResultFuture<User> retrieveAuthUser();

@@ -2,6 +2,7 @@ import 'package:bcrypt/bcrypt.dart';
 import 'package:pix2life/core/dtos/check_user_account_dto.dart';
 import 'package:pix2life/core/dtos/create_password_dto.dart';
 import 'package:pix2life/core/dtos/forgot_password_dto.dart';
+import 'package:pix2life/core/dtos/payment_stripe_response_dto.dart';
 import 'package:pix2life/core/dtos/reset_password_dto.dart';
 import 'package:pix2life/core/dtos/sign_up_user_dto.dart';
 import 'package:pix2life/core/dtos/sign_in_user_dto.dart';
@@ -54,6 +55,10 @@ abstract interface class AuthRemoteDataSource {
   Future<String> verifyResetCode({
     required String email,
     required String resetCode,
+  });
+
+  Future<String> stripePayment({
+    required DataMap paymentData,
   });
 
   Future<UserModel> retrieveAuthUser();
@@ -299,6 +304,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return user;
       }
       return null;
+    } catch (e) {
+      logger.e(e);
+      throw ApplicationError(message: e.toString(), statusCode: 505);
+    }
+  }
+
+  @override
+  Future<String> stripePayment({required DataMap paymentData}) async {
+    try {
+      final PaymentStripeResponse response =
+          await _userService.makeStripePayment(paymentData);
+      final String clientSecret = response.clientSecret;
+      return clientSecret;
+    } on ServerException {
+      rethrow;
     } catch (e) {
       logger.e(e);
       throw ApplicationError(message: e.toString(), statusCode: 505);

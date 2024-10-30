@@ -4,10 +4,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/get_user_data.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_user_account.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/create_user_password.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/payment_stripe.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
@@ -26,6 +28,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetUserData _getUserData;
   final RetrieveAuthUser _retrieveAuthUser;
   final IsUserLoggedIn _isUserLoggedIn;
+  final StripePayment _stripePayment;
   final logger = createLogger(AuthBloc);
 
   AuthBloc({
@@ -37,6 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required GetUserData getUserData,
     required RetrieveAuthUser retrieveAuthUser,
     required IsUserLoggedIn isUserLoggedIn,
+    required StripePayment stripePayment,
   })  : _userSignUp = userSignUp,
         _userSignIn = userSignIn,
         _checkUserAccount = checkUserAccount,
@@ -45,6 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _getUserData = getUserData,
         _retrieveAuthUser = retrieveAuthUser,
         _isUserLoggedIn = isUserLoggedIn,
+        _stripePayment = stripePayment,
         super(AuthInitial()) {
     on<AuthCheckAccountEvent>(_onCheckAccountEvent);
     on<AuthSignUpEvent>(_onSignUpEvent);
@@ -55,6 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthRetrieveAuthenticatedUserEvent>(
         _onAuthRetrieveAuthenticatedUserEvent);
     on<AuthIsUserLoggedInEvent>(_onAuthIsUserLoggedInEvent);
+    on<AuthStripePaymentEvent>(_onAuthStripePaymentEvent);
   }
 
   Future<void> _onCreatePasswordEvent(
@@ -148,5 +154,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (failure) => emit(AuthUnauthenticated(message: failure.errorMessage)),
         (user) =>
             emit(AuthenticatedUser(user: user, message: 'User Logged In')));
+  }
+
+  FutureOr<void> _onAuthStripePaymentEvent(
+      AuthStripePaymentEvent event, Emitter<AuthState> emit) async {
+    final response = await _stripePayment(
+        StripePaymentParams(paymentData: event.paymentData));
+    response.fold((failure) => emit(AuthFailure(message: failure.errorMessage)),
+        (clientSecret) => emit(AuthPaymentSuccess(clientSecret: clientSecret)));
   }
 }

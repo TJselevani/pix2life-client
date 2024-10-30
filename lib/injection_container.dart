@@ -22,6 +22,7 @@ import 'package:pix2life/src/features/auth/domain/repositories/auth_repository.d
 import 'package:pix2life/src/features/auth/domain/usecases/get_user_data.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/check_user_account.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/create_user_password.dart';
+import 'package:pix2life/src/features/auth/domain/usecases/payment_stripe.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/retrieve_auth_user.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_log_out.dart';
 import 'package:pix2life/src/features/auth/domain/usecases/user_sign_in.dart';
@@ -82,6 +83,7 @@ Future<void> initDependencies() async {
       getUserData: sl(),
       retrieveAuthUser: sl(),
       isUserLoggedIn: sl(),
+      stripePayment: sl(),
     ),
   );
 
@@ -140,6 +142,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => CheckUserAccount(sl()));
   sl.registerLazySingleton(() => RetrieveAuthUser(sl()));
   sl.registerLazySingleton(() => IsUserLoggedIn(sl()));
+  sl.registerLazySingleton(() => StripePayment(sl()));
 
   //Audio usecases
   sl.registerLazySingleton(() => DeleteAudio(sl()));

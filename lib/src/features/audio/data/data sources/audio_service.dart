@@ -6,6 +6,7 @@ import 'package:pix2life/core/dtos/update_audio_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_audio_response_dto.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
 import 'package:pix2life/src/features/audio/data/models/audio.model.dart';
 
@@ -28,9 +29,10 @@ class AudioService {
     return FetchAudiosResponse.fromJson(data);
   }
 
-  Future<UpdateAudioResponse> updateAudio(AudioModel audio) async {
+  Future<UpdateAudioResponse> updateAudio(
+      AudioModel audio, DataMap updateData) async {
     final url = '${AppSecrets.baseUrl}/audio/update?audioId=${audio.id}';
-    final data = await _apiService.updateData(audio.toMap(), url);
+    final data = await _apiService.updateData(updateData, url);
     return UpdateAudioResponse.fromJson(data);
   }
 

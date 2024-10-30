@@ -4,9 +4,14 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
+import 'package:pix2life/src/features/audio/data/data%20sources/audio_provider.dart';
 import 'package:pix2life/src/features/audio/domain/entities/audio.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
+import 'package:pix2life/src/features/audio/presentation/widgets/audio_popup_dialog.dart';
+import 'package:provider/provider.dart';
 
 class AudioGridPage extends StatefulWidget {
   const AudioGridPage({super.key});
@@ -17,16 +22,30 @@ class AudioGridPage extends StatefulWidget {
 
 enum ViewMode { grid, list }
 
-class _AudioGridPageState extends State<AudioGridPage> {
+class _AudioGridPageState extends State<AudioGridPage>
+    with SingleTickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   String _selectedAudioName = 'Audio Gallery';
   String? _selectedAudioUrl;
   bool _isPlaying = false;
   ViewMode _viewMode = ViewMode.list; // Use enum here
+  late AnimationController _controller;
+  bool isTapped = false;
+  double targetValue = 0.8;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.forward) {
+          setState(() => isTapped = true);
+        } else if (status == AnimationStatus.dismissed) {
+          setState(() => isTapped = false);
+        }
+      });
     final currentState = context.read<AudioBloc>().state;
 
     if (currentState is! AudiosLoaded) {
@@ -38,33 +57,10 @@ class _AudioGridPageState extends State<AudioGridPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(audio.filename),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('File Name: ${audio.filename}'),
-              Text('Description: ${audio.description}'),
-              Text('Gallery: ${audio.galleryName}'),
-              Text('Created: ${audio.createdAt}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: AppPalette.red,
-                foregroundColor: AppPalette.primaryWhite,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text('Close'),
-            ),
-          ],
+        return AudioDialog(
+          audio: audio,
+          targetValue: targetValue,
+          controller: _controller,
         );
       },
     );
@@ -125,6 +121,14 @@ class _AudioGridPageState extends State<AudioGridPage> {
       body: BlocConsumer<AudioBloc, AudioState>(listener: (context, state) {
         if (state is AudioFailure) {
           ErrorSnackBar.show(context: context, message: state.message);
+        }
+
+        if (state is AudioDeleted) {
+          SuccessSnackBar.show(context: context, message: state.message);
+        }
+
+        if (state is AudioUpdated) {
+          SuccessSnackBar.show(context: context, message: state.message);
         }
       }, builder: (context, state) {
         if (state is AudioFailure) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -69,6 +70,17 @@ class MyUserProvider with ChangeNotifier {
       _errorMessage = 'Failed to update user';
       notifyListeners();
     }
+  }
+
+  // Method to make stripe payment
+  void makeStripePayment(DataMap paymentData) {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+    _loading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    // Dispatch an [AuthStripePaymentEvent] to the [AuthBloc]
+    authBloc.add(AuthStripePaymentEvent(paymentData: paymentData));
   }
 
   // Refetch user data

@@ -5,6 +5,7 @@ import 'package:pix2life/core/dtos/updated_video_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_video_response_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/video/data/data%20sources/video_service.dart';
 import 'package:pix2life/src/features/video/data/models/video.model.dart';
 
@@ -14,7 +15,10 @@ abstract interface class VideoRemoteDataSource {
 
   Future<List<VideoModel>> fetchVideos();
 
-  Future<VideoModel> updateVideo({required VideoModel video});
+  Future<VideoModel> updateVideo({
+    required VideoModel video,
+    required DataMap updateData,
+  });
 
   Future<String> deleteVideo({required String videoId});
 }
@@ -56,10 +60,13 @@ class VideoRemoteDataSourceImpl implements VideoRemoteDataSource {
   }
 
   @override
-  Future<VideoModel> updateVideo({required VideoModel video}) async {
+  Future<VideoModel> updateVideo({
+    required VideoModel video,
+    required DataMap updateData,
+  }) async {
     try {
       final UpdatedVideoResponse response =
-          await _videoService.updateVideo(video);
+          await _videoService.updateVideo(video, updateData);
       final message = response.message;
       final updateVideo = response.updatedVideo;
       logger.i(message);

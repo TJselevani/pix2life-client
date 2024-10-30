@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/audio/domain/entities/audio.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 
@@ -17,7 +18,7 @@ class MyAudioProvider with ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   MyAudioProvider(this.context) {
-    // Start listening to AudioBloc state changes
+    // Start listening to [AudioBloc] state changes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initialize();
     });
@@ -26,7 +27,7 @@ class MyAudioProvider with ChangeNotifier {
   void _initialize() {
     final audioBloc = BlocProvider.of<AudioBloc>(context);
 
-    // Listen for changes in the AudioBloc state
+    // Listen for changes in the [AudioBloc] state
     audioBloc.stream.listen((state) {
       if (state is AudioLoading) {
         _loading = true;
@@ -36,6 +37,14 @@ class MyAudioProvider with ChangeNotifier {
         _audios = state.audios;
         _loading = false;
         notifyListeners();
+      } else if (state is AudioUpdated) {
+        audioBloc.add(AudiosFetchEvent());
+
+        notifyListeners();
+      } else if (state is AudioDeleted) {
+        audioBloc.add(AudiosFetchEvent());
+
+        notifyListeners();
       } else if (state is AudioFailure) {
         _errorMessage = state.message;
         _loading = false;
@@ -44,5 +53,27 @@ class MyAudioProvider with ChangeNotifier {
     });
 
     audioBloc.add(AudiosFetchEvent());
+  }
+
+  // Method to delete an [Audio] by ID
+  void deleteAudio(String audioId) {
+    final audioBloc = BlocProvider.of<AudioBloc>(context);
+    _loading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    // Dispatch a delete event to the [AudioBloc]
+    audioBloc.add(AudioDeleteEvent(audioId: audioId));
+  }
+
+  // Method to update an [Audio]
+  void updateAudio(Audio audio, DataMap updateData) {
+    final audioBloc = BlocProvider.of<AudioBloc>(context);
+    _loading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    // Dispatch an update event to the [AudioBloc]
+    audioBloc.add(AudioUpdateEvent(audio: audio, updateData: updateData));
   }
 }

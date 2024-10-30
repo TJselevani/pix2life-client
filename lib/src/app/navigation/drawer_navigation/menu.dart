@@ -3,20 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
+import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/app/pages/subscription/subscription_page.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
 import 'package:provider/provider.dart';
 
-class MenuPanel extends StatelessWidget {
+class MenuPanel extends StatefulWidget {
   const MenuPanel({super.key});
+
+  @override
+  State<MenuPanel> createState() => _MenuPanelState();
+}
+
+class _MenuPanelState extends State<MenuPanel> {
+  late bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
     User? authUser;
+
     final userProvider = Provider.of<MyUserProvider>(context);
+    final themeProvider = Provider.of<MyThemeProvider>(context);
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
     authUser = userProvider.user;
     return Scaffold(
+      backgroundColor:
+          isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
       body: SizedBox(
         width: 288,
         height: double.infinity,
@@ -69,7 +84,7 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const CircleAvatar(
+      leading: CircleAvatar(
         backgroundColor: AppPalette.navyBlue,
         child: Icon(
           CupertinoIcons.person,

@@ -177,4 +177,15 @@ class AuthRepositoryImpl implements AuthRepository {
       return left(ApiFailure.fromServerException(e));
     }
   }
+
+  @override
+  ResultFuture<String> stripePayment({required DataMap paymentData}) async {
+    try {
+      final String clientSecret =
+          await _remoteDataSource.stripePayment(paymentData: paymentData);
+      return right(clientSecret);
+    } on ServerException catch (e) {
+      return left(ApiFailure.fromServerException(e));
+    }
+  }
 }

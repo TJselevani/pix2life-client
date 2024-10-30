@@ -5,6 +5,7 @@ import 'package:pix2life/core/dtos/update_audio_response_dto.dart';
 import 'package:pix2life/core/dtos/upload_audio_response_dto.dart';
 import 'package:pix2life/core/error/exceptions.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/audio/data/data%20sources/audio_service.dart';
 import 'package:pix2life/src/features/audio/data/models/audio.model.dart';
 
@@ -13,7 +14,10 @@ abstract interface class AudioRemoteDataSource {
 
   Future<List<AudioModel>> fetchAudios();
 
-  Future<AudioModel> updateAudio({required AudioModel audio});
+  Future<AudioModel> updateAudio({
+    required AudioModel audio,
+    required DataMap updateData,
+  });
 
   Future<String> uploadAudio(
       {required FormData formData, required String galleryName});
@@ -56,10 +60,11 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
   }
 
   @override
-  Future<AudioModel> updateAudio({required AudioModel audio}) async {
+  Future<AudioModel> updateAudio(
+      {required AudioModel audio, required DataMap updateData}) async {
     try {
       final UpdateAudioResponse response =
-          await _audioService.updateAudio(audio);
+          await _audioService.updateAudio(audio, updateData);
       final String message = response.message;
       final AudioModel updatedAudio = response.updatedAudio;
       logger.i(message);

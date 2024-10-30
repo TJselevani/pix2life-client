@@ -35,8 +35,18 @@ final class VideoUpdated extends VideoState {
 
   const VideoUpdated({required this.message, required this.video});
 
-   @override
+  @override
   List<Object> get props => [video, message];
+}
+
+final class VideoDeleted extends VideoState {
+  final String videoId;
+  final String message;
+
+  const VideoDeleted({required this.videoId, required this.message});
+
+  @override
+  List<Object> get props => [videoId, message];
 }
 
 final class VideoSuccess extends VideoState {

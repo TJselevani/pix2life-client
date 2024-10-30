@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/src/features/video/domain/entities/video.dart';
 import 'package:pix2life/src/features/video/presentation/bloc/video_bloc.dart';
+import 'package:pix2life/src/features/video/presentation/widgets/video_popup_dialog.dart';
 import 'package:pix2life/src/shared/widgets/video-player/thumbnail/network_video_thumbnail_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pix2life/src/shared/widgets/video-player/video_player_widget.dart';
@@ -24,18 +26,32 @@ class VideoGridPage extends StatefulWidget {
   State<VideoGridPage> createState() => _VideoGridPageState();
 }
 
-class _VideoGridPageState extends State<VideoGridPage> {
+class _VideoGridPageState extends State<VideoGridPage>
+    with SingleTickerProviderStateMixin {
   String _selectedVideoName = 'Video Gallery';
   String? _selectedVideoUrl;
   ViewMode _currentViewMode = ViewMode.list;
   VideoPlayerController? _videoPlayerController;
   bool _isFullScreen = false;
   bool _isPlaying = false;
+  late AnimationController _controller;
+  bool isTapped = false;
+  double targetValue = 0.8;
   final logger = createLogger(VideoGridPage);
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.forward) {
+          setState(() => isTapped = true);
+        } else if (status == AnimationStatus.dismissed) {
+          setState(() => isTapped = false);
+        }
+      });
     _loadVideos();
   }
 
@@ -103,31 +119,10 @@ class _VideoGridPageState extends State<VideoGridPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(video.filename),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('File Name: ${video.filename}'),
-              Text('Description: ${video.description}'),
-              Text('Gallery: ${video.galleryName}'),
-              Text('Created: ${video.createdAt}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                backgroundColor: AppPalette.red,
-                foregroundColor: AppPalette.primaryWhite,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0.r),
-                ),
-              ),
-              child: const Text('Close'),
-            ),
-          ],
+        return VideoDialog(
+          video: video,
+          targetValue: targetValue,
+          controller: _controller,
         );
       },
     );
@@ -366,6 +361,15 @@ class _VideoGridPageState extends State<VideoGridPage> {
                   listener: (context, state) {
                     if (state is VideoFailure) {
                       ErrorSnackBar.show(
+                          context: context, message: state.message);
+                    }
+                    if (state is VideoDeleted) {
+                      SuccessSnackBar.show(
+                          context: context, message: state.message);
+                    }
+
+                    if (state is VideoUpdated) {
+                      SuccessSnackBar.show(
                           context: context, message: state.message);
                     }
                   },

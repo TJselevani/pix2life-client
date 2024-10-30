@@ -1,5 +1,6 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:pix2life/core/dtos/check_user_account_dto.dart';
+import 'package:pix2life/core/dtos/payment_stripe_response_dto.dart';
 import 'package:pix2life/core/utils/type_def.dart';
 
 import 'package:pix2life/src/api/data/data_source/api.service.dart';
@@ -79,6 +80,17 @@ class UserService {
     const url = '${AppSecrets.baseUrl}/auth/user/reset-password';
     final data = await _apiService.sendData(userData, url);
     return ResetPasswordResponse.fromJson(data);
+  }
+
+  Future<PaymentStripeResponse> makeStripePayment(DataMap paymentData) async {
+    const url = '${AppSecrets.baseUrl}/payment/stripe/create-payment-intent';
+    final data = await _apiService.sendData(paymentData, url);
+     return PaymentStripeResponse.fromJson(data);
+  }
+
+  Future<String> makePayPalPayment(DataMap paymentData) async {
+    const url = '${AppSecrets.baseUrl}/payment/stripe/create-payment-intent';
+    return await _apiService.sendData(paymentData, url);
   }
 
   bool comparePasswords(String password1, String password2) {

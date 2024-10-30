@@ -72,12 +72,16 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
     // Use ZoomDrawerProvider here
     final zoomDrawerProvider = Provider.of<MyZoomDrawerProvider>(context);
     final themeProvider = Provider.of<MyThemeProvider>(context);
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return ZoomDrawer(
       controller: zoomDrawerProvider.drawerController,
       menuScreen: const MenuPanel(),
       mainScreen: Scaffold(
+        backgroundColor:
+            isDarkMode ? AppPalette.darkBackground : AppPalette.lightBackground,
         body: Stack(
           children: [
             AnimatedBuilder(

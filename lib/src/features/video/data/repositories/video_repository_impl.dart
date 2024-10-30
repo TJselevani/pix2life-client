@@ -33,9 +33,10 @@ class VideoRepositoryImpl implements VideoRepository {
   }
 
   @override
-  ResultFuture<VideoModel> updateVideo({required Video video}) async {
+  ResultFuture<VideoModel> updateVideo({required Video video, required DataMap updateData}) async {
     try {
       final updatedVideo = await _remoteDataSource.updateVideo(
+        updateData: updateData,
           video: VideoModel(
         id: video.id,
         filename: video.filename,

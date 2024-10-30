@@ -30,6 +30,16 @@ final class AudioUpdated extends AudioState {
   List<Object> get props => [audio];
 }
 
+final class AudioDeleted extends AudioState {
+  final String audioId;
+  final String message;
+
+  const AudioDeleted({required this.audioId, required this.message});
+
+  @override
+  List<Object> get props => [audioId, message];
+}
+
 final class AudioSuccess extends AudioState {
   final String message;
 

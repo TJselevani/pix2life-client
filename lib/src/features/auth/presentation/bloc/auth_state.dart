@@ -29,6 +29,15 @@ final class AuthUnauthenticated extends AuthState {
   List<Object?> get props => [message];
 }
 
+final class AuthPaymentSuccess extends AuthState {
+  final String clientSecret;
+
+  const AuthPaymentSuccess({required this.clientSecret});
+
+  @override
+  List<Object> get props => [clientSecret];
+}
+
 final class AuthSuccess extends AuthState {
   final String message;
 

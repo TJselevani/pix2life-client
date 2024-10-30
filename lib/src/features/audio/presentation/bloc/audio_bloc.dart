@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pix2life/core/utils/type_def.dart';
 import 'package:pix2life/src/features/audio/domain/entities/audio.dart';
 import 'package:pix2life/src/features/audio/domain/usecases/delete_audio.dart';
 import 'package:pix2life/src/features/audio/domain/usecases/fetch_audios.dart';
@@ -41,7 +42,8 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
         await _deleteAudio(DeleteAudioParams(audioId: event.audioId));
     response.fold(
       (failure) => emit(AudioFailure(message: failure.errorMessage)),
-      (message) => emit(AudioSuccess(message: message)),
+      (audioId) => emit(AudioDeleted(
+          audioId: audioId, message: 'Audio Deleted Successfully')),
     );
   }
 
@@ -58,7 +60,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   FutureOr<void> _onAudioUpdateEvent(
       AudioUpdateEvent event, Emitter<AudioState> emit) async {
     emit(AudioLoading());
-    final response = await _updateAudio(UpdateAudioParams(audio: event.audio));
+    final response = await _updateAudio(UpdateAudioParams(audio: event.audio, updateData: event.updateData));
     response.fold(
       (failure) => emit(AudioFailure(message: failure.errorMessage)),
       (audio) => emit(

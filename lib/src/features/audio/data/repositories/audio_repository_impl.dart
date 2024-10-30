@@ -33,21 +33,23 @@ class AudioRepositoryImpl implements AudioRepository {
   }
 
   @override
-  ResultFuture<Audio> updateAudio({required Audio audio}) async {
+  ResultFuture<Audio> updateAudio(
+      {required Audio audio, required DataMap updateData}) async {
     try {
       final updatedVideo = await _remoteDataSource.updateAudio(
+          updateData: updateData,
           audio: AudioModel(
-        id: audio.id,
-        filename: audio.filename,
-        path: audio.path,
-        originalName: audio.originalName,
-        galleryName: audio.galleryName,
-        ownerId: audio.ownerId,
-        description: audio.description,
-        url: audio.url,
-        createdAt: audio.createdAt,
-        updatedAt: audio.updatedAt,
-      ));
+            id: audio.id,
+            filename: audio.filename,
+            path: audio.path,
+            originalName: audio.originalName,
+            galleryName: audio.galleryName,
+            ownerId: audio.ownerId,
+            description: audio.description,
+            url: audio.url,
+            createdAt: audio.createdAt,
+            updatedAt: audio.updatedAt,
+          ));
       return right(updatedVideo);
     } on ServerException catch (e) {
       return left(ApiFailure.fromServerException(e));

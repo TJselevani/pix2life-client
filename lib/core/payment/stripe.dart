@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:pix2life/core/error/http_errors.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
@@ -10,6 +11,7 @@ class StripeService {
 
   static final StripeService instance = StripeService._();
   final Dio _dio = Dio(); // Initialize Dio instance
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<void> makePayment(int amount, String currency) async {
     try {
@@ -39,7 +41,18 @@ class StripeService {
       };
 
       // Make POST request with Dio
-      final response = await _dio.post(url, data: paymentData);
+      final String? token = await _storage.read(key: 'auth_token');
+      final response = await _dio.post(
+        url,
+        data: paymentData,
+        options: Options(
+          headers: {
+            'accept': '*/*',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
       // Check response status and parse client secret
       if (response.statusCode == 200 && response.data != null) {

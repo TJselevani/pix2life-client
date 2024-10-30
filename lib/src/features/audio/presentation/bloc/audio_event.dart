@@ -22,11 +22,12 @@ final class AudiosFetchEvent extends AudioEvent {}
 
 final class AudioUpdateEvent extends AudioEvent {
   final Audio audio;
+  final DataMap updateData;
 
-  const AudioUpdateEvent({required this.audio});
+  const AudioUpdateEvent({required this.audio, required this.updateData});
 
   @override
-  List<Object> get props => [audio];
+  List<Object> get props => [audio, updateData];
 }
 
 final class AudioUploadEvent extends AudioEvent {
