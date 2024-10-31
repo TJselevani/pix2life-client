@@ -100,6 +100,7 @@ class _BottomTabNavigationState extends State<BottomTabNavigation>
                 child: IconButton(
                   icon: Icon(
                     CupertinoIcons.app_fill,
+                    color: AppPalette.transparent,
                     size: 24.sp,
                   ),
                   onPressed: () {

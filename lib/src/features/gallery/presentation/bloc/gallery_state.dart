@@ -37,13 +37,40 @@ final class GalleryVideosLoaded extends GalleryState {
   List<Object> get props => [videos];
 }
 
-final class GalleryAudioLoaded extends GalleryState {
+final class GalleryAudiosLoaded extends GalleryState {
   final List<Audio> audios;
 
-  const GalleryAudioLoaded({required this.audios});
+  const GalleryAudiosLoaded({required this.audios});
 
   @override
   List<Object> get props => [audios];
+}
+
+final class GalleryCreated extends GalleryState {
+  final String message;
+
+  const GalleryCreated({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class GalleryUpdated extends GalleryState {
+  final String message;
+
+  const GalleryUpdated({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class GalleryDeleted extends GalleryState {
+  final String message;
+
+  const GalleryDeleted({required this.message});
+
+  @override
+  List<Object> get props => [message];
 }
 
 final class GallerySuccess extends GalleryState {

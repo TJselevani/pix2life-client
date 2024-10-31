@@ -121,10 +121,10 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
           text: TextSpan(
             text: userEmail,
             style: TextStyle(
-              color: AppPalette.fontBlack,
               fontFamily: 'Poppins',
               fontSize: 22.sp,
               fontWeight: FontWeight.w600,
+              color: isDarkMode ? null : AppPalette.primaryBlack,
             ),
           ),
           textAlign: TextAlign.center,
@@ -137,6 +137,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
               fontFamily: 'Poppins',
               fontSize: 24.sp,
               fontWeight: FontWeight.w600,
+              color: isDarkMode ? null : AppPalette.primaryBlack,
             ),
           ),
           textAlign: TextAlign.center,

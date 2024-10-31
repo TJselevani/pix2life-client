@@ -18,6 +18,20 @@ class GalleryDialog {
       },
     );
   }
+
+  static void showPix2lifeImagesDialog({
+    required BuildContext context,
+    required List<String> images,
+    required String galleryName,
+  }) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.8),
+      builder: (BuildContext context) {
+        return FullScreenGallery2(images: images, galleryName: galleryName);
+      },
+    );
+  }
 }
 
 class FullScreenGallery extends StatefulWidget {
@@ -168,88 +182,152 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
   }
 }
 
+//####################################################################################################
 
+class FullScreenGallery2 extends StatefulWidget {
+  final List<String> images;
+  final String galleryName;
 
-// import 'dart:ui';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:pix2life/src/features/image/domain/entities/image.dart';
+  const FullScreenGallery2({
+    super.key,
+    required this.images,
+    required this.galleryName,
+  });
 
-// class GalleryDialog {
-//   static void showGalleryImagesDialog({
-//     required BuildContext context,
-//     required List<Photo> images,
-//     required String galleryName,
-//   }) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return Dialog(
-//           backgroundColor: Colors.transparent,
-//           child: Stack(
-//             children: [
-//               // Blur effect for the background
-//               Positioned.fill(
-//                 child: GestureDetector(
-//                   onTap: () {
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: BackdropFilter(
-//                     filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-//                     child: Container(
-//                       color: Colors.transparent,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               // Centered container for the gallery dialog
-//               Center(
-//                 child: Container(
-//                   padding: EdgeInsets.all(16.w),
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       // Gallery title
-//                       Text(
-//                         galleryName,
-//                         style: TextStyle(
-//                           fontSize: 24.sp,
-//                           fontWeight: FontWeight.bold,
-//                           color: Colors.white,
-//                         ),
-//                       ),
-//                       SizedBox(height: 16.h),
-//                       // Horizontal list of images
-//                       SizedBox(
-//                         height: 300.h,
-//                         child: ListView.builder(
-//                           scrollDirection: Axis.horizontal,
-//                           itemCount: images.length,
-//                           itemBuilder: (context, index) {
-//                             final image = images[index];
-//                             return Padding(
-//                               padding: EdgeInsets.symmetric(horizontal: 8.w),
-//                               child: ClipRRect(
-//                                 borderRadius: BorderRadius.circular(12.w),
-//                                 child: Image.network(
-//                                   image.url,
-//                                   fit: BoxFit.cover,
-//                                   errorBuilder: (context, error, stackTrace) =>
-//                                       const Icon(Icons.image_not_supported),
-//                                 ),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+  @override
+  State<FullScreenGallery2> createState() => _FullScreenGallery2State();
+}
+
+class _FullScreenGallery2State extends State<FullScreenGallery2> {
+  late PageController _pageController;
+  Timer? _timer;
+  int _currentIndex = 0;
+  bool isAutoScrollEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    if (isAutoScrollEnabled) {
+      _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+        if (_currentIndex < widget.images.length - 1) {
+          _currentIndex++;
+        } else {
+          _currentIndex = 0; // Loop back to the first image
+        }
+        _pageController.animateToPage(
+          _currentIndex,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
+  }
+
+  void _toggleAutoScroll() {
+    setState(() {
+      isAutoScrollEnabled = !isAutoScrollEnabled;
+      if (isAutoScrollEnabled) {
+        _startAutoScroll();
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
+      child: Stack(
+        children: [
+          // Background blur effect with tap-to-dismiss
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: Container(color: Colors.transparent),
+              ),
+            ),
+          ),
+          // Fullscreen PageView for images
+          Positioned.fill(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.images.length,
+              itemBuilder: (context, index) {
+                final image = widget.images[index];
+                return Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                );
+              },
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+          ),
+          // Overlay title and auto-scroll toggle button
+          Positioned(
+            bottom: 30.h,
+            left: 16.w,
+            right: 16.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.galleryName,
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    SizedBox(width: 10.w),
+                    IconButton(
+                      icon: Icon(
+                        isAutoScrollEnabled
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_fill,
+                        color: Colors.white,
+                      ),
+                      onPressed: _toggleAutoScroll,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

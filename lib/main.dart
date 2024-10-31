@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:pix2life/core/secrets/app_secrets.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:pix2life/core/secrets/app_secrets.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_theme.dart';
 import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
@@ -33,7 +33,7 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = AppSecrets.stripePublishableKey;
+  // Stripe.publishableKey = AppSecrets.stripePublishableKey;
   await initDependencies();
   runApp(
     ScreenUtilInit(
@@ -81,12 +81,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<AuthBloc>().add((AuthIsUserLoggedInEvent()));
-  }
-
   @override
   Widget build(BuildContext context) {
     final log = createLogger(MyApp);

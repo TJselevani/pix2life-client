@@ -23,6 +23,7 @@ class ImageGridPage extends StatefulWidget {
 class _ImageGridPageState extends State<ImageGridPage>
     with SingleTickerProviderStateMixin {
   String _selectedImageName = 'Image Gallery';
+  // ignore: unused_field
   String? _selectedImageUrl;
   late AnimationController _controller;
   bool isTapped = false;

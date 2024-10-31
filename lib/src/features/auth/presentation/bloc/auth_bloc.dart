@@ -61,6 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _onAuthRetrieveAuthenticatedUserEvent);
     on<AuthIsUserLoggedInEvent>(_onAuthIsUserLoggedInEvent);
     on<AuthStripePaymentEvent>(_onAuthStripePaymentEvent);
+    on<AuthUserUpdatedEvent>(_onAuthUserUpdatedEvent);
   }
 
   Future<void> _onCreatePasswordEvent(
@@ -132,7 +133,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final response = await _logOutUser();
     response.fold(
       (failure) => emit(AuthFailure(message: failure.errorMessage)),
-      (user) => emit(const AuthSuccess(message: 'Successfully logged out')),
+      (user) =>
+          emit(const AuthUnauthenticated(message: 'Successfully logged out')),
     );
   }
 
@@ -153,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     response.fold(
         (failure) => emit(AuthUnauthenticated(message: failure.errorMessage)),
         (user) =>
-            emit(AuthenticatedUser(user: user, message: 'User Logged In')));
+            emit(AuthLoggedInUser(user: user, message: 'User Logged In')));
   }
 
   FutureOr<void> _onAuthStripePaymentEvent(
@@ -162,5 +164,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         StripePaymentParams(paymentData: event.paymentData));
     response.fold((failure) => emit(AuthFailure(message: failure.errorMessage)),
         (clientSecret) => emit(AuthPaymentSuccess(clientSecret: clientSecret)));
+  }
+
+  FutureOr<void> _onAuthUserUpdatedEvent(
+      AuthUserUpdatedEvent event, Emitter<AuthState> emit) {
+    emit(AuthUpdatedUser());
   }
 }

@@ -124,7 +124,7 @@ class _SignInSuccessPageState extends State<SignInSuccessPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.primaryBlack,
+      color: isDarkMode ? AppPalette.primaryWhite : AppPalette.primaryBlack,
     );
   }
 

@@ -99,7 +99,7 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.primaryBlack,
+      color: isDarkMode ? AppPalette.primaryWhite : AppPalette.primaryBlack,
     );
   }
 
@@ -240,7 +240,7 @@ class _UserForgotPasswordPageState extends State<UserForgotPasswordPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
-            color: AppPalette.primaryBlack,
+            color: isDarkMode ? null : AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:pix2life/core/constants.dart';
@@ -10,6 +11,7 @@ import 'package:pix2life/src/features/audio/data/data%20sources/audio_provider.d
 import 'package:pix2life/src/features/audio/domain/entities/audio.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_provider.dart';
 import 'package:pix2life/src/features/gallery/domain/entities/gallery.dart';
 import 'package:pix2life/src/features/image/data/data%20sources/image_provider.dart';
@@ -49,6 +51,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 MediaQuery.of(context).platformBrightness == Brightness.dark);
       });
     });
+
+    final userState = BlocProvider.of<AuthBloc>(context).state;
+    if (userState is! AuthenticatedUser) {
+      BlocProvider.of<AuthBloc>(context)
+          .add(AuthRetrieveAuthenticatedUserEvent());
+    }
   }
 
   void checkForErrors(BuildContext context) {
@@ -169,10 +177,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           gradient: LinearGradient(
             begin: Alignment.bottomRight,
             colors: [
-              isDarkMode ? AppPalette.darkBackground : AppPalette.transparent,
+              isDarkMode
+                  ? AppPalette.darkBackground
+                  : AppPalette.lightBackground,
               isDarkMode
                   ? AppPalette.darkBackground.withOpacity(.3)
-                  : AppPalette.primaryBlack.withOpacity(.3)
+                  : AppPalette.lightBackground.withOpacity(.3)
             ],
           ),
         ),
@@ -186,10 +196,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 1,
                 Text(
                   authUser!.username,
-                  style: const TextStyle(
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.bold,
                     fontSize: 40,
+                    color: isDarkMode
+                        ? AppPalette.fontGrey
+                        : AppPalette.primaryBlack.withAlpha(220),
                   ),
                 ),
               ),
@@ -210,7 +226,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Text(
             "${images!.length} Images",
             style: TextStyle(
-              color: isDarkMode ? Colors.grey : AppPalette.primaryGrey,
+              color:
+                  isDarkMode ? AppPalette.primaryGrey : AppPalette.primaryBlack,
               fontSize: 16,
             ),
           ),
@@ -221,7 +238,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Text(
             "${videos!.length} Videos",
             style: TextStyle(
-              color: isDarkMode ? Colors.grey : AppPalette.primaryGrey,
+              color:
+                  isDarkMode ? AppPalette.primaryGrey : AppPalette.primaryBlack,
               fontSize: 16,
             ),
           ),
@@ -232,7 +250,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Text(
             "${audios!.length} Audios",
             style: TextStyle(
-              color: isDarkMode ? Colors.grey : AppPalette.primaryGrey,
+              color:
+                  isDarkMode ? AppPalette.primaryGrey : AppPalette.primaryBlack,
               fontSize: 16,
             ),
           ),
@@ -282,34 +301,49 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Update Profile Picture Button
-          IconButton(
-            icon: const Icon(
-                LineAwesomeIcons.user_circle), // Profile picture icon
-            onPressed: () {
-              Navigator.pushNamed(context, '/Avatar');
-            },
-            tooltip: 'Update Profile Picture',
+          Column(
+            children: [
+              IconButton(
+                icon: const Icon(
+                    LineAwesomeIcons.user_circle), // Profile picture icon
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Avatar');
+                },
+                tooltip: 'Update Profile Picture',
+              ),
+              const Text('Profile Pic', style: TextStyle(fontSize: 12)),
+            ],
           ),
-          SizedBox(width: 20.w),
+          SizedBox(width: 40.w),
           // Update Personal Info Button
-          IconButton(
-            icon: const Icon(LineAwesomeIcons.edit), // Edit personal info icon
-            onPressed: () async {},
-            tooltip: 'Update Personal Info',
+          Column(
+            children: [
+              IconButton(
+                icon: const Icon(
+                    LineAwesomeIcons.edit), // Edit personal info icon
+                onPressed: () async {},
+                tooltip: 'Update Personal Info',
+              ),
+              const Text('Edit Info', style: TextStyle(fontSize: 12)),
+            ],
           ),
-
-          SizedBox(width: 20.w),
+          SizedBox(width: 40.w),
           // Logout Button
-          IconButton(
-            icon:
-                const Icon(LineAwesomeIcons.sign_out_alt_solid), // Logout icon
-            onPressed: () async {
-              final userProvider =
-                  Provider.of<MyUserProvider>(context, listen: false);
-              userProvider.logOutUser();
-              Navigator.pushReplacementNamed(context, '/SignIn');
-            },
-            tooltip: 'Log Out',
+          Column(
+            children: [
+              IconButton(
+                icon: const Icon(
+                    LineAwesomeIcons.sign_out_alt_solid), // Logout icon
+                onPressed: () async {
+                  final userProvider =
+                      Provider.of<MyUserProvider>(context, listen: false);
+                  userProvider.logOutUser();
+                  Navigator.pushReplacementNamed(context, '/SignIn');
+                },
+                tooltip: 'Log Out',
+              ),
+              const Text('Log Out', style: TextStyle(fontSize: 12)),
+            ],
           ),
         ],
       ),

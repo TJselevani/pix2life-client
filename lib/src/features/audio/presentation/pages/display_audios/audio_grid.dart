@@ -6,12 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
-import 'package:pix2life/src/features/audio/data/data%20sources/audio_provider.dart';
 import 'package:pix2life/src/features/audio/domain/entities/audio.dart';
 import 'package:pix2life/src/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:pix2life/src/features/audio/presentation/widgets/audio_popup_dialog.dart';
-import 'package:provider/provider.dart';
 
 class AudioGridPage extends StatefulWidget {
   const AudioGridPage({super.key});

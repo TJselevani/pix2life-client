@@ -79,7 +79,8 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       _selectedMediaType = 'images'; // Set media type
     });
 
-    final List<XFile>? selectedImages = await mediaPickerService.pickImages();
+    final List<XFile>? selectedImages =
+        await mediaPickerService.pickMultipleImages();
 
     if (selectedImages != null && selectedImages.isNotEmpty) {
       setState(() {
@@ -99,11 +100,12 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       _selectedMediaType = 'videos'; // Set media type
     });
 
-    final XFile? videoPicker = await mediaPickerService.pickVideo();
-    if (videoPicker != null) {
+    final List<XFile>? selectedVideos =
+        await mediaPickerService.pickMultipleVideos();
+    if (selectedVideos != null) {
       setState(() {
-        _videos!.add(videoPicker); // Append to existing videos
-        _selectedMedia!.add(videoPicker); // Append to selected media
+        _videos!.addAll(selectedVideos); // Append to existing videos
+        _selectedMedia!.addAll(selectedVideos); // Append to selected media
       });
     }
   }
@@ -118,7 +120,8 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
       _selectedMediaType = 'audios'; // Set media type
     });
 
-    final List<XFile>? audioFiles = await mediaPickerService.pickAudios();
+    final List<XFile>? audioFiles =
+        await mediaPickerService.pickMultipleAudios();
 
     if (audioFiles != null && audioFiles.isNotEmpty) {
       setState(() {
@@ -433,9 +436,11 @@ class _MediaUploadScreenState extends State<MediaUploadScreen> {
           fetchedGalleries!.map((gallery) => gallery.name).toList();
       setState(() {
         galleryNames.clear();
+
         galleryNames.addAll(names);
       });
     }
+    galleryNames.add(authUser?.username ?? '');
 
     return _galleriesLoading
         ? const Center(child: CircularProgressIndicator())

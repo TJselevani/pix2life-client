@@ -33,6 +33,14 @@ class MyUserProvider with ChangeNotifier {
         _user = state.user;
         _loading = false;
         notifyListeners();
+      } else if (state is AuthUpdatedUser) {
+        authBloc.add(AuthRetrieveAuthenticatedUserEvent());
+        notifyListeners();
+      } else if (state is AuthLoggedInUser) {
+        _user = state.user;
+        authBloc.add(AuthGetUserDataEvent());
+        _loading = false;
+        notifyListeners();
       } else if (state is AuthFailure) {
         _errorMessage = state.message;
         _loading = false;

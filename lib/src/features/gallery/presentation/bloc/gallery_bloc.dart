@@ -50,7 +50,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
         await _createGallery(CreateGalleryParams(formData: event.formData));
     response.fold(
       (failure) => emit(GalleryFailure(message: failure.errorMessage)),
-      (message) => emit(GallerySuccess(message: message)),
+      (message) => emit(GalleryCreated(message: message)),
     );
   }
 
@@ -71,7 +71,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
         FetchAudiosByGalleryParams(galleryName: event.galleryName));
     response.fold(
       (failure) => emit(GalleryFailure(message: failure.errorMessage)),
-      (audios) => emit(GalleryAudioLoaded(audios: audios)),
+      (audios) => emit(GalleryAudiosLoaded(audios: audios)),
     );
   }
 

@@ -128,7 +128,8 @@ class _UserSignInPageState extends State<UserSignInPage> {
     return Container(
       width: 50.w,
       height: 5.h,
-      color: AppPalette.primaryBlack,
+      color:
+          isDarkMode ? AppPalette.primaryWhite : AppPalette.primaryBlack,
     );
   }
 
@@ -142,6 +143,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
+            color: isDarkMode ? null : AppPalette.primaryBlack,
           ),
         ),
         textAlign: TextAlign.center,
@@ -377,6 +379,7 @@ class _UserSignInPageState extends State<UserSignInPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 12.sp,
+            color: isDarkMode ? null : AppPalette.primaryBlack,
           ),
           children: [
             const TextSpan(text: ' '),

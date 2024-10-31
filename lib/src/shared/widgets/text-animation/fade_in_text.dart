@@ -10,6 +10,9 @@ class FadeInText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      maxLines: 1,
+      overflow: TextOverflow.fade,
+      softWrap: false,
       style: TextStyle(
         fontFamily: 'Montserrat',
         fontSize: 24.sp,

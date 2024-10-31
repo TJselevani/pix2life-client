@@ -126,6 +126,7 @@ class _UserCreatePasswordPageState extends State<UserCreatePasswordPage> {
             fontFamily: 'Poppins',
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
+            color: isDarkMode ? null : AppPalette.primaryBlack,
           ),
         ),
         textAlign: TextAlign.center,

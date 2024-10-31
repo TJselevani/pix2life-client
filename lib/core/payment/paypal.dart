@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:pix2life/core/secrets/app_secrets.dart';
+import 'package:pix2life/core/utils/logger/logger.dart';
 
 class PayPalService {
+  final logger = createLogger(PayPalService);
   PayPalService._();
 
   static final PayPalService instance = PayPalService._();
@@ -47,20 +49,20 @@ class PayPalService {
         ],
         note: "Please contact us for any inquiries.",
         onSuccess: (Map<String, dynamic> params) async {
-          print("onSuccess: $params");
+          logger.i("onSuccess: $params");
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Payment Successful')),
           );
         },
         onError: (error) {
-          print("onError: $error");
+          logger.e("onError: $error");
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Error creating payment')),
           );
           Navigator.pop(context);
         },
         onCancel: () {
-          print('Payment cancelled');
+          logger.i('Payment cancelled');
           Navigator.pop(context);
         },
       ),

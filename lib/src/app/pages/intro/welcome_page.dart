@@ -29,6 +29,12 @@ class _WelcomePageState extends State<WelcomePage> {
   int _currentPage = 0;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add((AuthIsUserLoggedInEvent()));
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -215,7 +221,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _buildActionButton(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthenticatedUser) {
+        if (state is AuthLoggedInUser) {
           SuccessSnackBar.show(context: context, message: state.message);
           WelcomePage.routeToHomePage(context);
         } else if (state is AuthUnauthenticated) {

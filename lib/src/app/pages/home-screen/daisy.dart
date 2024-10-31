@@ -8,9 +8,10 @@ import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
-import 'package:pix2life/src/app/pages/home-screen/gallery-card.dart';
+import 'package:pix2life/src/app/pages/home-screen/gallery_card.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
 import 'package:pix2life/src/features/auth/domain/entities/user.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/gallery/data/data_source/gallery_provider.dart';
 import 'package:pix2life/src/features/gallery/presentation/bloc/gallery_bloc.dart';
 import 'package:pix2life/src/features/gallery/presentation/views/create_gallery_form.dart';
@@ -71,6 +72,17 @@ class _DaisyState extends State<Daisy> {
     super.initState();
     _startImageShuffle();
     _initializePageControllers();
+
+    final userState = BlocProvider.of<AuthBloc>(context).state;
+    if (userState is! AuthenticatedUser) {
+      BlocProvider.of<AuthBloc>(context)
+          .add(AuthRetrieveAuthenticatedUserEvent());
+    }
+
+    final galleryState = BlocProvider.of<GalleryBloc>(context).state;
+    if (galleryState is! GalleriesLoaded) {
+      BlocProvider.of<GalleryBloc>(context).add(GalleryFetchGalleriesEvent());
+    }
   }
 
   void _startImageShuffle() {
@@ -122,6 +134,14 @@ class _DaisyState extends State<Daisy> {
     }));
   }
 
+  void _showPix2lifeImages(BuildContext context, String galleryName) {
+    GalleryDialog.showPix2lifeImagesDialog(
+      context: context,
+      images: _imageUrls, // Pass the loaded images
+      galleryName: galleryName, // Pass the gallery name
+    );
+  }
+
   Future<void> _showGalleryImages(
       BuildContext context, String galleryName) async {
     // Dispatch the event to fetch gallery images
@@ -145,7 +165,7 @@ class _DaisyState extends State<Daisy> {
         message: 'Failed to fetch gallery images',
       );
     } else if (galleryState is GalleryLoading) {
-      SuccessSnackBar.show(context: context, message: 'Fetching Gallery ...');
+      SuccessSnackBar.show(context: context, message: 'refreshing');
     }
   }
 
@@ -170,24 +190,49 @@ class _DaisyState extends State<Daisy> {
     authUser = userProvider.user;
     fetchedGalleries = galleryProvider.galleries;
 
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 5.h),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _buildProfileHeader(),
-              SizedBox(height: 10.h),
-              _buildSectionTitleContainer('Galleries'),
-              SizedBox(height: 10.h),
-              _buildGalleryListView(),
-              SizedBox(height: 10.h),
-              _buildCreateGalleryView(),
-              SizedBox(height: 20.h),
-              showcaseGalleries(),
-            ],
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<GalleryBloc, GalleryState>(
+          listener: (context, state) {
+            if (state is GalleriesLoaded) {
+              fetchedGalleries.clear();
+              fetchedGalleries = state.galleries;
+            }
+
+            // if (state is! GalleriesLoaded) {
+            //   BlocProvider.of<GalleryBloc>(context)
+            //       .add(GalleryFetchGalleriesEvent());
+            // }
+          },
+        ),
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthLoggedInUser) {
+              BlocProvider.of<AuthBloc>(context)
+                  .add(AuthRetrieveAuthenticatedUserEvent());
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 5.h),
+        body: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildProfileHeader(),
+                SizedBox(height: 10.h),
+                _buildSectionTitleContainer('Galleries'),
+                SizedBox(height: 10.h),
+                _buildGalleryListView(),
+                SizedBox(height: 10.h),
+                _buildCreateGalleryView(),
+                SizedBox(height: 20.h),
+                showcaseGalleries(),
+              ],
+            ),
           ),
         ),
       ),
@@ -221,7 +266,10 @@ class _DaisyState extends State<Daisy> {
                 _buildText('Hello', 20),
                 SizedBox(width: 4.w),
                 if (authUser?.username != null)
-                  FadeInText(text: authUser!.username.split('/')[0]),
+                  SizedBox(
+                      width: 160.w,
+                      child:
+                          FadeInText(text: authUser!.username.split('/')[0])),
               ],
             ),
             SizedBox(height: 4.h),
@@ -242,12 +290,17 @@ class _DaisyState extends State<Daisy> {
         itemCount: fetchedGalleries.length + 1,
         itemBuilder: (context, index) {
           return index == 0
-              ? GalleryCard(
-                  title: pix2lifeGalleries[0]['name']!,
-                  description: pix2lifeGalleries[0]['description']!,
-                  imagePaths: _imageUrls,
-                  controller: _pageControllers[pix2lifeGalleries[0]['name']!],
-                  isAsset: true,
+              ? GestureDetector(
+                  onDoubleTap: () {
+                    _showPix2lifeImages(context, pix2lifeGalleries[0]['name']!);
+                  },
+                  child: GalleryCard(
+                    title: pix2lifeGalleries[0]['name']!,
+                    description: pix2lifeGalleries[0]['description']!,
+                    imagePaths: _imageUrls,
+                    controller: _pageControllers[pix2lifeGalleries[0]['name']!],
+                    isAsset: true,
+                  ),
                 )
               : GestureDetector(
                   onDoubleTap: () {

@@ -8,6 +8,7 @@ import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
@@ -66,11 +67,17 @@ class _UpdateProfilePicPageState extends State<UpdateProfilePicPage> {
     );
   }
 
+  _updateUser() {
+    BlocProvider.of<AuthBloc>(context).add(AuthUserUpdatedEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<MyUserProvider>(context);
     final themeProvider = Provider.of<MyThemeProvider>(context); // Added
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
     final theme = Theme.of(context);
     authUser = userProvider.user;
 
@@ -90,7 +97,8 @@ class _UpdateProfilePicPageState extends State<UpdateProfilePicPage> {
                         _isUploaded = true;
                       }),
                       SuccessSnackBar.show(
-                          context: context, message: state.message)
+                          context: context, message: state.message),
+                      _updateUser()
                     }
                 }),
       ],
@@ -319,18 +327,17 @@ class _UpdateProfilePicPageState extends State<UpdateProfilePicPage> {
             color: theme.colorScheme.primary,
             size: 50.sp,
           );
-        } else {
-          return RoundedButton(
-            useColor: true,
-            name: "Done",
-            onPressed: () async {
-              if (_isSet && _isPending) {
-                await _uploadImage();
-              }
-              Navigator.of(context).pop();
-            },
-          );
         }
+        return RoundedButton(
+          useColor: true,
+          name: "Done",
+          onPressed: () async {
+            if (_isSet && _isPending) {
+              await _uploadImage();
+            }
+            Navigator.of(context).pop();
+          },
+        );
       },
     );
   }

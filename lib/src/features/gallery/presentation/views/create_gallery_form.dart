@@ -47,187 +47,181 @@ class _GalleryFormState extends State<GalleryForm> {
         (themeProvider.themeMode == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
-    return BlocConsumer<GalleryBloc, GalleryState>(
+    return BlocListener<GalleryBloc, GalleryState>(
       listener: (context, state) {
         if (state is GalleryFailure) {
           ErrorSnackBar.show(context: context, message: state.message);
+          Navigator.of(context).pop();
         }
 
-        if (state is GallerySuccess) {
+        if (state is GalleryCreated) {
           SuccessSnackBar.show(context: context, message: state.message);
+          Navigator.of(context).pop();
         }
       },
-      builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  'Create A New Gallery',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
-                    color: AppPalette.red,
-                  ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                'Create A New Gallery',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
+                  color: AppPalette.red,
                 ),
               ),
-              const SizedBox(height: 16),
-              Card(
-                color: isDarkMode
-                    ? AppPalette.darkBackground
-                    : AppPalette.lightBackground,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          height: 278,
-                          width: 283,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: isDarkMode
-                                ? AppPalette.darkBackground
-                                : AppPalette.lightBackground,
-                          ),
-                          child: Stack(
-                            children: [
-                              SizedBox.expand(
-                                child: CircleAvatar(
-                                  backgroundImage:
-                                      _image != null && _image!.path.isNotEmpty
-                                          ? FileImage(File(_image!.path))
-                                          : null,
-                                  backgroundColor: Colors.grey,
-                                  child:
-                                      _image != null && _image!.path.isNotEmpty
-                                          ? null
-                                          : const Icon(
-                                              Icons.image,
-                                              size: 50,
-                                              color: Colors.white,
-                                            ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 5,
-                                right: 5,
-                                child: GestureDetector(
-                                  onTap: _pickImage,
-                                  child: const Icon(
-                                    Icons.add_a_photo,
-                                    color: AppPalette.red,
-                                    size: 30,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              color: isDarkMode
+                  ? AppPalette.darkBackground
+                  : AppPalette.lightBackground,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        height: 278,
+                        width: 283,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: isDarkMode
+                              ? AppPalette.darkBackground
+                              : AppPalette.lightBackground,
                         ),
-                        AuthInputField(
-                          hintText: 'Gallery Name',
-                          labelText: 'Gallery Name',
-                          controller: _galleryNameController,
-                          prefixIcon: null,
-                          suffixIcon: null,
-                        ),
-                        const SizedBox(height: 12),
-                        AuthInputField(
-                          hintText: 'Gallery Description',
-                          labelText: 'Gallery Description',
-                          controller: _descriptionController,
-                          prefixIcon: null,
-                          suffixIcon: null,
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Stack(
                           children: [
-                            BlocBuilder<GalleryBloc, GalleryState>(
-                              builder: (context, state) {
-                                if (state is GalleryLoading) {
-                                  return const Flexible(
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppPalette.red,
-                                        strokeWidth: 2,
+                            SizedBox.expand(
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    _image != null && _image!.path.isNotEmpty
+                                        ? FileImage(File(_image!.path))
+                                        : null,
+                                backgroundColor: Colors.grey,
+                                child: _image != null && _image!.path.isNotEmpty
+                                    ? null
+                                    : const Icon(
+                                        Icons.image,
+                                        size: 50,
+                                        color: Colors.white,
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  return Flexible(
-                                    child: ElevatedButton.icon(
-                                      icon: const Icon(Icons.create, size: 15),
-                                      onPressed: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          if (_image != null &&
-                                              _image!.path.isNotEmpty) {
-                                            FormData formData =
-                                                FormData.fromMap({
-                                              "file":
-                                                  await MultipartFile.fromFile(
-                                                      _image!.path,
-                                                      filename: _image!.name),
-                                              "galleryName":
-                                                  _galleryNameController.text
-                                                      .trim(),
-                                              "description":
-                                                  _descriptionController.text
-                                                      .trim(),
-                                            });
-
-                                            BlocProvider.of<GalleryBloc>(
-                                                    context)
-                                                .add(GalleryCreateEvent(
-                                                    formData: formData));
-                                            Navigator.of(context).pop();
-                                          } else {
-                                            ErrorSnackBar.show(
-                                                context: context,
-                                                message:
-                                                    'Select Gallery Image');
-                                          }
-                                        }
-                                      },
-                                      label: const Text(
-                                        'Create Gallery',
-                                        style: TextStyle(
-                                          color: AppPalette.red,
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        iconColor: AppPalette.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 5,
+                              right: 5,
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: const Icon(
+                                  Icons.add_a_photo,
+                                  color: AppPalette.red,
+                                  size: 30,
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      AuthInputField(
+                        hintText: 'Gallery Name',
+                        labelText: 'Gallery Name',
+                        controller: _galleryNameController,
+                        prefixIcon: null,
+                        suffixIcon: null,
+                      ),
+                      const SizedBox(height: 12),
+                      AuthInputField(
+                        hintText: 'Gallery Description',
+                        labelText: 'Gallery Description',
+                        controller: _descriptionController,
+                        prefixIcon: null,
+                        suffixIcon: null,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<GalleryBloc, GalleryState>(
+                            builder: (context, state) {
+                              if (state is GalleryLoading) {
+                                return const Flexible(
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppPalette.red,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Flexible(
+                                  child: ElevatedButton.icon(
+                                    icon: const Icon(Icons.create, size: 15),
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        if (_image != null &&
+                                            _image!.path.isNotEmpty) {
+                                          FormData formData = FormData.fromMap({
+                                            "file":
+                                                await MultipartFile.fromFile(
+                                                    _image!.path,
+                                                    filename: _image!.name),
+                                            "galleryName":
+                                                _galleryNameController.text
+                                                    .trim(),
+                                            "description":
+                                                _descriptionController.text
+                                                    .trim(),
+                                          });
+
+                                          BlocProvider.of<GalleryBloc>(context)
+                                              .add(GalleryCreateEvent(
+                                                  formData: formData));
+                                        } else {
+                                          ErrorSnackBar.show(
+                                              context: context,
+                                              message: 'Select Gallery Image');
+                                        }
+                                      }
+                                    },
+                                    label: const Text(
+                                      'Create Gallery',
+                                      style: TextStyle(
+                                        color: AppPalette.red,
+                                        fontFamily: 'Poppins',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      iconColor: AppPalette.red,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

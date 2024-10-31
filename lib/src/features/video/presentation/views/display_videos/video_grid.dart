@@ -33,6 +33,7 @@ class _VideoGridPageState extends State<VideoGridPage>
   ViewMode _currentViewMode = ViewMode.list;
   VideoPlayerController? _videoPlayerController;
   bool _isFullScreen = false;
+  // ignore: unused_field
   bool _isPlaying = false;
   late AnimationController _controller;
   bool isTapped = false;

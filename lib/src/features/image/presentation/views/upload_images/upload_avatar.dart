@@ -8,6 +8,7 @@ import 'package:pix2life/core/constants.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
 import 'package:pix2life/core/utils/alerts/success.dart';
 import 'package:pix2life/src/features/auth/data/data_source/auth_provider.dart';
+import 'package:pix2life/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
 import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
@@ -56,21 +57,20 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
     }
   }
 
+  _updateUser() {
+    BlocProvider.of<AuthBloc>(context).add(AuthUserUpdatedEvent());
+  }
+
   Future<void> _uploadImage() async {
     if (!mounted) return;
 
     XFile image = _image!;
     FormData formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(
-        image.path,
-        filename: image.name,
-      ),
+      "file": await MultipartFile.fromFile(image.path, filename: image.name),
     });
 
     BlocProvider.of<ImageBloc>(context).add(
-      ImageUploadAvatarEvent(
-        formData: formData,
-      ),
+      ImageUploadAvatarEvent(formData: formData),
     );
   }
 
@@ -78,29 +78,34 @@ class _UploadProfilePicPageState extends State<UploadProfilePicPage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<MyUserProvider>(context);
     final themeProvider = Provider.of<MyThemeProvider>(context); // Added
-    isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    isDarkMode = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
     final theme = Theme.of(context);
     authUser = userProvider.user;
 
     return MultiBlocListener(
       listeners: [
         BlocListener<ImageBloc, ImageState>(
-            listener: (context, state) => {
-                  if (state is ImageFailure)
-                    {
-                      ErrorSnackBar.show(
-                          context: context, message: state.message)
-                    },
-                  if (state is ImageSuccess)
-                    {
-                      setState(() {
-                        _isPending = false;
-                        _isUploaded = true;
-                      }),
-                      SuccessSnackBar.show(
-                          context: context, message: state.message)
-                    }
+          listener: (context, state) => {
+            if (state is ImageFailure)
+              {
+                ErrorSnackBar.show(
+                  context: context,
+                  message: state.message,
+                )
+              },
+            if (state is ImageSuccess)
+              {
+                setState(() {
+                  _isPending = false;
+                  _isUploaded = true;
                 }),
+                SuccessSnackBar.show(context: context, message: state.message),
+                _updateUser()
+              }
+          },
+        ),
       ],
       child: Scaffold(
         backgroundColor: AppPalette.primaryBlack,

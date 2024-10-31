@@ -100,8 +100,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
       child: Container(
         width: 50.w,
         height: 5.h,
-        color:
-            isDarkMode ? AppPalette.lightBackground : AppPalette.primaryBlack,
+        color: isDarkMode ? AppPalette.primaryWhite : AppPalette.primaryBlack,
       ),
     );
   }
@@ -118,6 +117,7 @@ class _UserDetailsSignUpPageState extends State<UserDetailsSignUpPage> {
                 fontFamily: 'Poppins',
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w600,
+                color: isDarkMode ? null : AppPalette.primaryBlack,
               ),
             ),
             textAlign: TextAlign.center,

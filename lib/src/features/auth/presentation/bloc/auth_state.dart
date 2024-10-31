@@ -21,6 +21,23 @@ final class AuthenticatedUser extends AuthState {
   List<Object> get props => [user, message];
 }
 
+final class AuthLoggedInUser extends AuthState {
+  final User user;
+  final String message;
+
+  const AuthLoggedInUser({required this.user, required this.message});
+
+  @override
+  List<Object> get props => [user, message];
+}
+
+final class AuthUpdatedUser extends AuthState {
+  const AuthUpdatedUser();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class AuthUnauthenticated extends AuthState {
   final String message;
   const AuthUnauthenticated({required this.message});

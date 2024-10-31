@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pix2life/core/payment/paypal.dart';
-import 'package:pix2life/core/payment/stripe.dart';
 import 'package:pix2life/core/utils/alerts/failure.dart';
+import 'package:pix2life/core/utils/logger/logger.dart';
 import 'package:pix2life/core/utils/theme/app_palette.dart';
 import 'package:pix2life/core/utils/theme/app_theme_provider.dart';
 import 'package:pix2life/src/features/auth/presentation/widgets/auth_round_button.dart';
@@ -17,6 +17,7 @@ class SubscriptionsPage extends StatefulWidget {
 }
 
 class _SubscriptionsPageState extends State<SubscriptionsPage> {
+  final logger = createLogger(SubscriptionsPage);
   String selectedPlan = 'Monthly';
   String selectedPaymentMethod = 'Credit/Debit card';
   int monthlyCharge = 18;
@@ -298,16 +299,10 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                 setState(() {
                   isLoading = true;
                 });
-                print(
+                logger.i(
                     'Selected Plan: $selectedPlan, Payment Method: $selectedPaymentMethod');
-                if (selectedPlan == 'Monthly') {
-                  print('Amount: \$$monthlyCharge.00 /month');
-                } else {
-                  print('Amount: \$$annualCharge.00 /year');
-                }
-
-                final int amount =
-                    selectedPlan == 'Monthly' ? monthlyCharge : annualCharge;
+                // final int amount =
+                //     selectedPlan == 'Monthly' ? monthlyCharge : annualCharge;
 
                 try {
                   switch (selectedPaymentMethod) {
@@ -315,19 +310,17 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                       PayPalService.instance.createPayment(context);
                       break;
                     case 'Credit/Debit card':
-                      await StripeService.instance.makePayment(amount, "usd");
+                      // await StripeService.instance.makePayment(amount, "usd");
                       break;
                     default:
-                      ErrorSnackBar.show(
-                        context: context,
-                        message: 'Payment Currently Unavailable',
-                      );
+                      throw Exception('Payment method not supported');
                   }
+                  // Optionally show success message here
                 } catch (e) {
                   ErrorSnackBar.show(
-                    context: context,
-                    message: 'Payment Failed: $e',
-                  );
+                      context: context,
+                      message: 'Payment Failed: ${e.toString()}');
+                  logger.e('Error during payment: $e'); // Log detailed error
                 } finally {
                   setState(() {
                     isLoading = false;
