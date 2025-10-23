@@ -1,0 +1,108 @@
+# =========================
+# 🌐 Node.js (server/)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+.env.*.local
+dist/
+coverage/
+logs/
+*.log
+*.gz
+
+# PM2 logs
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# =========================
+# 📱 Flutter (client/)
+# =========================
+# Build outputs
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.dart_tool/
+.melos_tool/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Generated files
+*.lock
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+android/.idea/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/App.framework/
+ios/Flutter/ephemeral/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+macos/build/
+
+# Linux
+linux/flutter/ephemeral/
+linux/.dart_tool/
+linux/build/
+
+# Windows
+windows/flutter/ephemeral/
+windows/.dart_tool/
+windows/build/
+
+# Firebase/Secrets
+client/lib/app/secrets.dart
+client/lib/app/secrets/*.dart
+
+# =========================
+# 📦 Package Managers
+# =========================
+pubspec.lock
+package-lock.json
+yarn.lock
+
+# =========================
+# 📸 Misc
+# =========================
+*.zip
+*.tar.gz
+*.tgz
+*.bak
+*.old
+*.orig
+*.rej
+*.sublime-workspace
+*.sublime-project
